@@ -1,0 +1,28 @@
+
+.navbar-vertical {
+  position: fixed;
+  left: 0;
+  width: 200px; /* Chiều rộng của navbar dọc */
+  height: calc(100vh - 60px); /* Đảm bảo chiều cao đầy đủ dưới navbar ngang */
+  overflow-y: auto; /* Cuộn nội dung nếu dài */
+  z-index: 1000; /* Đặt trên nội dung chính */
+  background-color: #f8f9fa; /* Màu nền cho navbar */
+}
+
+/* Đảm bảo mỗi mục nav-item chiếm toàn bộ chiều rộng */
+.navbar-nav .nav-item {
+  width: 100%;
+}
+
+.navbar-nav .nav-link {
+  color: black;
+  display: block; /* Chuyển thẻ <a> thành block */
+  width: 100%; /* Chiều rộng tối đa */
+  padding: 10px; /* Khoảng cách cho thẻ <a> */
+  transition: background-color 0.3s; /* Hiệu ứng chuyển đổi cho màu nền khi hover */
+}
+
+/* Hiệu ứng hover */
+.navbar-nav .nav-link:hover {
+  background-color: rgba(0, 166, 255, 0.48); /* Màu nền nhẹ khi hover */
+}

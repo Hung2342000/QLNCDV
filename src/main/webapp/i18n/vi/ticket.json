@@ -1,0 +1,35 @@
+{
+  "qldvApp": {
+    "ticket": {
+      "home": {
+        "title": "Tickets",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm",
+        "createOrEditLabel": "Sửa",
+        "notFound": "No Tickets found"
+      },
+      "created": "Một Ticket mới được tạo",
+      "updated": "Một Ticket cập nhật",
+      "deleted": "Một Ticket đã xóa",
+      "delete": {
+        "question": "Bạn có chắc là muốn xóa Ticket?"
+      },
+      "detail": {
+        "title": "Ticket"
+      },
+      "id": "STT",
+      "phone": "Số điện thoại",
+      "serviceType": "Dịch vụ",
+      "status": "Trạng thái",
+      "createdTime": "Thời gian tạo",
+      "changeBy": "Giao dịch viên xử lý",
+      "shopCode": "Cửa hàng giao dịch",
+      "closedTime": "Thời gian đóng",
+      "smsReceived": "Tin nhắn phản hồi",
+      "province": "Tỉnh",
+      "smsStatus": "Trạng thái sms",
+      "callingStatus": "Trạng thái gọi ra",
+      "note": "Ghi chú"
+    }
+  }
+}

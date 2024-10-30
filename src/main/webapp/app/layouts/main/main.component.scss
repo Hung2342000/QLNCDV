@@ -1,0 +1,28 @@
+/* Đặt cấu trúc chung cho bố cục */
+.main-layout {
+  display: flex;
+  height: calc(100vh - 60px); /* Đảm bảo chiều cao trừ phần header (navbar ngang) */
+  margin-top: 60px; /* Để tránh bị đè lên bởi navbar ngang */
+}
+
+jhi-navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+jhi-navbar-vertical {
+  width: 200px; /* Chiều rộng của navbar dọc */
+  height: calc(100vh - 60px); /* Chiều cao đầy đủ dưới navbar ngang */
+  position: fixed; /* Đảm bảo navbar dọc luôn cố định */
+  top: 60px; /* Tránh bị đè bởi thanh navbar ngang */
+  left: 0;
+  z-index: 900;
+}
+
+.content-container {
+  margin-left: 200px; /* Đẩy nội dung sang phải, tương ứng với chiều rộng của navbar dọc */
+  width: calc(100% - 250px);
+  padding: 20px; /* Khoảng cách cho nội dung */
+}
