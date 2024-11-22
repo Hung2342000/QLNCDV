@@ -7,8 +7,10 @@ import com.mycompany.myapp.domain.Employee;
 import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.repository.EmployeeRepository;
 import com.mycompany.myapp.repository.UserRepository;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -56,5 +58,25 @@ public class EmployeeService {
             page = employeeRepository.listAllEmployees(searchCode.toLowerCase(), searchName.toLowerCase(), searchDepartment, pageable);
         }
         return page;
+    }
+
+    public List<Employee> getAllEmployeeNoPage() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username;
+        User user = new User();
+        Object principal = authentication.getPrincipal();
+        UserDetails userDetails = (UserDetails) principal;
+        username = userDetails.getUsername();
+        user = userRepository.findOneByLogin(username).get();
+        List<Employee> employeeList = new ArrayList<>();
+        if (
+            authentication != null &&
+            !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(USER).contains(authority)) &&
+            getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority)) &&
+            !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(SUPERUSER).contains(authority))
+        ) {
+            employeeList = employeeRepository.findAll();
+        }
+        return employeeList;
     }
 }

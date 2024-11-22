@@ -9,6 +9,8 @@ import { DATE_FORMAT } from 'app/config/input.constants';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { createRequestOption } from 'app/core/request/request-util';
 import { IAttendance, getAttendanceIdentifier } from '../attendance.model';
+import { IDepartment } from '../../employee/department.model';
+import { IAttendanceDetail } from '../attendanceDetail.model';
 
 export type EntityResponseType = HttpResponse<IAttendance>;
 export type EntityArrayResponseType = HttpResponse<IAttendance[]>;
@@ -16,13 +18,20 @@ export type EntityArrayResponseType = HttpResponse<IAttendance[]>;
 @Injectable({ providedIn: 'root' })
 export class AttendanceService {
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/attendances');
-
+  protected resourceUrlDetail = this.applicationConfigService.getEndpointFor('api/attendanceDetail');
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) {}
 
   create(attendance: IAttendance): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(attendance);
     return this.http
       .post<IAttendance>(this.resourceUrl, copy, { observe: 'response' })
+      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+  }
+
+  createDetail(attendanceDetail: IAttendanceDetail): Observable<EntityResponseType> {
+    const copy = this.convertDateFromClient(attendanceDetail);
+    return this.http
+      .post<IAttendanceDetail>(this.resourceUrlDetail, copy, { observe: 'response' })
       .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
   }
 
@@ -33,6 +42,14 @@ export class AttendanceService {
       .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
   }
 
+  updateDetail(attendanceDetail: IAttendanceDetail): Observable<EntityResponseType> {
+    const copy = this.convertDateFromClient(attendanceDetail);
+    return this.http
+      .put<IAttendanceDetail>(`${this.resourceUrlDetail}/${getAttendanceIdentifier(attendanceDetail) as number}`, copy, {
+        observe: 'response',
+      })
+      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+  }
   partialUpdate(attendance: IAttendance): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(attendance);
     return this.http
@@ -46,6 +63,9 @@ export class AttendanceService {
       .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
   }
 
+  queryAttendanceDetail(): Observable<EntityArrayResponseType> {
+    return this.http.get<IAttendanceDetail[]>(this.resourceUrlDetail, { observe: 'response' });
+  }
   query(req?: any): Observable<EntityArrayResponseType> {
     const options = createRequestOption(req);
     return this.http
@@ -79,15 +99,13 @@ export class AttendanceService {
 
   protected convertDateFromClient(attendance: IAttendance): IAttendance {
     return Object.assign({}, attendance, {
-      inTime: attendance.inTime?.isValid() ? attendance.inTime.format(DATE_FORMAT) : undefined,
-      outTime: attendance.outTime?.isValid() ? attendance.outTime.format(DATE_FORMAT) : undefined,
+      inTime: attendance.month?.isValid() ? attendance.month.format(DATE_FORMAT) : undefined,
     });
   }
 
   protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
     if (res.body) {
-      res.body.inTime = res.body.inTime ? dayjs(res.body.inTime) : undefined;
-      res.body.outTime = res.body.outTime ? dayjs(res.body.outTime) : undefined;
+      res.body.month = res.body.month ? dayjs(res.body.month) : undefined;
     }
     return res;
   }
@@ -95,8 +113,7 @@ export class AttendanceService {
   protected convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
     if (res.body) {
       res.body.forEach((attendance: IAttendance) => {
-        attendance.inTime = attendance.inTime ? dayjs(attendance.inTime) : undefined;
-        attendance.outTime = attendance.outTime ? dayjs(attendance.outTime) : undefined;
+        attendance.month = attendance.month ? dayjs(attendance.month) : undefined;
       });
     }
     return res;

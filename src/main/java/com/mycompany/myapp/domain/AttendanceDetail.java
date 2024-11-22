@@ -2,15 +2,16 @@ package com.mycompany.myapp.domain;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import javax.persistence.*;
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotNull;
 
 /**
  * A Attendance.
  */
 @Entity
-@Table(name = "attendance")
-public class Attendance implements Serializable {
+@Table(name = "attendance_detail")
+public class AttendanceDetail implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -21,17 +22,14 @@ public class Attendance implements Serializable {
     private Long id;
 
     @NotNull
-    @Column(name = "employee_id", nullable = false)
-    private Long employeeId;
+    @Column(name = "attendance_id", nullable = false)
+    private Long attendanceId;
 
-    @Column(name = "month")
-    private LocalDate month;
+    @Column(name = "in_time")
+    private LocalDateTime inTime;
 
-    @Column(name = "count")
-    private Long count;
-
-    @Column(name = "countNot")
-    private Long countNot;
+    @Column(name = "out_time")
+    private LocalDateTime outTime;
 
     @Column(name = "note")
     private String note;
@@ -42,7 +40,7 @@ public class Attendance implements Serializable {
         return this.id;
     }
 
-    public Attendance id(Long id) {
+    public AttendanceDetail id(Long id) {
         this.setId(id);
         return this;
     }
@@ -51,50 +49,32 @@ public class Attendance implements Serializable {
         this.id = id;
     }
 
-    public Long getEmployeeId() {
-        return this.employeeId;
+    public Long getAttendanceId() {
+        return attendanceId;
     }
 
-    public Attendance employeeId(Long employeeId) {
-        this.setEmployeeId(employeeId);
-        return this;
+    public void setAttendanceId(Long attendanceId) {
+        this.attendanceId = attendanceId;
     }
 
-    public void setEmployeeId(Long employeeId) {
-        this.employeeId = employeeId;
+    public LocalDateTime getInTime() {
+        return inTime;
     }
 
-    public LocalDate getMonth() {
-        return month;
+    public void setInTime(LocalDateTime inTime) {
+        this.inTime = inTime;
     }
 
-    public void setMonth(LocalDate month) {
-        this.month = month;
+    public LocalDateTime getOutTime() {
+        return outTime;
     }
 
-    public Long getCount() {
-        return count;
-    }
-
-    public void setCount(Long count) {
-        this.count = count;
-    }
-
-    public Long getCountNot() {
-        return countNot;
-    }
-
-    public void setCountNot(Long countNot) {
-        this.countNot = countNot;
+    public void setOutTime(LocalDateTime outTime) {
+        this.outTime = outTime;
     }
 
     public String getNote() {
-        return this.note;
-    }
-
-    public Attendance note(String note) {
-        this.setNote(note);
-        return this;
+        return note;
     }
 
     public void setNote(String note) {
@@ -108,10 +88,10 @@ public class Attendance implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Attendance)) {
+        if (!(o instanceof AttendanceDetail)) {
             return false;
         }
-        return id != null && id.equals(((Attendance) o).id);
+        return id != null && id.equals(((AttendanceDetail) o).id);
     }
 
     @Override
@@ -125,8 +105,6 @@ public class Attendance implements Serializable {
     public String toString() {
         return "Attendance{" +
             "id=" + getId() +
-            ", employeeId=" + getEmployeeId() +
-            ", note='" + getNote() + "'" +
             "}";
     }
 }

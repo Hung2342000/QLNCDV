@@ -134,11 +134,14 @@ public class AttendanceResource {
                 if (attendance.getEmployeeId() != null) {
                     existingAttendance.setEmployeeId(attendance.getEmployeeId());
                 }
-                if (attendance.getInTime() != null) {
-                    existingAttendance.setInTime(attendance.getInTime());
+                if (attendance.getMonth() != null) {
+                    existingAttendance.setMonth(attendance.getMonth());
                 }
-                if (attendance.getOutTime() != null) {
-                    existingAttendance.setOutTime(attendance.getOutTime());
+                if (attendance.getCount() != null) {
+                    existingAttendance.setCount(attendance.getCount());
+                }
+                if (attendance.getCountNot() != null) {
+                    existingAttendance.setCountNot(attendance.getCountNot());
                 }
                 if (attendance.getNote() != null) {
                     existingAttendance.setNote(attendance.getNote());

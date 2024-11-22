@@ -1,59 +1,35 @@
 <div>
-  <h2 id="page-heading" data-cy="AttendanceHeading">
-    <span jhiTranslate="qldvApp.attendance.home.title">Attendances</span>
-
+  <h3 id="page-heading" data-cy="AttendanceHeading">
+    <span>Chấm công</span>
     <div class="d-flex justify-content-end">
-      <button class="btn btn-info me-2" (click)="loadPage()" [disabled]="isLoading">
-        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
-        <span jhiTranslate="qldvApp.attendance.home.refreshListLabel">Refresh List</span>
-      </button>
-
-      <button
-        id="jh-create-entity"
-        data-cy="entityCreateButton"
-        class="btn btn-primary jh-create-entity create-attendance"
-        [routerLink]="['/attendance/new']"
-      >
-        <fa-icon icon="plus"></fa-icon>
-        <span jhiTranslate="qldvApp.attendance.home.createLabel"> Create a new Attendance </span>
+      <button id="jh-create-entity" data-cy="entityCreateButton" class="btn btn-primary btn-sm" [routerLink]="['/attendance/new']">
+        <span> Thêm </span>
       </button>
     </div>
-  </h2>
+  </h3>
 
-  <jhi-alert-error></jhi-alert-error>
-
-  <jhi-alert></jhi-alert>
-
-  <div class="alert alert-warning" id="no-result" *ngIf="attendances?.length === 0">
-    <span jhiTranslate="qldvApp.attendance.home.notFound">No attendances found</span>
-  </div>
-
-  <div class="table-responsive" id="entities" *ngIf="attendances && attendances.length > 0">
-    <table class="table table-striped" aria-describedby="page-heading">
+  <div class="table-responsive" id="entities" *ngIf="attendances">
+    <table class="table table-hover" aria-describedby="page-heading">
       <thead>
         <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="loadPage()">
-          <th scope="col" jhiSortBy="id"><span jhiTranslate="qldvApp.attendance.id">Id</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="employeeId">
-            <span jhiTranslate="qldvApp.attendance.employeeId">Employee Id</span> <fa-icon icon="sort"></fa-icon>
-          </th>
-          <th scope="col" jhiSortBy="inTime">
-            <span jhiTranslate="qldvApp.attendance.inTime">In Time</span> <fa-icon icon="sort"></fa-icon>
-          </th>
-          <th scope="col" jhiSortBy="outTime">
-            <span jhiTranslate="qldvApp.attendance.outTime">Out Time</span> <fa-icon icon="sort"></fa-icon>
-          </th>
-          <th scope="col" jhiSortBy="note"><span jhiTranslate="qldvApp.attendance.note">Note</span> <fa-icon icon="sort"></fa-icon></th>
+          <th style="width: 5%" scope="col" jhiSortBy="id"><span>STT</span> <fa-icon icon="sort"></fa-icon></th>
+          <th style="width: 20%" scope="col" jhiSortBy="employeeId"><span>Nhân viên</span> <fa-icon icon="sort"></fa-icon></th>
+          <th style="width: 15%" scope="col" jhiSortBy="employeeId"><span>Thời gian</span> <fa-icon icon="sort"></fa-icon></th>
+          <th style="width: 15%" scope="col" jhiSortBy="inTime"><span>Đã chấm công</span> <fa-icon icon="sort"></fa-icon></th>
+          <th style="width: 15%" scope="col" jhiSortBy="outTime"><span>Chưa chấm Công</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="note"><span>Ghi chú</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col"></th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let attendance of attendances; trackBy: trackId" data-cy="entityTable">
+        <tr *ngFor="let attendance of attendances; trackBy: trackId; let i = index" data-cy="entityTable">
           <td>
-            <a [routerLink]="['/attendance', attendance.id, 'view']">{{ attendance.id }}</a>
+            {{ i + 1 }}
           </td>
           <td>{{ attendance.employeeId }}</td>
-          <td>{{ attendance.inTime | formatMediumDate }}</td>
-          <td>{{ attendance.outTime | formatMediumDate }}</td>
+          <td>{{ attendance.month | formatMediumDate }}</td>
+          <td>{{ attendance.count }}</td>
+          <td>{{ attendance.countNot }}</td>
           <td>{{ attendance.note }}</td>
           <td class="text-end">
             <div class="btn-group">
@@ -64,9 +40,7 @@
                 data-cy="entityDetailsButton"
               >
                 <fa-icon icon="eye"></fa-icon>
-                <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
               </button>
-
               <button
                 type="submit"
                 [routerLink]="['/attendance', attendance.id, 'edit']"
@@ -74,26 +48,37 @@
                 data-cy="entityEditButton"
               >
                 <fa-icon icon="pencil-alt"></fa-icon>
-                <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
               </button>
 
               <button type="submit" (click)="delete(attendance)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
                 <fa-icon icon="times"></fa-icon>
-                <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
               </button>
             </div>
           </td>
+        </tr>
+        <tr *ngFor="let l of newArr(10 - attendances.length)">
+          <td class="text-center empty-row" style="width: 50px">&nbsp;</td>
+          <td class="text-center empty-row">&nbsp;</td>
+          <td class="text-center empty-row">&nbsp;</td>
+          <td class="text-center empty-row">&nbsp;</td>
+          <td class="text-center empty-row">&nbsp;</td>
+          <td class="text-center empty-row">&nbsp;</td>
+          <td class="text-right empty-row">&nbsp;</td>
         </tr>
       </tbody>
     </table>
   </div>
 
-  <div *ngIf="attendances && attendances.length > 0">
-    <div class="d-flex justify-content-center">
-      <jhi-item-count [params]="{ page: page, totalItems: totalItems, itemsPerPage: itemsPerPage }"></jhi-item-count>
-    </div>
-
-    <div class="d-flex justify-content-center">
+  <div *ngIf="attendances && attendances.length > 0" class="d-flex justify-content-end">
+    <div class="p-3 d-flex" style="justify-content: space-between">
+      <select style="border-radius: 7%; height: 35px" [(ngModel)]="itemsPerPage" (change)="loadPage()">
+        <option value="10">10</option>
+        <option value="20">20</option>
+        <option value="30">30</option>
+      </select>
+      <div style="font-size: 20px; margin-right: 15px">
+        <span style="width: 170px; padding-left: 20px; font-size: 15px">Tổng số: {{ this.totalItems }} </span>
+      </div>
       <ngb-pagination
         [collectionSize]="totalItems"
         [(page)]="ngbPaginationPage"
@@ -102,6 +87,7 @@
         [rotate]="true"
         [boundaryLinks]="true"
         (pageChange)="loadPage($event)"
+        class=""
       ></ngb-pagination>
     </div>
   </div>

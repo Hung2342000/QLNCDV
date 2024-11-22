@@ -15,7 +15,7 @@ import { AttendanceDeleteDialogComponent } from '../delete/attendance-delete-dia
   templateUrl: './attendance.component.html',
 })
 export class AttendanceComponent implements OnInit {
-  attendances?: IAttendance[];
+  attendances?: IAttendance[] | any;
   isLoading = false;
   totalItems = 0;
   itemsPerPage = ITEMS_PER_PAGE;
@@ -51,6 +51,14 @@ export class AttendanceComponent implements OnInit {
           this.onError();
         },
       });
+  }
+
+  newArr(lenght: number): any[] {
+    if (lenght > 0) {
+      return new Array(lenght);
+    } else {
+      return new Array(0);
+    }
   }
 
   ngOnInit(): void {

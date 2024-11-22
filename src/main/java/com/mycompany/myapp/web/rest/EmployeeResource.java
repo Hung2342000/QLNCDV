@@ -196,6 +196,13 @@ public class EmployeeResource {
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
+    @GetMapping("/employees/all")
+    public ResponseEntity<List<Employee>> getAllEmployees() {
+        log.debug("REST request to get a page of Employees");
+        List<Employee> employeeList = employeeService.getAllEmployeeNoPage();
+        return ResponseEntity.ok().body(employeeList);
+    }
+
     /**
      * {@code GET  /employees/:id} : get the "id" employee.
      *
