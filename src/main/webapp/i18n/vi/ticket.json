@@ -4,32 +4,32 @@
       "home": {
         "title": "Tickets",
         "refreshListLabel": "Refresh list",
-        "createLabel": "Thêm",
-        "createOrEditLabel": "Sửa",
+        "createLabel": "Thêm mới một Ticket",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Ticket",
         "notFound": "No Tickets found"
       },
-      "created": "Một Ticket mới được tạo",
-      "updated": "Một Ticket cập nhật",
-      "deleted": "Một Ticket đã xóa",
+      "created": "Một Ticket mới được tạo với định danh {{ param }}",
+      "updated": "Một Ticket cập nhật với định danh {{ param }}",
+      "deleted": "Một Ticket đã xóa với định danh {{ param }}",
       "delete": {
-        "question": "Bạn có chắc là muốn xóa Ticket?"
+        "question": "Bạn có chắc là muốn xóa Ticket {{ id }}?"
       },
       "detail": {
         "title": "Ticket"
       },
-      "id": "STT",
-      "phone": "Số điện thoại",
-      "serviceType": "Dịch vụ",
-      "status": "Trạng thái",
-      "createdTime": "Thời gian tạo",
-      "changeBy": "Giao dịch viên xử lý",
-      "shopCode": "Cửa hàng giao dịch",
-      "closedTime": "Thời gian đóng",
-      "smsReceived": "Tin nhắn phản hồi",
-      "province": "Tỉnh",
-      "smsStatus": "Trạng thái sms",
-      "callingStatus": "Trạng thái gọi ra",
-      "note": "Ghi chú"
+      "id": "Id",
+      "phone": "Phone",
+      "serviceType": "Service Type",
+      "status": "Status",
+      "createdTime": "Created Time",
+      "changeBy": "Change By",
+      "shopCode": "Shop Code",
+      "closedTime": "Closed Time",
+      "smsReceived": "Sms Received",
+      "province": "Province",
+      "smsStatus": "Sms Status",
+      "callingStatus": "Calling Status",
+      "note": "Note"
     }
   }
 }

@@ -1,0 +1,34 @@
+{
+  "qldvApp": {
+    "employee": {
+      "home": {
+        "title": "Nhân viên",
+        "refreshListLabel": "Tải lại trang",
+        "createLabel": "Thêm",
+        "createOrEditLabel": "Cập nhật",
+        "notFound": "Không có bản ghi"
+      },
+      "created": "Một Employee mới được tạo với định danh {{ param }}",
+      "updated": "Một Employee cập nhật với định danh {{ param }}",
+      "deleted": "Một Employee đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Xác nhận xóa?"
+      },
+      "detail": {
+        "title": "Nhân viên"
+      },
+      "id": "Id",
+      "codeEmployee": "Mã nhân viên",
+      "name": "Họ và tên",
+      "birthday": "Ngày sinh",
+      "otherId": "Căn cước công dân",
+      "address": "Địa chỉ",
+      "mobilePhone": "Số điện thoại cá nhân",
+      "workPhone": "Số điện thoại công việc",
+      "workEmail": "Email công việc",
+      "privateEmail": "Email cá nhân",
+      "department": "Phòng ban",
+      "startDate": "Ngày vào làm việc"
+    }
+  }
+}

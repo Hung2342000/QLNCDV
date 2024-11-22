@@ -1,0 +1,76 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <div *ngIf="ticket">
+      <h2 data-cy="ticketDetailsHeading"><span jhiTranslate="qldvApp.ticket.detail.title">Ticket</span></h2>
+
+      <hr />
+
+      <jhi-alert-error></jhi-alert-error>
+
+      <jhi-alert></jhi-alert>
+
+      <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="qldvApp.ticket.id">Id</span></dt>
+        <dd>
+          <span>{{ ticket.id }}</span>
+        </dd>
+        <dt><span jhiTranslate="qldvApp.ticket.phone">Phone</span></dt>
+        <dd>
+          <span>{{ ticket.phone }}</span>
+        </dd>
+        <dt><span jhiTranslate="qldvApp.ticket.serviceType">Service Type</span></dt>
+        <dd>
+          <span>{{ ticket.serviceType }}</span>
+        </dd>
+        <dt><span jhiTranslate="qldvApp.ticket.status">Status</span></dt>
+        <dd>
+          <span>{{ ticket.status }}</span>
+        </dd>
+        <dt><span jhiTranslate="qldvApp.ticket.createdTime">Created Time</span></dt>
+        <dd>
+          <span>{{ ticket.createdTime | formatMediumDate }}</span>
+        </dd>
+        <dt><span jhiTranslate="qldvApp.ticket.changeBy">Change By</span></dt>
+        <dd>
+          <span>{{ ticket.changeBy }}</span>
+        </dd>
+        <dt><span jhiTranslate="qldvApp.ticket.shopCode">Shop Code</span></dt>
+        <dd>
+          <span>{{ ticket.shopCode }}</span>
+        </dd>
+        <dt><span jhiTranslate="qldvApp.ticket.closedTime">Closed Time</span></dt>
+        <dd>
+          <span>{{ ticket.closedTime | formatMediumDate }}</span>
+        </dd>
+        <dt><span jhiTranslate="qldvApp.ticket.smsReceived">Sms Received</span></dt>
+        <dd>
+          <span>{{ ticket.smsReceived }}</span>
+        </dd>
+        <dt><span jhiTranslate="qldvApp.ticket.province">Province</span></dt>
+        <dd>
+          <span>{{ ticket.province }}</span>
+        </dd>
+        <dt><span jhiTranslate="qldvApp.ticket.smsStatus">Sms Status</span></dt>
+        <dd>
+          <span>{{ ticket.smsStatus }}</span>
+        </dd>
+        <dt><span jhiTranslate="qldvApp.ticket.callingStatus">Calling Status</span></dt>
+        <dd>
+          <span>{{ ticket.callingStatus }}</span>
+        </dd>
+        <dt><span jhiTranslate="qldvApp.ticket.note">Note</span></dt>
+        <dd>
+          <span>{{ ticket.note }}</span>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+      </button>
+
+      <button type="button" [routerLink]="['/ticket', ticket.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,145 @@
+<div>
+  <h2 id="page-heading" data-cy="EmployeeHeading">
+    <span>Nhân viên</span>
+
+    <div class="d-flex justify-content-end">
+      <button id="jh-create-entity" data-cy="entityCreateButton" class="btn btn-primary btn-sm" [routerLink]="['/employee/new']">
+        <span jhiTranslate="qldvApp.employee.home.createLabel"> Thêm </span>
+      </button>
+    </div>
+  </h2>
+
+  <div class="table-responsive" id="entities" style="border-top: 1px solid">
+    <table class="table table-hover" aria-describedby="page-heading">
+      <thead>
+        <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="loadPage()">
+          <th scope="col" style="width: 4%" jhiSortBy="id"><span>STT</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" style="width: 8%" jhiSortBy="codeEmployee"><span>Mã nhân viên</span> <fa-icon icon="sort"></fa-icon></th>
+          <th style="width: 13%" scope="col" jhiSortBy="name"><span>Họ và tên</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="birthday"><span>Ngày sinh</span> <fa-icon icon="sort"></fa-icon></th>
+          <!--          <th scope="col" jhiSortBy="otherId">-->
+          <!--            <span jhiTranslate="qldvApp.employee.otherId">Other Id</span> <fa-icon icon="sort"></fa-icon>-->
+          <!--          </th>-->
+          <th style="width: 12%" scope="col" jhiSortBy="mobilePhone"><span>Số điện thoại cá nhân</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="address"><span>Địa chỉ</span> <fa-icon icon="sort"></fa-icon></th>
+          <!--          <th scope="col" jhiSortBy="privateEmail">-->
+          <!--            <span jhiTranslate="qldvApp.employee.privateEmail">Private Email</span> <fa-icon icon="sort"></fa-icon>-->
+          <!--          </th>-->
+          <!--          <th scope="col" jhiSortBy="workPhone">-->
+          <!--            <span jhiTranslate="qldvApp.employee.workPhone">Work Phone</span> <fa-icon icon="sort"></fa-icon>-->
+          <!--          </th>-->
+          <!--          <th scope="col" jhiSortBy="workEmail">-->
+          <!--            <span jhiTranslate="qldvApp.employee.workEmail">Work Email</span> <fa-icon icon="sort"></fa-icon>-->
+          <!--          </th>-->
+          <th style="width: 10%" scope="col" jhiSortBy="department"><span>Phòng ban</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="startDate"><span>Ngày vào làm việc</span> <fa-icon icon="sort"></fa-icon></th>
+          <th style="width: 6%" class="text-center" scope="col">Thao tác</th>
+        </tr>
+        <tr style="border-bottom: 1px solid">
+          <th scope="col"></th>
+          <th scope="col" style="width: 8%">
+            <input
+              (keyup.enter)="loadPageSearch()"
+              [(ngModel)]="searchCode"
+              class="form-control border border-dark"
+              style="height: 30px"
+              type="search"
+              placeholder="Mã nhân viên"
+              aria-label="Tìm kiếm"
+            />
+          </th>
+          <th scope="col" style="width: 8%">
+            <input
+              (keyup.enter)="loadPageSearch()"
+              [(ngModel)]="searchName"
+              class="form-control border border-dark"
+              style="height: 30px"
+              type="search"
+              placeholder="Họ và tên"
+              aria-label="Tìm kiếm"
+            />
+          </th>
+          <th scope="col"></th>
+          <th scope="col"></th>
+          <th scope="col"></th>
+          <th scope="col">
+            <select style="height: 30px; width: 100%" [(ngModel)]="searchDepartment" (change)="loadPageSearch()">
+              <option [value]=""></option>
+              <option *ngFor="let department of departments" [value]="department.code">{{ department.name }}</option>
+            </select>
+          </th>
+        </tr>
+      </thead>
+      <tbody style="border-top: 1px solid">
+        <tr *ngFor="let employee of employees; trackBy: trackId; let i = index" data-cy="entityTable">
+          <td>{{ i + 1 }}</td>
+          <td>{{ employee.codeEmployee }}</td>
+          <td>{{ employee.name }}</td>
+          <td>{{ employee.birthday | formatDateVnPipe }}</td>
+          <!--          <td>{{ employee.otherId }}</td>-->
+          <td>{{ employee.mobilePhone }}</td>
+          <td>{{ employee.address }}</td>
+          <!--          <td>{{ employee.workPhone }}</td>-->
+          <!--          <td>{{ employee.workEmail }}</td>-->
+          <!--          <td>{{ employee.privateEmail }}</td>-->
+          <td>{{ departmentName(employee.department) }}</td>
+          <td>{{ employee.startDate | formatDateVnPipe }}</td>
+          <td class="text-end">
+            <div class="btn-group">
+              <button type="submit" (click)="view(employee)" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                <fa-icon icon="eye"></fa-icon>
+              </button>
+
+              <button
+                type="submit"
+                [routerLink]="['/employee', employee.id, 'edit']"
+                class="btn btn-primary btn-sm"
+                data-cy="entityEditButton"
+              >
+                <fa-icon icon="pencil-alt"></fa-icon>
+              </button>
+
+              <button type="submit" (click)="delete(employee)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                <fa-icon icon="times"></fa-icon>
+              </button>
+            </div>
+          </td>
+        </tr>
+        <tr *ngFor="let l of newArr(10 - employees.length)">
+          <td class="text-center empty-row">&nbsp;</td>
+          <td class="text-center empty-row">&nbsp;</td>
+          <td class="text-center empty-row">&nbsp;</td>
+          <td class="text-center empty-row">&nbsp;</td>
+          <td class="text-center empty-row">&nbsp;</td>
+          <td class="text-center empty-row"></td>
+          <td class="text-right empty-row"></td>
+          <td class="text-right empty-row"></td>
+          <td class="text-right empty-row"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="employees && employees.length > 0" class="d-flex justify-content-end">
+    <div class="p-3 d-flex" style="justify-content: space-between">
+      <select style="border-radius: 7%; height: 35px" [(ngModel)]="itemsPerPage" (change)="loadPage()">
+        <option value="10">10</option>
+        <option value="20">20</option>
+        <option value="30">30</option>
+      </select>
+      <div style="font-size: 20px; margin-right: 15px">
+        <span style="width: 170px; padding-left: 20px; font-size: 15px">Tổng số: {{ this.totalItems }} </span>
+      </div>
+      <ngb-pagination
+        [collectionSize]="totalItems"
+        [(page)]="ngbPaginationPage"
+        [pageSize]="itemsPerPage"
+        [maxSize]="5"
+        [rotate]="true"
+        [boundaryLinks]="true"
+        (pageChange)="loadPage($event)"
+        class=""
+      ></ngb-pagination>
+    </div>
+  </div>
+</div>

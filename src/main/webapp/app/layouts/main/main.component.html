@@ -1,8 +1,11 @@
-<jhi-navbar></jhi-navbar> <!-- Thanh điều hướng ngang -->
+<jhi-navbar *ngIf="account"></jhi-navbar>
+<!-- Thanh điều hướng ngang -->
 <div class="main-layout">
-  <jhi-navbar-vertical></jhi-navbar-vertical> <!-- Thanh điều hướng dọc -->
+  <jhi-navbar-vertical *ngIf="account"></jhi-navbar-vertical>
+  <!-- Thanh điều hướng dọc -->
   <div class="content-container">
-    <router-outlet></router-outlet> <!-- Nội dung hiển thị -->
+    <router-outlet></router-outlet>
+    <!-- Nội dung hiển thị -->
   </div>
 </div>
 <jhi-footer></jhi-footer>

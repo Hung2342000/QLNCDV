@@ -1,0 +1,66 @@
+{
+  "applications": "*",
+  "changelogDate": "20241121082145",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "employee",
+  "fields": [
+    {
+      "fieldName": "id",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "codeEmployee",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "name",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "birthday",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "otherId",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "address",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "mobilePhone",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "workPhone",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "workEmail",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "privateEmail",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "department",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "startDate",
+      "fieldType": "LocalDate"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Employee",
+  "pagination": "pagination",
+  "readOnly": false,
+  "relationships": [],
+  "service": "no"
+}

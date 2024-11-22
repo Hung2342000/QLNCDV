@@ -5,6 +5,7 @@ import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
 import dayjs from 'dayjs/esm';
 
 import { AccountService } from 'app/core/auth/account.service';
+import { Account } from '../../core/auth/account.model';
 
 @Component({
   selector: 'jhi-main',
@@ -13,6 +14,7 @@ import { AccountService } from 'app/core/auth/account.service';
 })
 export class MainComponent implements OnInit {
   checkLogin = false;
+  account: Account | null = null;
   private renderer: Renderer2;
 
   constructor(
@@ -42,6 +44,10 @@ export class MainComponent implements OnInit {
       this.updateTitle();
       dayjs.locale(langChangeEvent.lang);
       this.renderer.setAttribute(document.querySelector('html'), 'lang', langChangeEvent.lang);
+    });
+
+    this.accountService.getAuthenticationState().subscribe(account => {
+      this.account = account;
     });
   }
 

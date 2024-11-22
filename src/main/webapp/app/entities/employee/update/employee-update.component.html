@@ -1,0 +1,160 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h3 id="jhi-employee-heading" data-cy="EmployeeCreateUpdateHeading">Nhân viên</h3>
+      <div class="row">
+        <div class="col-md-5">
+          <div class="row mb-3">
+            <label class="form-label" jhiTranslate="qldvApp.employee.codeEmployee" for="field_codeEmployee">Code Employee</label>
+            <input
+              type="number"
+              class="form-control"
+              name="codeEmployee"
+              id="field_codeEmployee"
+              data-cy="codeEmployee"
+              formControlName="codeEmployee"
+            />
+            <div
+              *ngIf="
+                editForm.get('codeEmployee')!.invalid && (editForm.get('codeEmployee')!.dirty || editForm.get('codeEmployee')!.touched)
+              "
+            >
+              <small
+                class="form-text text-danger"
+                *ngIf="editForm.get('codeEmployee')?.errors?.required"
+                jhiTranslate="entity.validation.required"
+              >
+                This field is required.
+              </small>
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('codeEmployee')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+              >
+                This field should be a number.
+              </small>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <label class="form-label" jhiTranslate="qldvApp.employee.name" for="field_name">Họ và tên</label>
+            <input type="text" class="form-control" name="name" id="field_name" data-cy="name" formControlName="name" />
+          </div>
+
+          <div class="row mb-3">
+            <label class="form-label" jhiTranslate="qldvApp.employee.birthday" for="field_birthday">Ngày sinh</label>
+            <div class="input-group">
+              <input
+                id="field_birthday"
+                data-cy="birthday"
+                type="text"
+                class="form-control"
+                name="birthday"
+                ngbDatepicker
+                #birthdayDp="ngbDatepicker"
+                formControlName="birthday"
+              />
+              <button type="button" class="btn btn-secondary" (click)="birthdayDp.toggle()"><fa-icon icon="calendar-alt"></fa-icon></button>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <label class="form-label" jhiTranslate="qldvApp.employee.otherId" for="field_otherId">Căn cước công dân</label>
+            <input type="text" class="form-control" name="otherId" id="field_otherId" data-cy="otherId" formControlName="otherId" />
+          </div>
+
+          <div class="row mb-3">
+            <label class="form-label" jhiTranslate="qldvApp.employee.address" for="field_address">Địa chỉ</label>
+            <input type="text" class="form-control" name="address" id="field_address" data-cy="address" formControlName="address" />
+          </div>
+
+          <div class="row mb-3">
+            <label class="form-label" jhiTranslate="qldvApp.employee.mobilePhone" for="field_mobilePhone">Số điện thoại cá nhân</label>
+            <input
+              type="text"
+              class="form-control"
+              name="mobilePhone"
+              id="field_mobilePhone"
+              data-cy="mobilePhone"
+              formControlName="mobilePhone"
+            />
+          </div>
+        </div>
+        <div class="col-md-2"></div>
+        <div class="col-md-5">
+          <div class="row mb-3">
+            <label class="form-label" jhiTranslate="qldvApp.employee.workPhone" for="field_workPhone">Số điện thoại công việc</label>
+            <input type="text" class="form-control" name="workPhone" id="field_workPhone" data-cy="workPhone" formControlName="workPhone" />
+          </div>
+
+          <div class="row mb-3">
+            <label class="form-label" jhiTranslate="qldvApp.employee.workEmail" for="field_workEmail">Email công việc</label>
+            <input type="text" class="form-control" name="workEmail" id="field_workEmail" data-cy="workEmail" formControlName="workEmail" />
+          </div>
+
+          <div class="row mb-3">
+            <label class="form-label" jhiTranslate="qldvApp.employee.privateEmail" for="field_privateEmail">Email cá nhân</label>
+            <input
+              type="text"
+              class="form-control"
+              name="privateEmail"
+              id="field_privateEmail"
+              data-cy="privateEmail"
+              formControlName="privateEmail"
+            />
+          </div>
+
+          <div class="row mb-3">
+            <label class="form-label" jhiTranslate="qldvApp.employee.department" for="field_department">Phòng ban</label>
+            <select
+              class="form-select"
+              id="field_department"
+              formControlName="department"
+              data-cy="department"
+              name="department"
+              [disabled]="true"
+            >
+              <option *ngFor="let department of departments" [value]="department.code">{{ department.name }}</option>
+            </select>
+            <!--            <input-->
+            <!--              type="text"-->
+            <!--              class="form-control"-->
+            <!--              name="department"-->
+            <!--              id="field_department"-->
+            <!--              data-cy="department"-->
+            <!--              formControlName="department"-->
+            <!--            />-->
+          </div>
+
+          <div class="row mb-3">
+            <label class="form-label" jhiTranslate="qldvApp.employee.startDate" for="field_startDate">Ngày vào làm việc</label>
+            <div class="input-group">
+              <input
+                id="field_startDate"
+                data-cy="startDate"
+                type="text"
+                class="form-control"
+                name="startDate"
+                ngbDatepicker
+                #startDateDp="ngbDatepicker"
+                formControlName="startDate"
+              />
+              <button type="button" class="btn btn-secondary" (click)="startDateDp.toggle()">
+                <fa-icon icon="calendar-alt"></fa-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-info btn-sm" (click)="previousState()">
+          <span>Quay lại</span>
+        </button>
+
+        <button type="submit" id="save-entity" data-cy="entityCreateSaveButton" class="btn btn-primary btn-sm">
+          <span>Lưu</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

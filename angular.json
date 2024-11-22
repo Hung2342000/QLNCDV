@@ -76,15 +76,15 @@
         "serve": {
           "builder": "@angular-builders/custom-webpack:dev-server",
           "options": {
-            "browserTarget": "quanlytaisan:build:development",
+            "browserTarget": "hrm:build:development",
             "port": 4200
           },
           "configurations": {
             "production": {
-              "browserTarget": "quanlytaisan:build:production"
+              "browserTarget": "hrm:build:production"
             },
             "development": {
-              "browserTarget": "quanlytaisan:build:development"
+              "browserTarget": "hrm:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -92,7 +92,7 @@
       }
     }
   },
-  "defaultProject": "quanlytaisan",
+  "defaultProject": "hrm",
   "cli": {
     "cache": {
       "enabled": true,

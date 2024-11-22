@@ -1,0 +1,38 @@
+{
+  "applications": "*",
+  "changelogDate": "20241121093109",
+  "dto": "no",
+  "embedded": false,
+  "entityTableName": "attendance",
+  "fields": [
+    {
+      "fieldName": "id",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "employeeId",
+      "fieldType": "Long",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "inTime",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "outTime",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "note",
+      "fieldType": "String"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Attendance",
+  "pagination": "pagination",
+  "readOnly": false,
+  "relationships": [],
+  "service": "no"
+}

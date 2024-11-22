@@ -8,16 +8,16 @@
         "createOrEditLabel": "Create or edit a Ticket",
         "notFound": "No Tickets found"
       },
-      "created": "A new Ticket is created ",
-      "updated": "A Ticket is updated",
-      "deleted": "A Ticket is deleted",
+      "created": "A new Ticket is created with identifier {{ param }}",
+      "updated": "A Ticket is updated with identifier {{ param }}",
+      "deleted": "A Ticket is deleted with identifier {{ param }}",
       "delete": {
-        "question": "Are you sure you want to delete Ticket?"
+        "question": "Are you sure you want to delete Ticket {{ id }}?"
       },
       "detail": {
         "title": "Ticket"
       },
-      "id": "STT",
+      "id": "Id",
       "phone": "Phone",
       "serviceType": "Service Type",
       "status": "Status",

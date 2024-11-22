@@ -1,0 +1,109 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2 id="jhi-attendance-heading" data-cy="AttendanceCreateUpdateHeading" jhiTranslate="qldvApp.attendance.home.createOrEditLabel">
+        Create or edit a Attendance
+      </h2>
+
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+
+        <div class="row mb-3" [hidden]="editForm.get('id')!.value == null">
+          <label class="form-label" jhiTranslate="qldvApp.attendance.id" for="field_id">Id</label>
+          <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          <div *ngIf="editForm.get('id')!.invalid && (editForm.get('id')!.dirty || editForm.get('id')!.touched)">
+            <small class="form-text text-danger" *ngIf="editForm.get('id')?.errors?.required" jhiTranslate="entity.validation.required">
+              This field is required.
+            </small>
+            <small class="form-text text-danger" [hidden]="!editForm.get('id')?.errors?.number" jhiTranslate="entity.validation.number">
+              This field should be a number.
+            </small>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" jhiTranslate="qldvApp.attendance.employeeId" for="field_employeeId">Employee Id</label>
+          <input
+            type="number"
+            class="form-control"
+            name="employeeId"
+            id="field_employeeId"
+            data-cy="employeeId"
+            formControlName="employeeId"
+          />
+          <div *ngIf="editForm.get('employeeId')!.invalid && (editForm.get('employeeId')!.dirty || editForm.get('employeeId')!.touched)">
+            <small
+              class="form-text text-danger"
+              *ngIf="editForm.get('employeeId')?.errors?.required"
+              jhiTranslate="entity.validation.required"
+            >
+              This field is required.
+            </small>
+            <small
+              class="form-text text-danger"
+              [hidden]="!editForm.get('employeeId')?.errors?.number"
+              jhiTranslate="entity.validation.number"
+            >
+              This field should be a number.
+            </small>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" jhiTranslate="qldvApp.attendance.inTime" for="field_inTime">In Time</label>
+          <div class="input-group">
+            <input
+              id="field_inTime"
+              data-cy="inTime"
+              type="text"
+              class="form-control"
+              name="inTime"
+              ngbDatepicker
+              #inTimeDp="ngbDatepicker"
+              formControlName="inTime"
+            />
+            <button type="button" class="btn btn-secondary" (click)="inTimeDp.toggle()"><fa-icon icon="calendar-alt"></fa-icon></button>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" jhiTranslate="qldvApp.attendance.outTime" for="field_outTime">Out Time</label>
+          <div class="input-group">
+            <input
+              id="field_outTime"
+              data-cy="outTime"
+              type="text"
+              class="form-control"
+              name="outTime"
+              ngbDatepicker
+              #outTimeDp="ngbDatepicker"
+              formControlName="outTime"
+            />
+            <button type="button" class="btn btn-secondary" (click)="outTimeDp.toggle()"><fa-icon icon="calendar-alt"></fa-icon></button>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <label class="form-label" jhiTranslate="qldvApp.attendance.note" for="field_note">Note</label>
+          <input type="text" class="form-control" name="note" id="field_note" data-cy="note" formControlName="note" />
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

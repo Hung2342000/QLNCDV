@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 
 import { LoginService } from 'app/login/login.service';
 import { AccountService } from 'app/core/auth/account.service';
+import { Account } from '../core/auth/account.model';
 
 @Component({
   selector: 'jhi-login',
@@ -13,7 +14,7 @@ import { AccountService } from 'app/core/auth/account.service';
 export class LoginComponent implements OnInit, AfterViewInit {
   @ViewChild('username', { static: false })
   username!: ElementRef;
-
+  account: Account | null = null;
   authenticationError = false;
 
   loginForm = this.fb.group({
@@ -36,6 +37,10 @@ export class LoginComponent implements OnInit, AfterViewInit {
         this.router.navigate(['/login']);
       }
     });
+
+    this.accountService.getAuthenticationState().subscribe(account => {
+      this.account = account;
+    });
   }
 
   ngAfterViewInit(): void {
@@ -54,7 +59,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
           this.authenticationError = false;
           if (!this.router.getCurrentNavigation()) {
             // There were no routing during login (eg from navigationToStoredUrl)
-            this.router.navigate(['/ticket'], { state: { checkLogin: true } });
+            this.router.navigate(['/'], { state: { checkLogin: true } });
           }
         },
         error: () => (this.authenticationError = true),

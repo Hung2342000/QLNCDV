@@ -1,0 +1,25 @@
+entity Employee {
+    id Long required
+    codeEmployee Long required
+    name String
+    birthday LocalDate
+    otherId String
+    address String
+    mobilePhone String
+    workPhone String
+    workEmail String
+    privateEmail String
+    department String
+    startDate LocalDate
+}
+paginate Employee with pagination
+
+entity Attendance {
+    id Long required
+    employeeId Long required
+    inTime LocalDate
+    outTime LocalDate
+    note String
+}
+paginate Attendance with pagination
+

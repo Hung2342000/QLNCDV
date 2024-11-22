@@ -7,7 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.mycompany.myapp.IntegrationTest;
 import com.mycompany.myapp.domain.Ticket;
-
+import com.mycompany.myapp.repository.TicketRepository;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
