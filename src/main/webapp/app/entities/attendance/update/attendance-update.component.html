@@ -92,6 +92,9 @@
         <tr>
           <th style="width: 5%"><span>STT</span></th>
           <th style="width: 20%">
+            <span>Ngày chấm công</span>
+          </th>
+          <th style="width: 20%">
             <span>Thời gian đến</span>
           </th>
           <th style="width: 15%">
@@ -106,12 +109,16 @@
           <td>
             {{ i + 1 }}
           </td>
-          <td>{{ attendanceDetail.inTime | formatMediumDate }}</td>
-          <td>{{ attendanceDetail.outTime | formatMediumDate }}</td>
+          <td>{{ attendanceDetail.time | formatDateVnPipe }}</td>
+          <td>{{ attendanceDetail.inTime }}</td>
+          <td>{{ attendanceDetail.outTime }}</td>
           <td>{{ attendanceDetail.note }}</td>
           <td class="text-end">
+            <button type="submit" (click)="view(attendanceDetail)" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+              <fa-icon icon="eye"></fa-icon>
+            </button>
             <div class="btn-group">
-              <button type="submit" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+              <button (click)="delete(attendanceDetail)" type="submit" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
                 <fa-icon icon="times"></fa-icon>
               </button>
             </div>
@@ -119,6 +126,7 @@
         </tr>
         <tr *ngFor="let l of newArr(10 - attendanceDetails.length)">
           <td class="text-center empty-row" style="width: 50px">&nbsp;</td>
+          <td class="text-center empty-row">&nbsp;</td>
           <td class="text-center empty-row">&nbsp;</td>
           <td class="text-center empty-row">&nbsp;</td>
           <td class="text-center empty-row">&nbsp;</td>
@@ -139,38 +147,88 @@
       <div class="row">
         <div class="col-md-12">
           <div class="row mb-3">
-            <label class="form-label" for="field_month">Thời gian đến</label>
+            <label class="form-label" for="field_month">Ngày chấm công</label>
             <div class="input-group">
               <input
-                id="field_inTime"
-                data-cy="inTime"
                 type="text"
-                class="form-control"
-                name="inTime"
-                ngbDatepicker
-                #inTimeDp="ngbDatepicker"
-                formControlName="inTime"
+                mwlFlatpickr
+                data-cy="time"
+                id="field_time"
+                name="time"
+                formControlName="time"
+                [convertModelValue]="true"
+                [dateFormat]="'d/m/Y'"
               />
-              <button type="button" class="btn btn-secondary" (click)="inTimeDp.toggle()"><fa-icon icon="calendar-alt"></fa-icon></button>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label class="form-label" for="field_month">Thời gian đến</label>
+
+            <div class="input-group">
+              <input
+                type="text"
+                mwlFlatpickr
+                data-cy="inTime"
+                id="field_inTime"
+                name="inTime"
+                formControlName="inTime"
+                [noCalendar]="true"
+                [convertModelValue]="true"
+                [enableTime]="true"
+                [time24hr]="true"
+                [dateFormat]="'H:i'"
+              />
             </div>
           </div>
           <div class="row mb-3">
             <label class="form-label" for="field_month">Thời gian về</label>
+            <div class="input-group">
+              <input
+                type="text"
+                mwlFlatpickr
+                data-cy="outTime"
+                id="field_outTime"
+                name="outTime"
+                formControlName="outTime"
+                [noCalendar]="true"
+                [convertModelValue]="true"
+                [enableTime]="true"
+                [time24hr]="true"
+                [dateFormat]="'H:i'"
+              />
+            </div>
           </div>
-          <div style="margin-left: 6px" class="row mb-3">
+          <div class="row mb-3">
             <label class="form-label" for="field_note">Ghi chú</label>
-            <input type="text" class="form-control" name="note" id="field_note" data-cy="note" formControlName="note" />
+            <div class="input-group">
+              <input type="text" name="note" id="field_note" data-cy="note" formControlName="note" />
+            </div>
           </div>
         </div>
       </div>
+      <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal" (click)="closeModal()">
+        <span>Đóng</span>
+      </button>
+      <button type="submit" class="btn btn-primary btn-sm" data-dismiss="modal">
+        <span>Lưu</span>
+      </button>
     </form>
   </div>
+  <div class="modal-footer"></div>
+</ng-template>
+
+<ng-template #deleteDetail let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" data-cy="toolDeleteDialogHeading">Thông báo</h4>
+    <button type="button" class="btn-close" data-dismiss="modal" aria-hidden="true" (click)="closeModal()"></button>
+  </div>
+  <div class="modal-body">Xóa thành công</div>
   <div class="modal-footer">
     <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal" (click)="closeModal()">
       <span>Đóng</span>
     </button>
     <button type="submit" class="btn btn-primary btn-sm" data-dismiss="modal">
-      <span>Lưu</span>
+      <span>Xóa</span>
     </button>
   </div>
 </ng-template>

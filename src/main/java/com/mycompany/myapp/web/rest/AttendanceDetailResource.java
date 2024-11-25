@@ -94,23 +94,23 @@ public class AttendanceDetailResource {
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
-    @GetMapping("/attendanceDetails")
-    public ResponseEntity<List<AttendanceDetail>> getAllAttendanceDetailAll() {
-        List<AttendanceDetail> attendancDetailList = attendanceDetailRepository.findAll();
+    @GetMapping("/attendanceDetail/{id}")
+    public ResponseEntity<List<AttendanceDetail>> getAllAttendanceDetailAll(@PathVariable Long id) {
+        List<AttendanceDetail> attendancDetailList = attendanceDetailRepository.findAttendanceDetailByAttendanceId(id);
         return ResponseEntity.ok().body(attendancDetailList);
     }
 
-    @GetMapping("/attendanceDetail/{id}")
-    public ResponseEntity<Attendance> getAttendance(@PathVariable Long id) {
-        log.debug("REST request to get Attendance : {}", id);
-        Optional<Attendance> attendance = attendanceRepository.findById(id);
-        return ResponseUtil.wrapOrNotFound(attendance);
-    }
+    //    @GetMapping("/attendanceDetail/{id}")
+    //    public ResponseEntity<AttendanceDetail> getAttendance(@PathVariable Long id) {
+    //        log.debug("REST request to get Attendance : {}", id);
+    //        Optional<AttendanceDetail> attendance = attendanceDetailRepository.findById(id);
+    //        return ResponseUtil.wrapOrNotFound(attendance);
+    //    }
 
     @DeleteMapping("/attendanceDetail/{id}")
     public ResponseEntity<Void> deleteAttendance(@PathVariable Long id) {
         log.debug("REST request to delete Attendance : {}", id);
-        attendanceRepository.deleteById(id);
+        attendanceDetailRepository.deleteById(id);
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))

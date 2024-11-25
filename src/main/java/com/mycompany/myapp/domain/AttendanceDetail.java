@@ -3,6 +3,7 @@ package com.mycompany.myapp.domain;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
@@ -25,11 +26,14 @@ public class AttendanceDetail implements Serializable {
     @Column(name = "attendance_id", nullable = false)
     private Long attendanceId;
 
+    @Column(name = "time")
+    private LocalDate time;
+
     @Column(name = "in_time")
-    private LocalDateTime inTime;
+    private LocalTime inTime;
 
     @Column(name = "out_time")
-    private LocalDateTime outTime;
+    private LocalTime outTime;
 
     @Column(name = "note")
     private String note;
@@ -57,20 +61,28 @@ public class AttendanceDetail implements Serializable {
         this.attendanceId = attendanceId;
     }
 
-    public LocalDateTime getInTime() {
+    public LocalTime getInTime() {
         return inTime;
     }
 
-    public void setInTime(LocalDateTime inTime) {
+    public void setInTime(LocalTime inTime) {
         this.inTime = inTime;
     }
 
-    public LocalDateTime getOutTime() {
+    public LocalTime getOutTime() {
         return outTime;
     }
 
-    public void setOutTime(LocalDateTime outTime) {
+    public void setOutTime(LocalTime outTime) {
         this.outTime = outTime;
+    }
+
+    public LocalDate getTime() {
+        return time;
+    }
+
+    public void setTime(LocalDate time) {
+        this.time = time;
     }
 
     public String getNote() {

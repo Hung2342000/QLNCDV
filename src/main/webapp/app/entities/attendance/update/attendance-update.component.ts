@@ -11,7 +11,10 @@ import { AttendanceDetail, IAttendanceDetail } from '../attendanceDetail.model';
 import { IDepartment } from '../../employee/department.model';
 import { IEmployee } from '../../employee/employee.model';
 import { EmployeeService } from '../../employee/service/employee.service';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { EmployeeDetailComponent } from '../../employee/detail/employee-detail.component';
+import { AttendanceDeleteDialogComponent } from '../delete/attendance-delete-dialog.component';
+import { AttendanceDeleteDetailDialogComponent } from '../deleteDetail/attendanceDetail-delete-dialog.component';
 
 @Component({
   selector: 'jhi-attendance-update',
@@ -19,6 +22,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 })
 export class AttendanceUpdateComponent implements OnInit {
   @ViewChild('addDetail') addDetail: TemplateRef<any> | undefined;
+  @ViewChild('deleteDetail') deleteDetail: TemplateRef<any> | undefined;
   isSaving = false;
   attendanceDetails?: IAttendanceDetail[] | any;
   attendance?: IAttendance[] | any;
@@ -34,9 +38,10 @@ export class AttendanceUpdateComponent implements OnInit {
 
   editFormDetail = this.fb.group({
     id: [null, [Validators.required]],
-    attendanceId: [null, [Validators.required]],
-    in_time: [],
-    out_time: [],
+    attendanceId: [],
+    time: [],
+    inTime: [],
+    outTime: [],
     note: [],
   });
 
@@ -49,11 +54,13 @@ export class AttendanceUpdateComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.attendanceDetails = [];
     this.activatedRoute.data.subscribe(({ attendance }) => {
       this.updateForm(attendance);
       this.attendance = attendance;
     });
-    this.attendanceService.queryAttendanceDetail().subscribe({
+
+    this.attendanceService.queryAttendanceDetail(this.attendance.id).subscribe({
       next: (res: HttpResponse<IAttendanceDetail[]>) => {
         this.attendanceDetails = res.body;
       },
@@ -69,11 +76,30 @@ export class AttendanceUpdateComponent implements OnInit {
   closeModal(): void {
     this.modalService.dismissAll();
   }
+  closeModalDetail(): void {
+    // this.activeModal.dismiss();
+    this.modalService.dismissAll();
+    location.reload();
+  }
 
   previousState(): void {
     window.history.back();
   }
-
+  saveDetail(): void {
+    this.isSaving = true;
+    const attendanceDetail = this.createFromDetail();
+    attendanceDetail.attendanceId = this.attendance.id;
+    if (attendanceDetail.id && typeof attendanceDetail.id === 'number') {
+      this.subscribeToSaveResponseDetail(this.attendanceService.updateDetail(attendanceDetail));
+    } else {
+      this.subscribeToSaveResponseDetail(this.attendanceService.createDetail(attendanceDetail));
+    }
+  }
+  view(attendanceDetail: IAttendanceDetail): void {
+    this.updateFormDetail(attendanceDetail);
+    const modalRef = this.modalService.open(this.addDetail, { size: 'lg', backdrop: 'static' });
+    modalRef.componentInstance.attendanceDetail = attendanceDetail;
+  }
   save(): void {
     this.isSaving = true;
     const attendance = this.createFromForm();
@@ -84,15 +110,6 @@ export class AttendanceUpdateComponent implements OnInit {
     }
   }
 
-  saveDetail(): void {
-    this.isSaving = true;
-    const attendanceDetail = this.createFromFormDetail();
-    if (attendanceDetail.id !== undefined) {
-      this.subscribeToSaveResponseDetail(this.attendanceService.update(attendanceDetail));
-    } else {
-      this.subscribeToSaveResponseDetail(this.attendanceService.create(attendanceDetail));
-    }
-  }
   newArr(lenght: number): any[] {
     if (lenght > 0) {
       return new Array(lenght);
@@ -103,7 +120,11 @@ export class AttendanceUpdateComponent implements OnInit {
   addDetails(attendance: IAttendance): void {
     this.modalService.open(this.addDetail, { size: 'lg', backdrop: 'static' });
   }
-
+  delete(attendanceDetail: IAttendanceDetail): void {
+    const modalRef = this.modalService.open(AttendanceDeleteDetailDialogComponent, { size: 'lg', backdrop: 'static' });
+    modalRef.componentInstance.attendanceDetail = attendanceDetail;
+    // unsubscribe not needed because closed completes on modal close
+  }
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IAttendance>>): void {
     result.pipe(finalize(() => this.onSaveFinalize())).subscribe({
       next: () => this.onSaveSuccess(),
@@ -113,7 +134,7 @@ export class AttendanceUpdateComponent implements OnInit {
 
   protected subscribeToSaveResponseDetail(result: Observable<HttpResponse<IAttendanceDetail>>): void {
     result.pipe(finalize(() => this.onSaveFinalize())).subscribe({
-      next: () => this.onSaveSuccess(),
+      next: () => this.closeModalDetail(),
       error: () => this.onSaveError(),
     });
   }
@@ -142,9 +163,10 @@ export class AttendanceUpdateComponent implements OnInit {
   }
 
   protected updateFormDetail(attendanceDetail: IAttendanceDetail): void {
-    this.editForm.patchValue({
+    this.editFormDetail.patchValue({
       id: attendanceDetail.id,
       attendanceId: attendanceDetail.attendanceId,
+      time: attendanceDetail.time,
       inTime: attendanceDetail.inTime,
       outTime: attendanceDetail.outTime,
       note: attendanceDetail.note,
@@ -163,11 +185,12 @@ export class AttendanceUpdateComponent implements OnInit {
     };
   }
 
-  protected createFromFormDetail(): IAttendanceDetail {
+  protected createFromDetail(): IAttendanceDetail {
     return {
       ...new AttendanceDetail(),
       id: this.editFormDetail.get(['id'])!.value,
       attendanceId: this.editFormDetail.get(['attendanceId'])!.value,
+      time: this.editFormDetail.get(['time'])!.value,
       inTime: this.editFormDetail.get(['inTime'])!.value,
       outTime: this.editFormDetail.get(['outTime'])!.value,
       note: this.editFormDetail.get(['note'])!.value,

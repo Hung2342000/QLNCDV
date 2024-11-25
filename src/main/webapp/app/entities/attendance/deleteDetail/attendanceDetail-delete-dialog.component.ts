@@ -3,12 +3,13 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { IAttendance } from '../attendance.model';
 import { AttendanceService } from '../service/attendance.service';
+import { IAttendanceDetail } from '../attendanceDetail.model';
 
 @Component({
-  templateUrl: './attendance-delete-dialog.component.html',
+  templateUrl: './attendanceDetail-delete-dialog.component.html',
 })
-export class AttendanceDeleteDialogComponent {
-  attendance?: IAttendance;
+export class AttendanceDeleteDetailDialogComponent {
+  attendanceDetail?: IAttendanceDetail;
 
   constructor(protected attendanceService: AttendanceService, protected activeModal: NgbActiveModal) {}
 

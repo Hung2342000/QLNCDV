@@ -5,15 +5,17 @@ import { map } from 'rxjs/operators';
 import dayjs from 'dayjs/esm';
 
 import { isPresent } from 'app/core/util/operators';
-import { DATE_FORMAT } from 'app/config/input.constants';
+import { DATE_FORMAT, DATE_TIME_FORMAT, TIME_FORMAT } from 'app/config/input.constants';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { createRequestOption } from 'app/core/request/request-util';
 import { IAttendance, getAttendanceIdentifier } from '../attendance.model';
 import { IDepartment } from '../../employee/department.model';
-import { IAttendanceDetail } from '../attendanceDetail.model';
+import { getAttendanceDetailIdentifier, IAttendanceDetail } from '../attendanceDetail.model';
 
 export type EntityResponseType = HttpResponse<IAttendance>;
+export type EntityResponseDetailType = HttpResponse<IAttendanceDetail>;
 export type EntityArrayResponseType = HttpResponse<IAttendance[]>;
+export type EntityArrayResponseDetailType = HttpResponse<IAttendanceDetail[]>;
 
 @Injectable({ providedIn: 'root' })
 export class AttendanceService {
@@ -29,10 +31,10 @@ export class AttendanceService {
   }
 
   createDetail(attendanceDetail: IAttendanceDetail): Observable<EntityResponseType> {
-    const copy = this.convertDateFromClient(attendanceDetail);
+    const copy = this.convertDateDetailFromClient(attendanceDetail);
     return this.http
       .post<IAttendanceDetail>(this.resourceUrlDetail, copy, { observe: 'response' })
-      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+      .pipe(map((res: EntityResponseType) => this.convertDateDetailFromServer(res)));
   }
 
   update(attendance: IAttendance): Observable<EntityResponseType> {
@@ -43,12 +45,12 @@ export class AttendanceService {
   }
 
   updateDetail(attendanceDetail: IAttendanceDetail): Observable<EntityResponseType> {
-    const copy = this.convertDateFromClient(attendanceDetail);
+    const copy = this.convertDateDetailFromClient(attendanceDetail);
     return this.http
-      .put<IAttendanceDetail>(`${this.resourceUrlDetail}/${getAttendanceIdentifier(attendanceDetail) as number}`, copy, {
+      .put<IAttendanceDetail>(`${this.resourceUrlDetail}/${getAttendanceDetailIdentifier(attendanceDetail) as number}`, copy, {
         observe: 'response',
       })
-      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+      .pipe(map((res: EntityResponseType) => this.convertDateDetailFromServer(res)));
   }
   partialUpdate(attendance: IAttendance): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(attendance);
@@ -63,8 +65,10 @@ export class AttendanceService {
       .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
   }
 
-  queryAttendanceDetail(): Observable<EntityArrayResponseType> {
-    return this.http.get<IAttendanceDetail[]>(this.resourceUrlDetail, { observe: 'response' });
+  queryAttendanceDetail(id: number): Observable<EntityArrayResponseType> {
+    return this.http
+      .get<IAttendanceDetail[]>(`${this.resourceUrlDetail}/${id}`, { observe: 'response' })
+      .pipe(map((res: EntityArrayResponseDetailType) => this.convertDateArrayDetailFromServer(res)));
   }
   query(req?: any): Observable<EntityArrayResponseType> {
     const options = createRequestOption(req);
@@ -75,6 +79,9 @@ export class AttendanceService {
 
   delete(id: number): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
+  }
+  deleteDetail(id: number): Observable<HttpResponse<{}>> {
+    return this.http.delete(`${this.resourceUrlDetail}/${id}`, { observe: 'response' });
   }
 
   addAttendanceToCollectionIfMissing(
@@ -103,9 +110,23 @@ export class AttendanceService {
     });
   }
 
+  protected convertDateDetailFromClient(attendanceDetail: IAttendanceDetail): IAttendance {
+    return Object.assign({}, attendanceDetail, {
+      time: attendanceDetail.time ? dayjs(attendanceDetail.time).format(DATE_FORMAT) : undefined,
+      inTime: typeof attendanceDetail.inTime !== 'string' ? dayjs(attendanceDetail.inTime).format(TIME_FORMAT) : attendanceDetail.inTime,
+      outTime:
+        typeof attendanceDetail.outTime !== 'string' ? dayjs(attendanceDetail.outTime).format(TIME_FORMAT) : attendanceDetail.outTime,
+    });
+  }
   protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
     if (res.body) {
       res.body.month = res.body.month ? dayjs(res.body.month) : undefined;
+    }
+    return res;
+  }
+  protected convertDateDetailFromServer(res: EntityResponseDetailType): EntityResponseDetailType {
+    if (res.body) {
+      res.body.time = res.body.time ? dayjs(res.body.inTime) : undefined;
     }
     return res;
   }
@@ -114,6 +135,15 @@ export class AttendanceService {
     if (res.body) {
       res.body.forEach((attendance: IAttendance) => {
         attendance.month = attendance.month ? dayjs(attendance.month) : undefined;
+      });
+    }
+    return res;
+  }
+
+  protected convertDateArrayDetailFromServer(res: EntityArrayResponseDetailType): EntityArrayResponseDetailType {
+    if (res.body) {
+      res.body.forEach((attendance: IAttendanceDetail) => {
+        attendance.time = attendance.time ? dayjs(attendance.time) : undefined;
       });
     }
     return res;

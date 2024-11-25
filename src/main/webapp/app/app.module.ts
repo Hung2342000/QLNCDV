@@ -26,7 +26,8 @@ import { PageRibbonComponent } from './layouts/profiles/page-ribbon.component';
 import { ActiveMenuDirective } from './layouts/navbar/active-menu.directive';
 import { ErrorComponent } from './layouts/error/error.component';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
-import {NavbarVerticalComponent} from "./layouts/navbar-vertical/navbar-vertical.component";
+import { NavbarVerticalComponent } from './layouts/navbar-vertical/navbar-vertical.component';
+import { FlatpickrModule } from 'angularx-flatpickr';
 @NgModule({
   imports: [
     BrowserModule,
@@ -40,6 +41,7 @@ import {NavbarVerticalComponent} from "./layouts/navbar-vertical/navbar-vertical
     NgxWebstorageModule.forRoot({ prefix: 'jhi', separator: '-', caseSensitive: true }),
     TranslationModule,
     NgMultiSelectDropDownModule.forRoot(),
+    FlatpickrModule.forRoot(),
   ],
   providers: [
     Title,
@@ -47,7 +49,15 @@ import {NavbarVerticalComponent} from "./layouts/navbar-vertical/navbar-vertical
     { provide: NgbDateAdapter, useClass: NgbDateDayjsAdapter },
     httpInterceptorProviders,
   ],
-  declarations: [MainComponent, NavbarComponent, ErrorComponent, PageRibbonComponent, ActiveMenuDirective, FooterComponent, NavbarVerticalComponent],
+  declarations: [
+    MainComponent,
+    NavbarComponent,
+    ErrorComponent,
+    PageRibbonComponent,
+    ActiveMenuDirective,
+    FooterComponent,
+    NavbarVerticalComponent,
+  ],
   bootstrap: [MainComponent],
 })
 export class AppModule {

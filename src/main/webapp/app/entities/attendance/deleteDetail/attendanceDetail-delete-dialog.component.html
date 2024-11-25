@@ -1,0 +1,13 @@
+<form *ngIf="attendanceDetail" name="deleteForm" (ngSubmit)="confirmDelete(attendanceDetail.id!)">
+  <div class="modal-header">
+    <h4 class="modal-title" data-cy="attendanceDeleteDialogHeading" jhiTranslate="entity.delete.title">Confirm delete operation</h4>
+
+    <button type="button" class="btn-close" data-dismiss="modal" aria-hidden="true" (click)="cancel()">&times;</button>
+  </div>
+  <div class="modal-body"></div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="cancel()"></button>
+    <button id="jhi-confirm-delete-attendance" data-cy="entityConfirmDeleteButton" type="submit" class="btn btn-danger"></button>
+  </div>
+</form>
