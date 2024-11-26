@@ -6,6 +6,8 @@ export interface IAttendanceDetail {
   time?: dayjs.Dayjs | null;
   inTime?: dayjs.Dayjs | null;
   outTime?: dayjs.Dayjs | null;
+  countTime?: number | null;
+  status?: string | null;
   note?: string | null;
 }
 
@@ -16,6 +18,8 @@ export class AttendanceDetail implements IAttendanceDetail {
     public time?: dayjs.Dayjs | null,
     public inTime?: dayjs.Dayjs | null,
     public outTime?: dayjs.Dayjs | null,
+    public countTime?: number | null,
+    public status?: string | null,
     public note?: string | null
   ) {}
 }

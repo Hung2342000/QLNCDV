@@ -113,9 +113,14 @@ export class AttendanceService {
   protected convertDateDetailFromClient(attendanceDetail: IAttendanceDetail): IAttendance {
     return Object.assign({}, attendanceDetail, {
       time: attendanceDetail.time ? dayjs(attendanceDetail.time).format(DATE_FORMAT) : undefined,
-      inTime: typeof attendanceDetail.inTime !== 'string' ? dayjs(attendanceDetail.inTime).format(TIME_FORMAT) : attendanceDetail.inTime,
+      inTime:
+        typeof attendanceDetail.inTime !== 'string' && attendanceDetail.inTime !== undefined
+          ? dayjs(attendanceDetail.inTime).format(TIME_FORMAT)
+          : attendanceDetail.inTime,
       outTime:
-        typeof attendanceDetail.outTime !== 'string' ? dayjs(attendanceDetail.outTime).format(TIME_FORMAT) : attendanceDetail.outTime,
+        typeof attendanceDetail.outTime !== 'string' && attendanceDetail.outTime !== undefined
+          ? dayjs(attendanceDetail.outTime).format(TIME_FORMAT)
+          : attendanceDetail.outTime,
     });
   }
   protected convertDateFromServer(res: EntityResponseType): EntityResponseType {

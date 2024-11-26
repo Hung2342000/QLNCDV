@@ -35,6 +35,12 @@ public class AttendanceDetail implements Serializable {
     @Column(name = "out_time")
     private LocalTime outTime;
 
+    @Column(name = "status")
+    private String status;
+
+    @Column(name = "countTime")
+    private Double countTime;
+
     @Column(name = "note")
     private String note;
 
@@ -91,6 +97,22 @@ public class AttendanceDetail implements Serializable {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Double getCountTime() {
+        return countTime;
+    }
+
+    public void setCountTime(Double countTime) {
+        this.countTime = countTime;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

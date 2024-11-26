@@ -9,6 +9,8 @@ import { IAttendance } from '../attendance.model';
 import { ASC, DESC, ITEMS_PER_PAGE, SORT } from 'app/config/pagination.constants';
 import { AttendanceService } from '../service/attendance.service';
 import { AttendanceDeleteDialogComponent } from '../delete/attendance-delete-dialog.component';
+import { IEmployee } from '../../employee/employee.model';
+import { EmployeeService } from '../../employee/service/employee.service';
 
 @Component({
   selector: 'jhi-attendance',
@@ -23,8 +25,10 @@ export class AttendanceComponent implements OnInit {
   predicate!: string;
   ascending!: boolean;
   ngbPaginationPage = 1;
+  employeeList?: IEmployee[] | any;
 
   constructor(
+    protected employeeService: EmployeeService,
     protected attendanceService: AttendanceService,
     protected activatedRoute: ActivatedRoute,
     protected router: Router,
@@ -51,6 +55,12 @@ export class AttendanceComponent implements OnInit {
           this.onError();
         },
       });
+
+    this.employeeService.queryAll().subscribe({
+      next: (res: HttpResponse<IEmployee[]>) => {
+        this.employeeList = res.body;
+      },
+    });
   }
 
   newArr(lenght: number): any[] {
@@ -70,7 +80,7 @@ export class AttendanceComponent implements OnInit {
   }
 
   delete(attendance: IAttendance): void {
-    const modalRef = this.modalService.open(AttendanceDeleteDialogComponent, { size: 'lg', backdrop: 'static' });
+    const modalRef = this.modalService.open(AttendanceDeleteDialogComponent, { size: 'sm', backdrop: 'static' });
     modalRef.componentInstance.attendance = attendance;
     // unsubscribe not needed because closed completes on modal close
     modalRef.closed.subscribe(reason => {
@@ -78,6 +88,16 @@ export class AttendanceComponent implements OnInit {
         this.loadPage();
       }
     });
+  }
+
+  employeeName(idEmployee: number | null | undefined): any {
+    let name = '';
+    for (let i = 0; i < this.employeeList.length; i++) {
+      if (idEmployee === this.employeeList[i].id) {
+        name = this.employeeList[i].name;
+      }
+    }
+    return name;
   }
 
   protected sort(): string[] {

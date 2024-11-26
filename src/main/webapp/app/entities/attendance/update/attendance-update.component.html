@@ -11,24 +11,9 @@
         <div class="col-md-5">
           <div class="row mb-3">
             <label class="form-label" for="field_employeeId">Nhân viên</label>
-            <select
-              class="form-select"
-              id="field_employeeId"
-              formControlName="employeeId"
-              data-cy="employeeId"
-              name="employeeId"
-              [disabled]="true"
-            >
-              <option *ngFor="let e of employeeList" [value]="e.id">{{ e.name }}</option>
+            <select class="form-select" id="field_employeeId" formControlName="employeeId" data-cy="employeeId" name="employeeId">
+              <option *ngFor="let employee of employeeList" [value]="employee.id">{{ employee.name }}</option>
             </select>
-            <!--            <input-->
-            <!--              type="number"-->
-            <!--              class="form-control"-->
-            <!--              name="employeeId"-->
-            <!--              id="field_employeeId"-->
-            <!--              data-cy="employeeId"-->
-            <!--              formControlName="employeeId"-->
-            <!--            />-->
             <div *ngIf="editForm.get('employeeId')!.invalid && (editForm.get('employeeId')!.dirty || editForm.get('employeeId')!.touched)">
               <small
                 class="form-text text-danger"
@@ -71,11 +56,27 @@
         <div class="col-md-5">
           <div class="row mb-3">
             <label class="form-label" for="field_count">Số ngày chấm công</label>
-            <input type="number" class="form-control" name="note" id="field_count" data-cy="count" formControlName="count" />
+            <input
+              [readOnly]="true"
+              type="number"
+              class="form-control"
+              name="note"
+              id="field_count"
+              data-cy="count"
+              formControlName="count"
+            />
           </div>
           <div class="row mb-3">
-            <label class="form-label" for="field_countNot">Số ngày chưa chấm</label>
-            <input type="number" class="form-control" name="countNot" id="field_countNot" data-cy="countNot" formControlName="countNot" />
+            <label class="form-label" for="field_countNot">Số ngày hoàn thành chấm công</label>
+            <input
+              type="number"
+              [readOnly]="true"
+              class="form-control"
+              name="countNot"
+              id="field_countNot"
+              data-cy="countNot"
+              formControlName="countNot"
+            />
           </div>
         </div>
       </div>
@@ -91,17 +92,23 @@
       <thead>
         <tr>
           <th style="width: 5%"><span>STT</span></th>
-          <th style="width: 20%">
+          <th style="width: 15%">
             <span>Ngày chấm công</span>
           </th>
-          <th style="width: 20%">
+          <th style="width: 12%">
             <span>Thời gian đến</span>
           </th>
-          <th style="width: 15%">
+          <th style="width: 12%">
             <span>Thời gian về</span>
           </th>
+          <th style="width: 12%">
+            <span>Số giờ làm việc</span>
+          </th>
+          <th style="width: 12%">
+            <span>Trạng thái</span>
+          </th>
           <th><span>Ghi chú</span></th>
-          <th>Thao tác</th>
+          <th style="width: 7%">Thao tác</th>
         </tr>
       </thead>
       <tbody>
@@ -112,10 +119,12 @@
           <td>{{ attendanceDetail.time | formatDateVnPipe }}</td>
           <td>{{ attendanceDetail.inTime }}</td>
           <td>{{ attendanceDetail.outTime }}</td>
+          <td>{{ attendanceDetail.countTime }}</td>
+          <td>{{ attendanceDetail.status }}</td>
           <td>{{ attendanceDetail.note }}</td>
           <td class="text-end">
-            <button type="submit" (click)="view(attendanceDetail)" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
-              <fa-icon icon="eye"></fa-icon>
+            <button type="submit" (click)="edit(attendanceDetail)" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+              <fa-icon icon="pencil-alt"></fa-icon>
             </button>
             <div class="btn-group">
               <button (click)="delete(attendanceDetail)" type="submit" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
@@ -131,6 +140,8 @@
           <td class="text-center empty-row">&nbsp;</td>
           <td class="text-center empty-row">&nbsp;</td>
           <td class="text-center empty-row">&nbsp;</td>
+          <td class="text-center empty-row"></td>
+          <td class="text-center empty-row"></td>
         </tr>
       </tbody>
     </table>
@@ -157,7 +168,6 @@
                 name="time"
                 formControlName="time"
                 [convertModelValue]="true"
-                [dateFormat]="'d/m/Y'"
               />
             </div>
           </div>
@@ -217,18 +227,17 @@
   <div class="modal-footer"></div>
 </ng-template>
 
-<ng-template #deleteDetail let-modal>
-  <div class="modal-header">
-    <h4 class="modal-title" data-cy="toolDeleteDialogHeading">Thông báo</h4>
-    <button type="button" class="btn-close" data-dismiss="modal" aria-hidden="true" (click)="closeModal()"></button>
-  </div>
-  <div class="modal-body">Xóa thành công</div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal" (click)="closeModal()">
-      <span>Đóng</span>
-    </button>
-    <button type="submit" class="btn btn-primary btn-sm" data-dismiss="modal">
-      <span>Xóa</span>
-    </button>
-  </div>
-</ng-template>
+<!--<ng-template #deleteDetail let-modal>-->
+<!--  <div class="modal-header">-->
+<!--    <h4 class="modal-title" data-cy="toolDeleteDialogHeading">Xác nhận xóa</h4>-->
+<!--    <button type="button" class="btn-close" data-dismiss="modal" aria-hidden="true" (click)="closeModal()"></button>-->
+<!--  </div>-->
+<!--  <div class="modal-footer">-->
+<!--    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal" (click)="closeModal()">-->
+<!--      <span>Đóng</span>-->
+<!--    </button>-->
+<!--    <button type="submit" class="btn btn-primary btn-sm" data-dismiss="modal" (click)="confirmDelete()" )>-->
+<!--      <span>Xóa</span>-->
+<!--    </button>-->
+<!--  </div>-->
+<!--</ng-template>-->

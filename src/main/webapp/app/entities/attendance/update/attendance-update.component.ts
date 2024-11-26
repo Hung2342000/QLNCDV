@@ -8,13 +8,13 @@ import { finalize } from 'rxjs/operators';
 import { IAttendance, Attendance } from '../attendance.model';
 import { AttendanceService } from '../service/attendance.service';
 import { AttendanceDetail, IAttendanceDetail } from '../attendanceDetail.model';
-import { IDepartment } from '../../employee/department.model';
 import { IEmployee } from '../../employee/employee.model';
 import { EmployeeService } from '../../employee/service/employee.service';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EmployeeDetailComponent } from '../../employee/detail/employee-detail.component';
 import { AttendanceDeleteDialogComponent } from '../delete/attendance-delete-dialog.component';
 import { AttendanceDeleteDetailDialogComponent } from '../deleteDetail/attendanceDetail-delete-dialog.component';
+import { DATE_FORMAT, DATE_FORMAT_CUSTOM } from '../../../config/input.constants';
 
 @Component({
   selector: 'jhi-attendance-update',
@@ -59,35 +59,47 @@ export class AttendanceUpdateComponent implements OnInit {
       this.updateForm(attendance);
       this.attendance = attendance;
     });
-
-    this.attendanceService.queryAttendanceDetail(this.attendance.id).subscribe({
-      next: (res: HttpResponse<IAttendanceDetail[]>) => {
-        this.attendanceDetails = res.body;
-      },
-    });
-
+    this.loadPage();
     this.employeeService.queryAll().subscribe({
       next: (res: HttpResponse<IEmployee[]>) => {
         this.employeeList = res.body;
       },
     });
   }
-
   closeModal(): void {
+    this.loadPage();
+    this.resetModalData();
     this.modalService.dismissAll();
   }
   closeModalDetail(): void {
-    // this.activeModal.dismiss();
+    this.loadDetail();
+    this.resetModalData();
     this.modalService.dismissAll();
-    location.reload();
+    this.loadPage();
   }
-
+  loadDetail(): void {
+    this.attendanceService.find(this.attendance.id).subscribe({
+      next: (res: HttpResponse<IAttendance>) => {
+        this.attendance = res.body;
+        this.updateForm(this.attendance);
+      },
+    });
+  }
+  resetModalData(): void {
+    this.editFormDetail.reset();
+  }
   previousState(): void {
     window.history.back();
   }
   saveDetail(): void {
     this.isSaving = true;
     const attendanceDetail = this.createFromDetail();
+    if (attendanceDetail.outTime === null) {
+      attendanceDetail.outTime = undefined;
+    }
+    if (attendanceDetail.inTime === null) {
+      attendanceDetail.inTime = undefined;
+    }
     attendanceDetail.attendanceId = this.attendance.id;
     if (attendanceDetail.id && typeof attendanceDetail.id === 'number') {
       this.subscribeToSaveResponseDetail(this.attendanceService.updateDetail(attendanceDetail));
@@ -95,10 +107,9 @@ export class AttendanceUpdateComponent implements OnInit {
       this.subscribeToSaveResponseDetail(this.attendanceService.createDetail(attendanceDetail));
     }
   }
-  view(attendanceDetail: IAttendanceDetail): void {
+  edit(attendanceDetail: IAttendanceDetail): void {
     this.updateFormDetail(attendanceDetail);
-    const modalRef = this.modalService.open(this.addDetail, { size: 'lg', backdrop: 'static' });
-    modalRef.componentInstance.attendanceDetail = attendanceDetail;
+    this.modalService.open(this.addDetail, { size: 'lg', backdrop: 'static' });
   }
   save(): void {
     this.isSaving = true;
@@ -109,7 +120,6 @@ export class AttendanceUpdateComponent implements OnInit {
       this.subscribeToSaveResponse(this.attendanceService.create(attendance));
     }
   }
-
   newArr(lenght: number): any[] {
     if (lenght > 0) {
       return new Array(lenght);
@@ -120,10 +130,24 @@ export class AttendanceUpdateComponent implements OnInit {
   addDetails(attendance: IAttendance): void {
     this.modalService.open(this.addDetail, { size: 'lg', backdrop: 'static' });
   }
-  delete(attendanceDetail: IAttendanceDetail): void {
-    const modalRef = this.modalService.open(AttendanceDeleteDetailDialogComponent, { size: 'lg', backdrop: 'static' });
+  delete(attendanceDetail: AttendanceDetail): void {
+    const modalRef = this.modalService.open(AttendanceDeleteDetailDialogComponent, { size: 'sm', backdrop: 'static' });
     modalRef.componentInstance.attendanceDetail = attendanceDetail;
-    // unsubscribe not needed because closed completes on modal close
+
+    modalRef.closed.subscribe(reason => {
+      if (reason === 'deleted') {
+        this.loadPage();
+        this.loadDetail();
+      }
+    });
+  }
+
+  loadPage(): void {
+    this.attendanceService.queryAttendanceDetail(this.attendance.id).subscribe({
+      next: (res: HttpResponse<IAttendanceDetail[]>) => {
+        this.attendanceDetails = res.body;
+      },
+    });
   }
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IAttendance>>): void {
     result.pipe(finalize(() => this.onSaveFinalize())).subscribe({
@@ -131,14 +155,12 @@ export class AttendanceUpdateComponent implements OnInit {
       error: () => this.onSaveError(),
     });
   }
-
   protected subscribeToSaveResponseDetail(result: Observable<HttpResponse<IAttendanceDetail>>): void {
     result.pipe(finalize(() => this.onSaveFinalize())).subscribe({
       next: () => this.closeModalDetail(),
       error: () => this.onSaveError(),
     });
   }
-
   protected onSaveSuccess(): void {
     this.previousState();
   }
@@ -146,11 +168,9 @@ export class AttendanceUpdateComponent implements OnInit {
   protected onSaveError(): void {
     // Api for inheritance.
   }
-
   protected onSaveFinalize(): void {
     this.isSaving = false;
   }
-
   protected updateForm(attendance: IAttendance): void {
     this.editForm.patchValue({
       id: attendance.id,
@@ -166,7 +186,7 @@ export class AttendanceUpdateComponent implements OnInit {
     this.editFormDetail.patchValue({
       id: attendanceDetail.id,
       attendanceId: attendanceDetail.attendanceId,
-      time: attendanceDetail.time,
+      time: attendanceDetail.time?.format(DATE_FORMAT),
       inTime: attendanceDetail.inTime,
       outTime: attendanceDetail.outTime,
       note: attendanceDetail.note,

@@ -15,10 +15,12 @@
           <th style="width: 5%" scope="col" jhiSortBy="id"><span>STT</span> <fa-icon icon="sort"></fa-icon></th>
           <th style="width: 20%" scope="col" jhiSortBy="employeeId"><span>Nhân viên</span> <fa-icon icon="sort"></fa-icon></th>
           <th style="width: 15%" scope="col" jhiSortBy="employeeId"><span>Thời gian</span> <fa-icon icon="sort"></fa-icon></th>
-          <th style="width: 15%" scope="col" jhiSortBy="inTime"><span>Đã chấm công</span> <fa-icon icon="sort"></fa-icon></th>
-          <th style="width: 15%" scope="col" jhiSortBy="outTime"><span>Chưa chấm Công</span> <fa-icon icon="sort"></fa-icon></th>
+          <th style="width: 15%" scope="col" jhiSortBy="inTime"><span>Số ngày chấm công</span> <fa-icon icon="sort"></fa-icon></th>
+          <th style="width: 15%" scope="col" jhiSortBy="outTime">
+            <span>Số ngày hoàn thành chấm công</span> <fa-icon icon="sort"></fa-icon>
+          </th>
           <th scope="col" jhiSortBy="note"><span>Ghi chú</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col"></th>
+          <th scope="col" style="width: 6%">Thao tác</th>
         </tr>
       </thead>
       <tbody>
@@ -26,21 +28,21 @@
           <td>
             {{ i + 1 }}
           </td>
-          <td>{{ attendance.employeeId }}</td>
-          <td>{{ attendance.month | formatMediumDate }}</td>
+          <td>{{ employeeName(attendance.employeeId) }}</td>
+          <td>{{ attendance.month | formatDateVnPipe }}</td>
           <td>{{ attendance.count }}</td>
           <td>{{ attendance.countNot }}</td>
           <td>{{ attendance.note }}</td>
-          <td class="text-end">
+          <td class="text-center">
             <div class="btn-group">
-              <button
-                type="submit"
-                [routerLink]="['/attendance', attendance.id, 'view']"
-                class="btn btn-info btn-sm"
-                data-cy="entityDetailsButton"
-              >
-                <fa-icon icon="eye"></fa-icon>
-              </button>
+              <!--              <button-->
+              <!--                type="submit"-->
+              <!--                [routerLink]="['/attendance', attendance.id, 'view']"-->
+              <!--                class="btn btn-info btn-sm"-->
+              <!--                data-cy="entityDetailsButton"-->
+              <!--              >-->
+              <!--                <fa-icon icon="eye"></fa-icon>-->
+              <!--              </button>-->
               <button
                 type="submit"
                 [routerLink]="['/attendance', attendance.id, 'edit']"

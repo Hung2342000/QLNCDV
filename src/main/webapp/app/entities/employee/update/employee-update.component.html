@@ -106,14 +106,7 @@
 
           <div class="row mb-3">
             <label class="form-label" jhiTranslate="qldvApp.employee.department" for="field_department">Phòng ban</label>
-            <select
-              class="form-select"
-              id="field_department"
-              formControlName="department"
-              data-cy="department"
-              name="department"
-              [disabled]="true"
-            >
+            <select class="form-select" id="field_department" formControlName="department" data-cy="department" name="department">
               <option *ngFor="let department of departments" [value]="department.code">{{ department.name }}</option>
             </select>
             <!--            <input-->

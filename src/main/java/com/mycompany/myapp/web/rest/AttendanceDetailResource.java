@@ -4,12 +4,12 @@ import com.mycompany.myapp.domain.Attendance;
 import com.mycompany.myapp.domain.AttendanceDetail;
 import com.mycompany.myapp.repository.AttendanceDetailRepository;
 import com.mycompany.myapp.repository.AttendanceRepository;
+import com.mycompany.myapp.service.AttendanceDetailService;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
-import tech.jhipster.web.util.ResponseUtil;
 
 /**
  * REST controller for managing {@link Attendance}.
@@ -41,11 +40,17 @@ public class AttendanceDetailResource {
     private String applicationName;
 
     private final AttendanceRepository attendanceRepository;
-    private final AttendanceDetailRepository attendanceDetailRepository;
+    private AttendanceDetailRepository attendanceDetailRepository;
+    private AttendanceDetailService attendanceDetailService;
 
-    public AttendanceDetailResource(AttendanceRepository attendanceRepository, AttendanceDetailRepository attendanceDetailRepository) {
+    public AttendanceDetailResource(
+        AttendanceRepository attendanceRepository,
+        AttendanceDetailRepository attendanceDetailRepository,
+        AttendanceDetailService attendanceDetailService
+    ) {
         this.attendanceRepository = attendanceRepository;
         this.attendanceDetailRepository = attendanceDetailRepository;
+        this.attendanceDetailService = attendanceDetailService;
     }
 
     @PostMapping("/attendanceDetail")
@@ -55,7 +60,7 @@ public class AttendanceDetailResource {
         if (attendanceDetail.getId() != null) {
             throw new BadRequestAlertException("A new attendance cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        AttendanceDetail result = attendanceDetailRepository.save(attendanceDetail);
+        AttendanceDetail result = attendanceDetailService.createAttendanceDetail(attendanceDetail);
         return ResponseEntity
             .created(new URI("/api/attendanceDetail/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -79,7 +84,7 @@ public class AttendanceDetailResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        AttendanceDetail result = attendanceDetailRepository.save(attendanceDetail);
+        AttendanceDetail result = attendanceDetailService.createAttendanceDetail(attendanceDetail);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, attendanceDetail.getId().toString()))
@@ -110,7 +115,7 @@ public class AttendanceDetailResource {
     @DeleteMapping("/attendanceDetail/{id}")
     public ResponseEntity<Void> deleteAttendance(@PathVariable Long id) {
         log.debug("REST request to delete Attendance : {}", id);
-        attendanceDetailRepository.deleteById(id);
+        attendanceDetailService.delete(id);
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))

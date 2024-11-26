@@ -17,4 +17,10 @@ import org.springframework.stereotype.Repository;
 public interface AttendanceDetailRepository extends JpaRepository<AttendanceDetail, Long> {
     @Query("select a from AttendanceDetail a where a.attendanceId =  :id ")
     List<AttendanceDetail> findAttendanceDetailByAttendanceId(@Param("id") Long id);
+
+    @Query("select count(a) from AttendanceDetail a where a.attendanceId =  :id ")
+    Long countAttendanceDetailByAttendanceId(@Param("id") Long id);
+
+    @Query("select count(a) from AttendanceDetail a where a.attendanceId =  :id and a.countTime = 8")
+    Long countSuccessAttendanceDetailByAttendanceId(@Param("id") Long id);
 }

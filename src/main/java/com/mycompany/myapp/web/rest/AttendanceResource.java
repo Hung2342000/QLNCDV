@@ -2,6 +2,7 @@ package com.mycompany.myapp.web.rest;
 
 import com.mycompany.myapp.domain.Attendance;
 import com.mycompany.myapp.repository.AttendanceRepository;
+import com.mycompany.myapp.service.AttendanceService;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -16,7 +17,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -41,9 +41,11 @@ public class AttendanceResource {
     private String applicationName;
 
     private final AttendanceRepository attendanceRepository;
+    private AttendanceService attendanceService;
 
-    public AttendanceResource(AttendanceRepository attendanceRepository) {
+    public AttendanceResource(AttendanceRepository attendanceRepository, AttendanceService attendanceService) {
         this.attendanceRepository = attendanceRepository;
+        this.attendanceService = attendanceService;
     }
 
     /**
@@ -59,7 +61,7 @@ public class AttendanceResource {
         if (attendance.getId() != null) {
             throw new BadRequestAlertException("A new attendance cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Attendance result = attendanceRepository.save(attendance);
+        Attendance result = attendanceService.createAttendance(attendance);
         return ResponseEntity
             .created(new URI("/api/attendances/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
