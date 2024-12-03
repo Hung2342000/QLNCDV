@@ -30,6 +30,7 @@ export class EmployeeUpdateComponent implements OnInit {
     privateEmail: [],
     department: [],
     startDate: [],
+    basicSalary: [],
   });
 
   constructor(protected employeeService: EmployeeService, protected activatedRoute: ActivatedRoute, protected fb: FormBuilder) {}
@@ -91,6 +92,7 @@ export class EmployeeUpdateComponent implements OnInit {
       privateEmail: employee.privateEmail,
       department: employee.department,
       startDate: employee.startDate,
+      basicSalary: employee.basicSalary,
     });
   }
 
@@ -109,6 +111,7 @@ export class EmployeeUpdateComponent implements OnInit {
       privateEmail: this.editForm.get(['privateEmail'])!.value,
       department: this.editForm.get(['department'])!.value,
       startDate: this.editForm.get(['startDate'])!.value,
+      basicSalary: this.editForm.get(['basicSalary'])!.value,
     };
   }
 }

@@ -8,87 +8,87 @@
         </button>
       </div>
       <div class="row">
-        <div class="col-md-5">
-          <div class="row mb-3">
-            <label class="form-label" for="field_employeeId">Nhân viên</label>
-            <select class="form-select" id="field_employeeId" formControlName="employeeId" data-cy="employeeId" name="employeeId">
-              <option *ngFor="let employee of employeeList" [value]="employee.id">{{ employee.name }}</option>
-            </select>
-            <div *ngIf="editForm.get('employeeId')!.invalid && (editForm.get('employeeId')!.dirty || editForm.get('employeeId')!.touched)">
-              <small
-                class="form-text text-danger"
-                *ngIf="editForm.get('employeeId')?.errors?.required"
-                jhiTranslate="entity.validation.required"
-              >
-                This field is required.
-              </small>
-              <small
-                class="form-text text-danger"
-                [hidden]="!editForm.get('employeeId')?.errors?.number"
-                jhiTranslate="entity.validation.number"
-              >
-                This field should be a number.
-              </small>
-            </div>
-          </div>
-          <div class="row mb-3">
-            <label class="form-label" for="field_month">Thời gian</label>
-            <div class="input-group">
-              <input
-                id="field_month"
-                data-cy="month"
-                type="text"
-                class="form-control"
-                name="month"
-                ngbDatepicker
-                #inTimeDp="ngbDatepicker"
-                formControlName="month"
-              />
-              <button type="button" class="btn btn-secondary" (click)="inTimeDp.toggle()"><fa-icon icon="calendar-alt"></fa-icon></button>
-            </div>
-          </div>
-          <div class="row mb-3">
-            <label class="form-label" for="field_note">Ghi chú</label>
-            <input type="text" class="form-control" name="note" id="field_note" data-cy="note" formControlName="note" />
+        <div class="col-md-3">
+          <label class="form-label" for="field_employeeId">Nhân viên</label>
+          <select class="form-select" id="field_employeeId" formControlName="employeeId" data-cy="employeeId" name="employeeId">
+            <option *ngFor="let employee of employeeList" [value]="employee.id">{{ employee.name }}</option>
+          </select>
+          <div *ngIf="editForm.get('employeeId')!.invalid && (editForm.get('employeeId')!.dirty || editForm.get('employeeId')!.touched)">
+            <small
+              class="form-text text-danger"
+              *ngIf="editForm.get('employeeId')?.errors?.required"
+              jhiTranslate="entity.validation.required"
+            >
+              This field is required.
+            </small>
+            <small
+              class="form-text text-danger"
+              [hidden]="!editForm.get('employeeId')?.errors?.number"
+              jhiTranslate="entity.validation.number"
+            >
+              This field should be a number.
+            </small>
           </div>
         </div>
-        <div class="col-md-2"></div>
-        <div class="col-md-5">
-          <div class="row mb-3">
-            <label class="form-label" for="field_count">Số ngày chấm công</label>
-            <input
-              [readOnly]="true"
-              type="number"
-              class="form-control"
-              name="note"
-              id="field_count"
-              data-cy="count"
-              formControlName="count"
-            />
+        <div class="col-md-3">
+          <div class="row">
+            <div class="col-md-6">
+              <label class="form-label" for="field_month">Tháng</label>
+              <select class="form-select" id="field_month" formControlName="month" data-cy="month" name="month">
+                <option [value]="1">1</option>
+                <option [value]="2">2</option>
+                <option [value]="3">3</option>
+                <option [value]="4">4</option>
+                <option [value]="5">5</option>
+                <option [value]="6">6</option>
+                <option [value]="7">7</option>
+                <option [value]="8">8</option>
+                <option [value]="9">9</option>
+                <option [value]="10">10</option>
+                <option [value]="11">11</option>
+                <option [value]="12">12</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="field_year">Năm</label>
+              <input type="text" class="form-control" name="year" id="field_year" data-cy="year" formControlName="year" />
+            </div>
           </div>
-          <div class="row mb-3">
-            <label class="form-label" for="field_countNot">Số ngày hoàn thành chấm công</label>
-            <input
-              type="number"
-              [readOnly]="true"
-              class="form-control"
-              name="countNot"
-              id="field_countNot"
-              data-cy="countNot"
-              formControlName="countNot"
-            />
-          </div>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label" for="field_count">Số ngày chấm công</label>
+          <input
+            [readOnly]="true"
+            type="number"
+            class="form-control"
+            name="note"
+            id="field_count"
+            data-cy="count"
+            formControlName="count"
+          />
+        </div>
+        <div class="col-md-3">
+          <label class="form-label" for="field_countNot">Số ngày hoàn thành chấm công</label>
+          <input
+            type="number"
+            [readOnly]="true"
+            class="form-control"
+            name="countNot"
+            id="field_countNot"
+            data-cy="countNot"
+            formControlName="countNot"
+          />
         </div>
       </div>
     </form>
 
-    <div class="d-flex justify-content-end">
+    <div style="margin-top: 30px" class="d-flex justify-content-end" *ngIf="attendance.id !== undefined">
       <button (click)="addDetails(attendance)" type="submit" class="btn btn-primary btn-sm">
         <span>Thêm chi tiết</span>
       </button>
     </div>
 
-    <table class="table table-hover">
+    <table class="table table-hover" *ngIf="attendance.id !== undefined">
       <thead>
         <tr>
           <th style="width: 5%"><span>STT</span></th>
@@ -226,18 +226,3 @@
   </div>
   <div class="modal-footer"></div>
 </ng-template>
-
-<!--<ng-template #deleteDetail let-modal>-->
-<!--  <div class="modal-header">-->
-<!--    <h4 class="modal-title" data-cy="toolDeleteDialogHeading">Xác nhận xóa</h4>-->
-<!--    <button type="button" class="btn-close" data-dismiss="modal" aria-hidden="true" (click)="closeModal()"></button>-->
-<!--  </div>-->
-<!--  <div class="modal-footer">-->
-<!--    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal" (click)="closeModal()">-->
-<!--      <span>Đóng</span>-->
-<!--    </button>-->
-<!--    <button type="submit" class="btn btn-primary btn-sm" data-dismiss="modal" (click)="confirmDelete()" )>-->
-<!--      <span>Xóa</span>-->
-<!--    </button>-->
-<!--  </div>-->
-<!--</ng-template>-->

@@ -99,7 +99,7 @@ export class EmployeeComponent implements OnInit {
   }
 
   delete(employee: IEmployee): void {
-    const modalRef = this.modalService.open(EmployeeDeleteDialogComponent, { size: 'lg', backdrop: 'static' });
+    const modalRef = this.modalService.open(EmployeeDeleteDialogComponent, { size: 'sm', backdrop: 'static' });
     modalRef.componentInstance.employee = employee;
     // unsubscribe not needed because closed completes on modal close
     modalRef.closed.subscribe(reason => {

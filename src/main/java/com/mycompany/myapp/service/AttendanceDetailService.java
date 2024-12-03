@@ -6,6 +6,7 @@ import com.mycompany.myapp.repository.AttendanceDetailRepository;
 import com.mycompany.myapp.repository.AttendanceRepository;
 import com.mycompany.myapp.repository.EmployeeRepository;
 import com.mycompany.myapp.repository.UserRepository;
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalTime;
 import org.slf4j.Logger;
@@ -83,7 +84,15 @@ public class AttendanceDetailService {
         long coutTime = this.attendanceDetailRepository.countAttendanceDetailByAttendanceId(attendanceDetail.getAttendanceId());
         long coutSuccessTime =
             this.attendanceDetailRepository.countSuccessAttendanceDetailByAttendanceId(attendanceDetail.getAttendanceId());
+        Double coutTimeNotSuccess =
+            this.attendanceDetailRepository.countTimeNotSuccessAttendanceDetailByAttendanceId(attendanceDetail.getAttendanceId());
+        BigDecimal numberWorking;
+        if (coutTimeNotSuccess != null) {
+            numberWorking = new BigDecimal(coutTimeNotSuccess).divide(new BigDecimal(8)).add(new BigDecimal(coutSuccessTime));
+        } else numberWorking = new BigDecimal(coutSuccessTime);
+
         attendance.setCount(coutTime);
+        attendance.setNumberWorking(numberWorking);
         attendance.setCountNot(coutSuccessTime);
         attendanceRepository.save(attendance);
         return attendanceDetailCreate;

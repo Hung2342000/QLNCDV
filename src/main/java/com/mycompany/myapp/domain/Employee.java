@@ -1,6 +1,7 @@
 package com.mycompany.myapp.domain;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -53,6 +54,9 @@ public class Employee implements Serializable {
 
     @Column(name = "start_date")
     private LocalDate startDate;
+
+    @Column(name = "basic_salary")
+    private BigDecimal basicSalary;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -210,6 +214,14 @@ public class Employee implements Serializable {
 
     public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
+    }
+
+    public BigDecimal getBasicSalary() {
+        return basicSalary;
+    }
+
+    public void setBasicSalary(BigDecimal basicSalary) {
+        this.basicSalary = basicSalary;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

@@ -100,6 +100,18 @@ export class AttendanceComponent implements OnInit {
     return name;
   }
 
+  formatMonthYear(attendance: IAttendance): string {
+    let text = '';
+    if (attendance.month === null && attendance.year !== null && attendance.year) {
+      text = attendance.year.toString();
+    } else if (attendance.year === null && attendance.month !== null && attendance.month) {
+      text = attendance.month.toString();
+    } else if (typeof attendance.month === 'number' && typeof attendance.year === 'number') {
+      text = 'tháng ' + String(attendance.month) + ' năm ' + String(attendance.year);
+    }
+    return text;
+  }
+
   protected sort(): string[] {
     const result = [this.predicate + ',' + (this.ascending ? ASC : DESC)];
     if (this.predicate !== 'id') {

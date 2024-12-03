@@ -107,23 +107,6 @@
         <!--        </li>-->
 
         <li
-          *jhiHasAnyAuthority="'ROLE_ADMIN'"
-          ngbDropdown
-          class="nav-item dropdown pointer"
-          display="dynamic"
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: true }"
-        >
-          <ul class="dropdown-menu" ngbDropdownMenu aria-labelledby="admin-menu">
-            <li>
-              <a class="dropdown-item" routerLink="admin/user-management" routerLinkActive="active" (click)="collapseNavbar()">
-                <fa-icon icon="users" [fixedWidth]="true"></fa-icon>
-                <span jhiTranslate="global.menu.admin.userManagement">User management</span>
-              </a>
-            </li>
-          </ul>
-        </li>
-        <li
           [ngSwitch]="account !== null"
           ngbDropdown
           class="nav-item dropdown pointer"
@@ -139,14 +122,14 @@
             id="account-menu"
             data-cy="accountMenu"
           >
-            <span *ngIf="!account?.imageUrl"
-              >`
+            {{ account.name }}
+            <span *ngIf="!account?.imageUrl">
               <fa-icon icon="user"></fa-icon>
               <span>{{ account?.login }}</span>
             </span>
-            <span *ngIf="account?.imageUrl">
-              <img [src]="account!.imageUrl" class="profile-image rounded-circle" alt="Avatar" />
-            </span>
+            <!--            <span *ngIf="account?.imageUrl">-->
+            <!--              <img [src]="account!.imageUrl" class="profile-image rounded-circle" alt="Avatar" />-->
+            <!--            </span>-->
           </a>
           <ul class="dropdown-menu" ngbDropdownMenu aria-labelledby="account-menu">
             <li *ngSwitchCase="true">

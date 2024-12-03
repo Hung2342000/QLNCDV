@@ -1,6 +1,7 @@
 package com.mycompany.myapp.domain;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -25,10 +26,16 @@ public class Attendance implements Serializable {
     private Long employeeId;
 
     @Column(name = "month")
-    private LocalDate month;
+    private Long month;
+
+    @Column(name = "year")
+    private Long year;
 
     @Column(name = "count")
     private Long count;
+
+    @Column(name = "numberWorking")
+    private BigDecimal numberWorking;
 
     @Column(name = "countNot")
     private Long countNot;
@@ -64,12 +71,20 @@ public class Attendance implements Serializable {
         this.employeeId = employeeId;
     }
 
-    public LocalDate getMonth() {
+    public Long getMonth() {
         return month;
     }
 
-    public void setMonth(LocalDate month) {
+    public void setMonth(Long month) {
         this.month = month;
+    }
+
+    public Long getYear() {
+        return year;
+    }
+
+    public void setYear(Long year) {
+        this.year = year;
     }
 
     public Long getCount() {
@@ -99,6 +114,14 @@ public class Attendance implements Serializable {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public BigDecimal getNumberWorking() {
+        return numberWorking;
+    }
+
+    public void setNumberWorking(BigDecimal numberWorking) {
+        this.numberWorking = numberWorking;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

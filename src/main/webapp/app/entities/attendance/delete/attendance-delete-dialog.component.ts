@@ -17,7 +17,7 @@ export class AttendanceDeleteDialogComponent {
   }
 
   confirmDelete(id: number): void {
-    this.attendanceService.deleteDetail(id).subscribe(() => {
+    this.attendanceService.delete(id).subscribe(() => {
       this.activeModal.close('deleted');
     });
   }

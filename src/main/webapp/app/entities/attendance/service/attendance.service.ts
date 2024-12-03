@@ -24,10 +24,7 @@ export class AttendanceService {
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) {}
 
   create(attendance: IAttendance): Observable<EntityResponseType> {
-    const copy = this.convertDateFromClient(attendance);
-    return this.http
-      .post<IAttendance>(this.resourceUrl, copy, { observe: 'response' })
-      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+    return this.http.post<IAttendance>(this.resourceUrl, attendance, { observe: 'response' }).pipe(map((res: EntityResponseType) => res));
   }
 
   createDetail(attendanceDetail: IAttendanceDetail): Observable<EntityResponseType> {
@@ -38,10 +35,9 @@ export class AttendanceService {
   }
 
   update(attendance: IAttendance): Observable<EntityResponseType> {
-    const copy = this.convertDateFromClient(attendance);
     return this.http
-      .put<IAttendance>(`${this.resourceUrl}/${getAttendanceIdentifier(attendance) as number}`, copy, { observe: 'response' })
-      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+      .put<IAttendance>(`${this.resourceUrl}/${getAttendanceIdentifier(attendance) as number}`, attendance, { observe: 'response' })
+      .pipe(map((res: EntityResponseType) => res));
   }
 
   updateDetail(attendanceDetail: IAttendanceDetail): Observable<EntityResponseType> {
@@ -53,16 +49,13 @@ export class AttendanceService {
       .pipe(map((res: EntityResponseType) => this.convertDateDetailFromServer(res)));
   }
   partialUpdate(attendance: IAttendance): Observable<EntityResponseType> {
-    const copy = this.convertDateFromClient(attendance);
     return this.http
-      .patch<IAttendance>(`${this.resourceUrl}/${getAttendanceIdentifier(attendance) as number}`, copy, { observe: 'response' })
-      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+      .patch<IAttendance>(`${this.resourceUrl}/${getAttendanceIdentifier(attendance) as number}`, attendance, { observe: 'response' })
+      .pipe(map((res: EntityResponseType) => res));
   }
 
   find(id: number): Observable<EntityResponseType> {
-    return this.http
-      .get<IAttendance>(`${this.resourceUrl}/${id}`, { observe: 'response' })
-      .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+    return this.http.get<IAttendance>(`${this.resourceUrl}/${id}`, { observe: 'response' }).pipe(map((res: EntityResponseType) => res));
   }
 
   queryAttendanceDetail(id: number): Observable<EntityArrayResponseType> {
@@ -74,7 +67,7 @@ export class AttendanceService {
     const options = createRequestOption(req);
     return this.http
       .get<IAttendance[]>(this.resourceUrl, { params: options, observe: 'response' })
-      .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
+      .pipe(map((res: EntityArrayResponseType) => res));
   }
 
   delete(id: number): Observable<HttpResponse<{}>> {
@@ -104,12 +97,6 @@ export class AttendanceService {
     return attendanceCollection;
   }
 
-  protected convertDateFromClient(attendance: IAttendance): IAttendance {
-    return Object.assign({}, attendance, {
-      inTime: attendance.month?.isValid() ? attendance.month.format(DATE_FORMAT) : undefined,
-    });
-  }
-
   protected convertDateDetailFromClient(attendanceDetail: IAttendanceDetail): IAttendance {
     return Object.assign({}, attendanceDetail, {
       time: attendanceDetail.time ? dayjs(attendanceDetail.time).format(DATE_FORMAT) : undefined,
@@ -123,24 +110,10 @@ export class AttendanceService {
           : attendanceDetail.outTime,
     });
   }
-  protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
-    if (res.body) {
-      res.body.month = res.body.month ? dayjs(res.body.month) : undefined;
-    }
-    return res;
-  }
+
   protected convertDateDetailFromServer(res: EntityResponseDetailType): EntityResponseDetailType {
     if (res.body) {
       res.body.time = res.body.time ? dayjs(res.body.inTime) : undefined;
-    }
-    return res;
-  }
-
-  protected convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
-    if (res.body) {
-      res.body.forEach((attendance: IAttendance) => {
-        attendance.month = attendance.month ? dayjs(attendance.month) : undefined;
-      });
     }
     return res;
   }

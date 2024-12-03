@@ -1,7 +1,7 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { FormBuilder, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 
@@ -10,11 +10,9 @@ import { AttendanceService } from '../service/attendance.service';
 import { AttendanceDetail, IAttendanceDetail } from '../attendanceDetail.model';
 import { IEmployee } from '../../employee/employee.model';
 import { EmployeeService } from '../../employee/service/employee.service';
-import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { EmployeeDetailComponent } from '../../employee/detail/employee-detail.component';
-import { AttendanceDeleteDialogComponent } from '../delete/attendance-delete-dialog.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AttendanceDeleteDetailDialogComponent } from '../deleteDetail/attendanceDetail-delete-dialog.component';
-import { DATE_FORMAT, DATE_FORMAT_CUSTOM } from '../../../config/input.constants';
+import { DATE_FORMAT } from '../../../config/input.constants';
 
 @Component({
   selector: 'jhi-attendance-update',
@@ -25,12 +23,13 @@ export class AttendanceUpdateComponent implements OnInit {
   @ViewChild('deleteDetail') deleteDetail: TemplateRef<any> | undefined;
   isSaving = false;
   attendanceDetails?: IAttendanceDetail[] | any;
-  attendance?: IAttendance[] | any;
+  attendance?: IAttendance | any;
   employeeList?: IEmployee[] | any;
   editForm = this.fb.group({
     id: [null, [Validators.required]],
     employeeId: [null, [Validators.required]],
     month: [],
+    year: [],
     count: [],
     countNot: [],
     note: [],
@@ -50,7 +49,8 @@ export class AttendanceUpdateComponent implements OnInit {
     protected activatedRoute: ActivatedRoute,
     protected fb: FormBuilder,
     protected employeeService: EmployeeService,
-    protected modalService: NgbModal
+    protected modalService: NgbModal,
+    protected router: Router
   ) {}
 
   ngOnInit(): void {
@@ -91,6 +91,7 @@ export class AttendanceUpdateComponent implements OnInit {
   previousState(): void {
     window.history.back();
   }
+
   saveDetail(): void {
     this.isSaving = true;
     const attendanceDetail = this.createFromDetail();
@@ -162,6 +163,7 @@ export class AttendanceUpdateComponent implements OnInit {
     });
   }
   protected onSaveSuccess(): void {
+    // this.router.navigate([`/attendance/${employeeId}/edit`]);
     this.previousState();
   }
 
@@ -176,6 +178,7 @@ export class AttendanceUpdateComponent implements OnInit {
       id: attendance.id,
       employeeId: attendance.employeeId,
       month: attendance.month,
+      year: attendance.year,
       count: attendance.count,
       countNot: attendance.countNot,
       note: attendance.note,
@@ -199,6 +202,7 @@ export class AttendanceUpdateComponent implements OnInit {
       id: this.editForm.get(['id'])!.value,
       employeeId: this.editForm.get(['employeeId'])!.value,
       month: this.editForm.get(['month'])!.value,
+      year: this.editForm.get(['year'])!.value,
       count: this.editForm.get(['count'])!.value,
       countNot: this.editForm.get(['countNot'])!.value,
       note: this.editForm.get(['note'])!.value,

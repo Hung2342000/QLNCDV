@@ -1,0 +1,27 @@
+{
+  "qldvApp": {
+    "attendance": {
+      "home": {
+        "title": "Lương",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Thêm mới một Attendance",
+        "createOrEditLabel": "Thêm mới hoặc cập nhật Attendance",
+        "notFound": "No Attendances found"
+      },
+      "created": "Một Attendance mới được tạo với định danh {{ param }}",
+      "updated": "Một Attendance cập nhật với định danh {{ param }}",
+      "deleted": "Một Attendance đã xóa với định danh {{ param }}",
+      "delete": {
+        "question": "Xác nhận xóa?"
+      },
+      "detail": {
+        "title": "Lương"
+      },
+      "id": "Id",
+      "employeeId": "Employee Id",
+      "inTime": "In Time",
+      "outTime": "Out Time",
+      "note": "Note"
+    }
+  }
+}
