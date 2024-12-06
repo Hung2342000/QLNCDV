@@ -7,6 +7,7 @@ import com.mycompany.myapp.repository.AttendanceRepository;
 import com.mycompany.myapp.repository.EmployeeRepository;
 import com.mycompany.myapp.repository.UserRepository;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalTime;
 import org.slf4j.Logger;
@@ -44,12 +45,6 @@ public class AttendanceDetailService {
         LocalTime timeIn = LocalTime.of(8, 00);
         LocalTime timeOut = LocalTime.of(17, 00);
 
-        if (attendanceDetail.getInTime() != null && attendanceDetail.getInTime().isAfter(timeIn)) {
-            attendanceDetail.setStatus("Đi muộn");
-        }
-        if (attendanceDetail.getOutTime() != null && attendanceDetail.getOutTime().isBefore(timeOut)) {
-            attendanceDetail.setStatus("Về sớm");
-        }
         if (
             (attendanceDetail.getInTime() == null || attendanceDetail.getOutTime() == null) &&
             attendanceDetail.getOutTime().isBefore(attendanceDetail.getInTime())
@@ -59,13 +54,15 @@ public class AttendanceDetailService {
             Duration duration;
             if (
                 Duration.between(attendanceDetail.getOutTime(), timeOut).getSeconds() <= 0 &&
-                Duration.between(attendanceDetail.getInTime(), timeIn).getSeconds() <= 0
+                Duration.between(attendanceDetail.getInTime(), timeIn).getSeconds() < 0
             ) {
+                attendanceDetail.setStatus("Đi muộn");
                 duration = Duration.between(attendanceDetail.getInTime(), timeOut);
             } else if (
-                Duration.between(attendanceDetail.getOutTime(), timeOut).getSeconds() >= 0 &&
+                Duration.between(attendanceDetail.getOutTime(), timeOut).getSeconds() > 0 &&
                 Duration.between(attendanceDetail.getInTime(), timeIn).getSeconds() >= 0
             ) {
+                attendanceDetail.setStatus("Về sớm");
                 duration = Duration.between(timeIn, attendanceDetail.getOutTime());
             } else if (attendanceDetail.getOutTime().isBefore(timeOut) && attendanceDetail.getInTime().isAfter(timeIn)) {
                 duration = Duration.between(attendanceDetail.getInTime(), attendanceDetail.getOutTime());
@@ -75,7 +72,7 @@ public class AttendanceDetailService {
                 attendanceDetail.setStatus("Hoàn thành");
             }
             long totalSeconds = duration.getSeconds() - 3600;
-            double hours = totalSeconds / 3600.00;
+            double hours = totalSeconds / 3600.0000;
             attendanceDetail.setCountTime(hours);
         }
         AttendanceDetail attendanceDetailCreate = this.attendanceDetailRepository.save(attendanceDetail);

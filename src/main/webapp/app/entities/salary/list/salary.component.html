@@ -9,7 +9,7 @@
     </div>
   </h2>
 
-  <div class="table-responsive" id="entities" style="border-top: 1px solid">
+  <div class="table-responsive" id="entities">
     <table class="table table-hover" aria-describedby="page-heading">
       <thead>
         <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="loadPage()">
@@ -21,7 +21,7 @@
           <th style="width: 6%" class="text-center" scope="col">Thao tác</th>
         </tr>
       </thead>
-      <tbody style="border-top: 1px solid">
+      <tbody>
         <tr *ngFor="let salary of salarys; trackBy: trackId; let i = index" data-cy="entityTable">
           <td>{{ i + 1 }}</td>
           <td>{{ salary.createDate | formatDateVnPipe }}</td>
@@ -30,10 +30,6 @@
           <td>{{ salary.year }}</td>
           <td class="text-end">
             <div class="btn-group">
-              <button type="submit" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
-                <fa-icon icon="eye"></fa-icon>
-              </button>
-
               <button type="submit" [routerLink]="['/salary', salary.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
                 <fa-icon icon="pencil-alt"></fa-icon>
               </button>
@@ -169,10 +165,10 @@
           </div>
         </div>
       </div>
-      <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal" (click)="closeModal()">
+      <button style="margin-top: 20px" type="button" class="btn btn-secondary btn-sm" data-dismiss="modal" (click)="closeModal()">
         <span>Đóng</span>
       </button>
-      <button type="submit" class="btn btn-primary btn-sm" data-dismiss="modal">
+      <button style="margin-top: 20px" type="submit" class="btn btn-primary btn-sm" data-dismiss="modal">
         <span>Lưu</span>
       </button>
     </form>

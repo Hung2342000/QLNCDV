@@ -2,6 +2,7 @@ package com.mycompany.myapp.repository;
 
 import com.mycompany.myapp.domain.Employee;
 import com.mycompany.myapp.domain.Ticket;
+import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.*;
@@ -23,4 +24,17 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
         @Param("searchDepartment") String searchDepartment,
         Pageable pageable
     );
+
+    @Query(
+        "select a from Employee a where LOWER(a.codeEmployee) LIKE %:searchCode% AND LOWER(a.name) LIKE %:searchName% and a.department = :department"
+    )
+    Page<Employee> listAllEmployeesDepartment(
+        @Param("searchCode") String searchCode,
+        @Param("searchName") String searchName,
+        @Param("department") String department,
+        Pageable pageable
+    );
+
+    @Query("select a from Employee a where a.department = :department")
+    List<Employee> listAllEmployeesDepartmentNoPage(@Param("department") String department);
 }

@@ -56,28 +56,32 @@
           </div>
         </div>
         <div class="col-md-3">
-          <label class="form-label" for="field_count">Số ngày chấm công</label>
-          <input
-            [readOnly]="true"
-            type="number"
-            class="form-control"
-            name="note"
-            id="field_count"
-            data-cy="count"
-            formControlName="count"
-          />
-        </div>
-        <div class="col-md-3">
-          <label class="form-label" for="field_countNot">Số ngày hoàn thành chấm công</label>
-          <input
-            type="number"
-            [readOnly]="true"
-            class="form-control"
-            name="countNot"
-            id="field_countNot"
-            data-cy="countNot"
-            formControlName="countNot"
-          />
+          <div class="row">
+            <div class="col-md-6">
+              <label class="form-label" for="field_count">Số ngày chấm công</label>
+              <input
+                [readOnly]="true"
+                type="number"
+                class="form-control"
+                name="note"
+                id="field_count"
+                data-cy="count"
+                formControlName="count"
+              />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="field_countNot">Số ngày hoàn thành</label>
+              <input
+                type="number"
+                [readOnly]="true"
+                class="form-control"
+                name="countNot"
+                id="field_countNot"
+                data-cy="countNot"
+                formControlName="countNot"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </form>
@@ -168,6 +172,8 @@
                 name="time"
                 formControlName="time"
                 [convertModelValue]="true"
+                [maxDate]="maxDate"
+                [minDate]="minDate"
               />
             </div>
           </div>

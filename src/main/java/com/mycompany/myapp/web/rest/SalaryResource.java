@@ -130,7 +130,7 @@ public class SalaryResource {
     @DeleteMapping("/salary/{id}")
     public ResponseEntity<Void> deleteSalary(@PathVariable Long id) {
         log.debug("REST request to delete Salary : {}", id);
-        salaryRepository.deleteById(id);
+        salaryService.deleteSalary(id);
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))

@@ -168,7 +168,7 @@ public class AttendanceResource {
     @GetMapping("/attendances")
     public ResponseEntity<List<Attendance>> getAllAttendances(@org.springdoc.api.annotations.ParameterObject Pageable pageable) {
         log.debug("REST request to get a page of Attendances");
-        Page<Attendance> page = attendanceRepository.findAll(pageable);
+        Page<Attendance> page = attendanceService.getAllByDepartment(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
@@ -195,7 +195,7 @@ public class AttendanceResource {
     @DeleteMapping("/attendances/{id}")
     public ResponseEntity<Void> deleteAttendance(@PathVariable Long id) {
         log.debug("REST request to delete Attendance : {}", id);
-        attendanceRepository.deleteById(id);
+        attendanceService.deleteAttendance(id);
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))

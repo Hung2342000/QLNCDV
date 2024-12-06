@@ -19,4 +19,7 @@ import org.springframework.stereotype.Repository;
 public interface SalaryDetailRepository extends JpaRepository<SalaryDetail, Long> {
     @Query("select a from SalaryDetail a where a.salaryId = :idSalary ")
     Page<SalaryDetail> getAllBySalaryId(Pageable pageable, @Param("idSalary") Long idSalary);
+
+    void deleteAllBySalaryId(@Param("idSalary") Long idSalary);
+    List<SalaryDetail> getSalaryDetailBySalaryId(@Param("idSalary") Long idSalary);
 }

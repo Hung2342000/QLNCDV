@@ -6,6 +6,8 @@ import com.mycompany.myapp.domain.SalaryDetail;
 import com.mycompany.myapp.repository.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
 import liquibase.pro.packaged.B;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,14 +50,19 @@ public class SalaryService {
             SalaryDetail salaryDetail = new SalaryDetail();
             salaryDetail.setEmployeeId(employeeSelect.getId());
             salaryDetail.setSalaryId(salaryCreate.getId());
-            BigDecimal numberWorking = attendanceRepository.getNumberWorkingByEmployeeId(employeeSelect.getId());
+            BigDecimal numberWorking = attendanceRepository.getNumberWorkingByEmployeeId(
+                employeeSelect.getId(),
+                salary.getMonth(),
+                salary.getYear()
+            );
             if (numberWorking != null && employeeSelect.getBasicSalary() != null) {
                 salaryDetail.setBasicSalary(employeeSelect.getBasicSalary());
                 salaryDetail.setNumberWorking(numberWorking);
                 salaryDetail.setNumberWorkInMonth(new BigDecimal(salary.getNumberWork()));
                 BigDecimal amount = numberWorking
                     .multiply(employeeSelect.getBasicSalary())
-                    .divide(new BigDecimal(salary.getNumberWork()), 4, RoundingMode.HALF_UP);
+                    .divide(new BigDecimal(salary.getNumberWork()), 10, RoundingMode.HALF_UP)
+                    .setScale(4, RoundingMode.HALF_UP);
                 if (amount != null) {
                     salaryDetail.setAmount(amount);
                 }
@@ -64,5 +71,14 @@ public class SalaryService {
         }
 
         return salary;
+    }
+
+    public void deleteSalary(Long id) {
+        List<SalaryDetail> salaryDetailList = new ArrayList<>();
+        salaryDetailList = this.salaryDetailRepository.getSalaryDetailBySalaryId(id);
+        if (salaryDetailList.size() > 0) {
+            this.salaryDetailRepository.deleteAllBySalaryId(id);
+        }
+        this.salaryRepository.deleteById(id);
     }
 }

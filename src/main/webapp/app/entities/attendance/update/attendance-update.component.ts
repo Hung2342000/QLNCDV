@@ -25,6 +25,8 @@ export class AttendanceUpdateComponent implements OnInit {
   attendanceDetails?: IAttendanceDetail[] | any;
   attendance?: IAttendance | any;
   employeeList?: IEmployee[] | any;
+  maxDate: Date = new Date();
+  minDate: Date = new Date();
   editForm = this.fb.group({
     id: [null, [Validators.required]],
     employeeId: [null, [Validators.required]],
@@ -109,6 +111,16 @@ export class AttendanceUpdateComponent implements OnInit {
     }
   }
   edit(attendanceDetail: IAttendanceDetail): void {
+    if (this.attendance.month && this.attendance.year) {
+      const year = String(this.attendance.year);
+      const month = String(this.attendance.month);
+      this.minDate = new Date(`${year}-${month}-1`);
+      if ([1, 3, 5, 7, 8, 10, 12].includes(this.attendance.month)) {
+        this.maxDate = new Date(`${year}-${month}-31`);
+      } else if ([4, 6, 9, 11].includes(this.attendance.month)) {
+        this.maxDate = new Date(`${year}-${month}-30`);
+      }
+    }
     this.updateFormDetail(attendanceDetail);
     this.modalService.open(this.addDetail, { size: 'lg', backdrop: 'static' });
   }
@@ -128,7 +140,16 @@ export class AttendanceUpdateComponent implements OnInit {
       return new Array(0);
     }
   }
-  addDetails(attendance: IAttendance): void {
+  addDetails(attendanceCheck: IAttendance): void {
+    if (attendanceCheck.month && attendanceCheck.year) {
+      this.minDate = new Date(attendanceCheck.year.toString() + '-' + attendanceCheck.month.toString() + '-1');
+      if ([1, 3, 5, 7, 8, 10, 12].includes(attendanceCheck.month)) {
+        this.maxDate = new Date(attendanceCheck.year.toString() + '-' + attendanceCheck.month.toString() + '-31');
+      } else if ([4, 6, 9, 11].includes(attendanceCheck.month)) {
+        this.maxDate = new Date(attendanceCheck.year.toString() + '-' + attendanceCheck.month.toString() + '-30');
+      }
+    }
+
     this.modalService.open(this.addDetail, { size: 'lg', backdrop: 'static' });
   }
   delete(attendanceDetail: AttendanceDetail): void {

@@ -25,6 +25,9 @@ public class Attendance implements Serializable {
     @Column(name = "employee_id", nullable = false)
     private Long employeeId;
 
+    @Column(name = "department")
+    private String department;
+
     @Column(name = "month")
     private Long month;
 
@@ -122,6 +125,14 @@ public class Attendance implements Serializable {
 
     public void setNumberWorking(BigDecimal numberWorking) {
         this.numberWorking = numberWorking;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

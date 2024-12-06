@@ -26,4 +26,9 @@ public interface AttendanceDetailRepository extends JpaRepository<AttendanceDeta
 
     @Query("select sum(a.countTime) from AttendanceDetail a where a.attendanceId =  :id and a.countTime <> 8")
     Double countTimeNotSuccessAttendanceDetailByAttendanceId(@Param("id") Long id);
+
+    @Query("select a from AttendanceDetail a where a.attendanceId = :id")
+    List<AttendanceDetail> selectAllByAttId(@Param("id") Long id);
+
+    void deleteAllByAttendanceId(@Param("attendanceId") Long attendanceId);
 }

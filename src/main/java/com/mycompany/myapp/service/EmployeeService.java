@@ -56,6 +56,16 @@ public class EmployeeService {
             !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(SUPERUSER).contains(authority))
         ) {
             page = employeeRepository.listAllEmployees(searchCode.toLowerCase(), searchName.toLowerCase(), searchDepartment, pageable);
+        } else if (
+            authentication != null && !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority))
+        ) {
+            page =
+                employeeRepository.listAllEmployeesDepartment(
+                    searchCode.toLowerCase(),
+                    searchName.toLowerCase(),
+                    user.getDepartment(),
+                    pageable
+                );
         }
         return page;
     }
@@ -76,6 +86,10 @@ public class EmployeeService {
             !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(SUPERUSER).contains(authority))
         ) {
             employeeList = employeeRepository.findAll();
+        } else if (
+            authentication != null && !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority))
+        ) {
+            employeeList = employeeRepository.listAllEmployeesDepartmentNoPage(user.getDepartment());
         }
         return employeeList;
     }
