@@ -7,6 +7,7 @@ import com.mycompany.myapp.repository.SalaryRepository;
 import com.mycompany.myapp.service.SalaryDetailService;
 import com.mycompany.myapp.service.SalaryService;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -18,6 +19,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -141,5 +144,15 @@ public class SalaryDetailResource {
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    @GetMapping("/salary-detail/export")
+    public ResponseEntity<byte[]> exportSalary(Long salaryId) throws IOException {
+        byte[] excelBytes = salaryDetailService.exportSalaryDetail(salaryId);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+        headers.setContentDispositionFormData("attachment", "data.xlsx");
+
+        return new ResponseEntity<>(excelBytes, headers, HttpStatus.OK);
     }
 }

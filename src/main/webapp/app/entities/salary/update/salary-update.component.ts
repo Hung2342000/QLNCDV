@@ -96,6 +96,22 @@ export class SalaryUpdateComponent implements OnInit {
     window.history.back();
   }
 
+  exportToExcel(): void {
+    this.salaryService
+      .exportToExcel({
+        salaryId: this.salary.id,
+      })
+      .subscribe(response => {
+        const blob = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'bangluong.xlsx';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      });
+  }
   employeeName(idEmployee: number | null | undefined): any {
     let name = '';
     for (let i = 0; i < this.employeeList.length; i++) {

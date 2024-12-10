@@ -7,7 +7,7 @@ import { AccountService } from 'app/core/auth/account.service';
 import { Account } from 'app/core/auth/account.model';
 import { FormBuilder, Validators } from '@angular/forms';
 import { HttpResponse } from '@angular/common/http';
-import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'jhi-home',
@@ -36,7 +36,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.shopCode = this.activatedRoute.snapshot.paramMap.get('shopCode');
     this.accountService
       .getAuthenticationState()
       .pipe(takeUntil(this.destroy$))
@@ -46,5 +45,4 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.destroy$.next();
     this.destroy$.complete();
   }
-
 }

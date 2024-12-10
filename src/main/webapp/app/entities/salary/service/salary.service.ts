@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import dayjs from 'dayjs/esm';
@@ -54,6 +54,15 @@ export class SalaryService {
     return this.http
       .get<ISalary>(`${this.resourceUrl}/${id}`, { observe: 'response' })
       .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+  }
+
+  exportToExcel(req?: any): Observable<any> {
+    const options = createRequestOption(req);
+    return this.http.get(`${this.resourceUrlDetail}/export`, {
+      params: options,
+      responseType: 'blob',
+      headers: new HttpHeaders().append('Content-Type', 'application/json'),
+    });
   }
 
   query(req?: any): Observable<EntityArrayResponseType> {
