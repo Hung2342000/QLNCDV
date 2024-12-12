@@ -1,12 +1,12 @@
 <div>
-  <h3 id="page-heading" data-cy="AttendanceHeading">
-    <span>Chấm công</span>
+  <h4 id="page-heading" data-cy="AttendanceHeading">
+    <span style="color: rgba(0, 81, 255, 0.85)">Chấm công</span>
     <div class="d-flex justify-content-end">
       <button id="jh-create-entity" data-cy="entityCreateButton" class="btn btn-primary btn-sm" [routerLink]="['/attendance/new']">
         <span> Thêm </span>
       </button>
     </div>
-  </h3>
+  </h4>
 
   <div class="table-responsive" id="entities" *ngIf="attendances">
     <table class="table table-hover" aria-describedby="page-heading">

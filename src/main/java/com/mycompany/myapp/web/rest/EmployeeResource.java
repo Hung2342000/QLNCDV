@@ -1,6 +1,8 @@
 package com.mycompany.myapp.web.rest;
 
+import com.mycompany.myapp.domain.CountEmployee;
 import com.mycompany.myapp.domain.Employee;
+import com.mycompany.myapp.repository.CountEmployeeRepository;
 import com.mycompany.myapp.repository.EmployeeRepository;
 import com.mycompany.myapp.service.EmployeeService;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
@@ -41,10 +43,16 @@ public class EmployeeResource {
     private String applicationName;
 
     private final EmployeeRepository employeeRepository;
+    private final CountEmployeeRepository countEmployeeRepository;
     private final EmployeeService employeeService;
 
-    public EmployeeResource(EmployeeRepository employeeRepository, EmployeeService employeeService) {
+    public EmployeeResource(
+        EmployeeRepository employeeRepository,
+        CountEmployeeRepository countEmployeeRepository,
+        EmployeeService employeeService
+    ) {
         this.employeeRepository = employeeRepository;
+        this.countEmployeeRepository = countEmployeeRepository;
         this.employeeService = employeeService;
     }
 
@@ -230,5 +238,12 @@ public class EmployeeResource {
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    @GetMapping("/employees/count")
+    public ResponseEntity<List<CountEmployee>> getAllEmployeesCount() {
+        log.debug("REST request to get a page of Employees");
+        List<CountEmployee> employeeList = employeeService.getAllCountEmployee();
+        return ResponseEntity.ok().body(employeeList);
     }
 }

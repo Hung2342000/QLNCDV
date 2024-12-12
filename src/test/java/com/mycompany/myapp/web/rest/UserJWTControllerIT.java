@@ -13,7 +13,6 @@ import com.mycompany.myapp.IntegrationTest;
 import com.mycompany.myapp.domain.User;
 import com.mycompany.myapp.repository.UserRepository;
 import com.mycompany.myapp.web.rest.vm.LoginVM;
-
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +25,9 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * Integration tests for the {@link UserJWTController} REST controller.
  */
-@Disabled
 @AutoConfigureMockMvc
 @IntegrationTest
+@Disabled
 class UserJWTControllerIT {
 
     @Autowired

@@ -3,8 +3,12 @@ package com.mycompany.myapp.service;
 import static com.mycompany.myapp.security.AuthoritiesConstants.*;
 import static com.mycompany.myapp.security.SecurityUtils.getAuthorities;
 
+import com.mycompany.myapp.domain.CountEmployee;
+import com.mycompany.myapp.domain.Department;
 import com.mycompany.myapp.domain.Employee;
 import com.mycompany.myapp.domain.User;
+import com.mycompany.myapp.repository.CountEmployeeRepository;
+import com.mycompany.myapp.repository.DepartmentRepository;
 import com.mycompany.myapp.repository.EmployeeRepository;
 import com.mycompany.myapp.repository.UserRepository;
 import java.util.ArrayList;
@@ -34,10 +38,19 @@ public class EmployeeService {
     private final Logger log = LoggerFactory.getLogger(EmployeeService.class);
     private UserRepository userRepository;
     private EmployeeRepository employeeRepository;
+    private CountEmployeeRepository countEmployeeRepository;
+    private DepartmentRepository departmentRepository;
 
-    public EmployeeService(UserRepository userRepository, EmployeeRepository employeeRepository) {
+    public EmployeeService(
+        UserRepository userRepository,
+        EmployeeRepository employeeRepository,
+        CountEmployeeRepository countEmployeeRepository,
+        DepartmentRepository departmentRepository
+    ) {
         this.userRepository = userRepository;
         this.employeeRepository = employeeRepository;
+        this.countEmployeeRepository = countEmployeeRepository;
+        this.departmentRepository = departmentRepository;
     }
 
     public Page<Employee> getAllEmployees(Pageable pageable, String searchCode, String searchName, String searchDepartment) {
@@ -90,6 +103,23 @@ public class EmployeeService {
             authentication != null && !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority))
         ) {
             employeeList = employeeRepository.listAllEmployeesDepartmentNoPage(user.getDepartment());
+        }
+        return employeeList;
+    }
+
+    public List<CountEmployee> getAllCountEmployee() {
+        List<CountEmployee> employeeList = countEmployeeRepository.listAllCountEmployee();
+        List<Department> listDepartment = new ArrayList<>();
+        listDepartment = this.departmentRepository.findAll();
+        if (employeeList.size() > 0) {
+            for (Department dp : listDepartment) {
+                if (!employeeList.stream().anyMatch(em -> em.getCode().equals(dp.getName()))) {
+                    CountEmployee countEmployee = new CountEmployee();
+                    countEmployee.setCountEmployee((long) 0);
+                    countEmployee.setCode(dp.getName());
+                    employeeList.add(countEmployee);
+                }
+            }
         }
         return employeeList;
     }

@@ -28,11 +28,13 @@ import { ErrorComponent } from './layouts/error/error.component';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { NavbarVerticalComponent } from './layouts/navbar-vertical/navbar-vertical.component';
 import { FlatpickrModule } from 'angularx-flatpickr';
+import { NgChartsModule } from 'ng2-charts';
 @NgModule({
   imports: [
     BrowserModule,
     SharedModule,
     HomeModule,
+    NgChartsModule,
     // jhipster-needle-angular-add-module JHipster will add new module here
     AppRoutingModule,
     // Set this to true to enable service worker (PWA)

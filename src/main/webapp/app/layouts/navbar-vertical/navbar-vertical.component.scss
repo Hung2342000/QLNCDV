@@ -1,28 +1,42 @@
-
+/* Hiệu ứng nổi khối cho navbar */
 .navbar-vertical {
-  position: fixed;
-  left: 0;
-  width: 200px; /* Chiều rộng của navbar dọc */
-  height: calc(100vh - 60px); /* Đảm bảo chiều cao đầy đủ dưới navbar ngang */
-  overflow-y: auto; /* Cuộn nội dung nếu dài */
-  z-index: 1000; /* Đặt trên nội dung chính */
-  background-color: #f8f9fa; /* Màu nền cho navbar */
+  background-color: #010b3a; /* Màu nền của navbar */
+  height: 100%;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1), 0 2px 6px rgba(0, 0, 0, 0.1); /* Hiệu ứng bóng đổ */
+  transition: all 0.3s ease-in-out; /* Hiệu ứng chuyển động mượt mà */
 }
 
-/* Đảm bảo mỗi mục nav-item chiếm toàn bộ chiều rộng */
-.navbar-nav .nav-item {
-  width: 100%;
+/* Khi di chuột qua navbar, tăng độ nổi khối */
+.navbar-vertical:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.2); /* Làm bóng đổ mạnh hơn */
 }
 
-.navbar-nav .nav-link {
-  color: black;
-  display: block; /* Chuyển thẻ <a> thành block */
-  width: 100%; /* Chiều rộng tối đa */
-  padding: 10px; /* Khoảng cách cho thẻ <a> */
-  transition: background-color 0.3s; /* Hiệu ứng chuyển đổi cho màu nền khi hover */
+/* Hiệu ứng cho các mục menu */
+.navbar-vertical .nav-item {
+  border-radius: 5px; /* Bo góc mỗi mục trong navbar */
+  margin-bottom: 10px; /* Tạo khoảng cách giữa các mục */
+  transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
 }
 
-/* Hiệu ứng hover */
-.navbar-nav .nav-link:hover {
-  background-color: rgba(0, 166, 255, 0.48); /* Màu nền nhẹ khi hover */
+/* Hiệu ứng khi di chuột vào mỗi mục */
+.navbar-vertical .nav-item:hover {
+  background-color: rgba(255, 255, 255, 0.1); /* Màu nền thay đổi khi hover */
+  transform: scale(1.05); /* Làm mục menu phóng to khi hover */
+}
+
+/* Hiệu ứng cho các liên kết */
+.navbar-vertical .nav-link {
+  color: white; /* Màu chữ */
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  border-radius: 5px;
+  text-decoration: none; /* Bỏ gạch chân */
+  transition: color 0.3s ease-in-out;
+}
+
+/* Thay đổi màu chữ khi hover vào liên kết */
+.navbar-vertical .nav-link:hover {
+  color: #008cff; /* Màu chữ khi hover */
 }

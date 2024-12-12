@@ -1,5 +1,6 @@
 package com.mycompany.myapp.repository;
 
+import com.mycompany.myapp.domain.CountEmployee;
 import com.mycompany.myapp.domain.Employee;
 import com.mycompany.myapp.domain.Ticket;
 import java.util.List;
@@ -37,4 +38,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     @Query("select a from Employee a where a.department = :department")
     List<Employee> listAllEmployeesDepartmentNoPage(@Param("department") String department);
+
+    @Query("SELECT new CountEmployee( d.code, count(d.code)) FROM Employee e JOIN Department d on e.department = d.code group by d.code")
+    List<CountEmployee> listAllEmployeesDepartmentNoPage();
 }

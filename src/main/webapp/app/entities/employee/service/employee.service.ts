@@ -10,9 +10,11 @@ import { ApplicationConfigService } from 'app/core/config/application-config.ser
 import { createRequestOption } from 'app/core/request/request-util';
 import { IEmployee, getEmployeeIdentifier } from '../employee.model';
 import { IDepartment } from '../department.model';
+import { ICountEmployee } from '../count-employee.model';
 
 export type EntityResponseType = HttpResponse<IEmployee>;
 export type EntityArrayResponseType = HttpResponse<IEmployee[]>;
+export type EntityArrayResponseCountEmployeeType = HttpResponse<ICountEmployee[]>;
 
 @Injectable({ providedIn: 'root' })
 export class EmployeeService {
@@ -43,6 +45,10 @@ export class EmployeeService {
 
   queryDepartment(): Observable<EntityArrayResponseType> {
     return this.http.get<IDepartment[]>(this.resourceUrlDepartment, { observe: 'response' });
+  }
+
+  queryCountEmployee(): Observable<EntityArrayResponseCountEmployeeType> {
+    return this.http.get<ICountEmployee[]>(this.resourceUrl + '/count', { observe: 'response' });
   }
   find(id: number): Observable<EntityResponseType> {
     return this.http
