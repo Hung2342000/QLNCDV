@@ -133,6 +133,23 @@ export class AttendanceUpdateComponent implements OnInit {
       this.subscribeToSaveResponse(this.attendanceService.create(attendance));
     }
   }
+
+  exportToExcel(): void {
+    this.attendanceService
+      .exportToExcel({
+        attendanceId: this.attendance.id,
+      })
+      .subscribe(response => {
+        const blob = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'bangchamcong.xlsx';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      });
+  }
   newArr(lenght: number): any[] {
     if (lenght > 0) {
       return new Array(lenght);

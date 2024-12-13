@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import dayjs from 'dayjs/esm';
@@ -54,6 +54,14 @@ export class AttendanceService {
       .pipe(map((res: EntityResponseType) => res));
   }
 
+  exportToExcel(req?: any): Observable<any> {
+    const options = createRequestOption(req);
+    return this.http.get(`${this.resourceUrl}/export`, {
+      params: options,
+      responseType: 'blob',
+      headers: new HttpHeaders().append('Content-Type', 'application/json'),
+    });
+  }
   find(id: number): Observable<EntityResponseType> {
     return this.http.get<IAttendance>(`${this.resourceUrl}/${id}`, { observe: 'response' }).pipe(map((res: EntityResponseType) => res));
   }

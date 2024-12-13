@@ -69,6 +69,7 @@ public class SalaryDetailService {
         List<SalaryDetail> salaryDetailList = new ArrayList<>();
         salaryDetailList = this.salaryDetailRepository.getSalaryDetailBySalaryId(salaryId);
 
+        Salary salary = this.salaryRepository.findById(salaryId).get();
         XSSFWorkbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Data");
 
@@ -84,8 +85,8 @@ public class SalaryDetailService {
 
         CellStyle detailStyle = workbook.createCellStyle();
         detailStyle.setFont(fontDetail);
-        detailStyle.setBorderRight(BorderStyle.MEDIUM);
-        detailStyle.setBorderLeft(BorderStyle.MEDIUM);
+        detailStyle.setBorderRight(BorderStyle.THIN);
+        detailStyle.setBorderLeft(BorderStyle.THIN);
 
         CellStyle tableName = workbook.createCellStyle();
         tableName.setFont(font);
@@ -96,10 +97,10 @@ public class SalaryDetailService {
         centeredBoldStyle.setFont(font);
         centeredBoldStyle.setAlignment(HorizontalAlignment.CENTER);
         centeredBoldStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-        centeredBoldStyle.setBorderBottom(BorderStyle.MEDIUM);
-        centeredBoldStyle.setBorderTop(BorderStyle.MEDIUM);
-        centeredBoldStyle.setBorderRight(BorderStyle.MEDIUM);
-        centeredBoldStyle.setBorderLeft(BorderStyle.MEDIUM);
+        centeredBoldStyle.setBorderBottom(BorderStyle.THIN);
+        centeredBoldStyle.setBorderTop(BorderStyle.THIN);
+        centeredBoldStyle.setBorderRight(BorderStyle.THIN);
+        centeredBoldStyle.setBorderLeft(BorderStyle.THIN);
 
         // Sample data (replace with your own data)
         String[] headers = { "STT", "Tên nhân viên", "Lương cơ bản", "Số ngày nhận lương", "Phụ cấp", "Lương khuyến khích", "Thành tiền" };
@@ -135,7 +136,13 @@ public class SalaryDetailService {
         cellTableName.setCellStyle(tableName);
         sheet.addMergedRegion(new CellRangeAddress(2, 2, 0, 8));
 
-        int rowNum = 4;
+        Row rowDate = sheet.createRow(4);
+        Cell cellDate = rowDate.createCell(0);
+        cellDate.setCellValue("Bảng lương tháng " + salary.getMonth() + " năm " + salary.getYear());
+        cellDate.setCellStyle(boldStyle);
+        sheet.addMergedRegion(new CellRangeAddress(4, 4, 0, 8));
+
+        int rowNum = 5;
         Row headerRow = sheet.createRow(rowNum++);
         for (int i = 0; i < headers.length; i++) {
             Cell cell = headerRow.createCell(i);

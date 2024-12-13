@@ -151,7 +151,7 @@ public class SalaryDetailResource {
         byte[] excelBytes = salaryDetailService.exportSalaryDetail(salaryId);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
-        headers.setContentDispositionFormData("attachment", "data.xlsx");
+        headers.setContentDispositionFormData("attachment", "bangluong.xlsx");
 
         return new ResponseEntity<>(excelBytes, headers, HttpStatus.OK);
     }
