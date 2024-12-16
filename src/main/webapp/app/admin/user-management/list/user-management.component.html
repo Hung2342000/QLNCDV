@@ -3,30 +3,23 @@
     <span style="font-size: 20px">TÀI KHOẢN</span>
   </h2>
   <div class="d-flex justify-content-end">
-    <button class="btn btn-primary jh-create-entity" [routerLink]="['./new']">
-      <span>Thêm mới</span>
+    <button class="btn btn-primary jh-create-entity btn-sm" [routerLink]="['./new']">
+      <span>Thêm</span>
     </button>
   </div>
 
-  <jhi-alert-error></jhi-alert-error>
-
-  <jhi-alert></jhi-alert>
-
-  <div class="table-responsive" *ngIf="users">
+  <div class="table-responsive">
     <table class="table table-striped" aria-describedby="user-management-page-heading">
       <thead>
         <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="transition()">
           <!--          <th scope="col" jhiSortBy="id"><span>ID</span> <fa-icon icon="sort"></fa-icon></th>-->
-          <th class="text-center" scope="col" jhiSortBy="login"><span>Login</span> <fa-icon icon="sort"></fa-icon></th>
-          <th class="text-center" scope="col" jhiSortBy="email"><span>Email</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col"><span>Tên đăng nhập</span></th>
+          <th scope="col"><span>Họ và tên</span></th>
+          <th class="text-center" scope="col"><span>Email</span></th>
           <th class="text-center" scope="col"></th>
-          <th class="text-center" scope="col"><span>Role</span></th>
+          <th class="text-center" scope="col"><span>Phân quyền</span></th>
           <th class="text-center" scope="col"><span>Phòng ban</span></th>
-          <th class="text-center" scope="col" jhiSortBy="createdDate"><span>Created Date</span> <fa-icon icon="sort"></fa-icon></th>
-          <th class="text-center" scope="col" jhiSortBy="lastModifiedBy"><span>Last Modified By</span> <fa-icon icon="sort"></fa-icon></th>
-          <th class="text-center" scope="col" jhiSortBy="lastModifiedDate">
-            <span>Last Modified Date</span> <fa-icon icon="sort"></fa-icon>
-          </th>
+          <th class="text-center" scope="col"><span>Ngày tạo</span></th>
           <th class="text-center" scope="col">Thao tác</th>
         </tr>
       </thead>
@@ -36,6 +29,7 @@
           <!--            <a [routerLink]="['./', user.login, 'view']">{{ user.id }}</a>-->
           <!--          </td>-->
           <td>{{ user.login }}</td>
+          <td>{{ user.name }}</td>
           <td>{{ user.email }}</td>
           <td class="text-center">
             <button class="btn btn-danger btn-sm" (click)="setActive(user, true)" *ngIf="!user.activated">Deactivated</button>
@@ -55,8 +49,6 @@
           </td>
           <td class="text-center">{{ user.departmentName }}</td>
           <td class="text-center">{{ user.createdDate | date: 'dd/MM/yyyy' }}</td>
-          <td class="text-end text-center">{{ user.lastModifiedBy }}</td>
-          <td class="text-center">{{ user.lastModifiedDate | date: 'dd/MM/yyyy' }}</td>
           <td class="text-end text-center">
             <div class="btn-group">
               <button type="button" (click)="viewUser(user)" class="btn btn-info btn-sm">

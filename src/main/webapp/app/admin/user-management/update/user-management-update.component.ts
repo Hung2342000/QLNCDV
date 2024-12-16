@@ -5,7 +5,9 @@ import { ActivatedRoute } from '@angular/router';
 import { LANGUAGES } from 'app/config/language.constants';
 import { User } from '../user-management.model';
 import { UserManagementService } from '../service/user-management.service';
+import { IDepartment } from '../../../entities/employee/department.model';
 import { HttpResponse } from '@angular/common/http';
+import { EmployeeService } from '../../../entities/employee/service/employee.service';
 
 @Component({
   selector: 'jhi-user-mgmt-update',
@@ -16,6 +18,8 @@ export class UserManagementUpdateComponent implements OnInit {
   languages = LANGUAGES;
   authorities: string[] = [];
   isSaving = false;
+  departments?: IDepartment[] | any;
+  dropdownSettings: any;
 
   editForm = this.fb.group({
     id: [],
@@ -28,25 +32,33 @@ export class UserManagementUpdateComponent implements OnInit {
         Validators.pattern('^[a-zA-Z0-9!$&*+=?^_`{|}~.-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$|^[_.@A-Za-z0-9-]+$'),
       ],
     ],
-    passWord: ['', [Validators.maxLength(50)]],
-    firstName: ['', [Validators.maxLength(50)]],
-    lastName: ['', [Validators.maxLength(50)]],
+    name: [],
     email: ['', [Validators.minLength(5), Validators.maxLength(254), Validators.email]],
-    activated: [],
-    langKey: [],
     authorities: [],
     department: [],
     contact: [],
   });
 
   constructor(
+    protected employeeService: EmployeeService,
     private userService: UserManagementService,
     private route: ActivatedRoute,
     private fb: FormBuilder
   ) {}
 
   ngOnInit(): void {
-
+    this.dropdownSettings = {
+      singleSelection: false,
+      idField: 'authority',
+      textField: 'authority',
+      itemsShowLimit: 5,
+      allowSearchFilter: true,
+    };
+    this.employeeService.queryDepartment().subscribe({
+      next: (res: HttpResponse<IDepartment[]>) => {
+        this.departments = res.body;
+      },
+    });
     this.route.data.subscribe(({ user }) => {
       if (user) {
         this.user = user;
@@ -83,12 +95,8 @@ export class UserManagementUpdateComponent implements OnInit {
     this.editForm.patchValue({
       id: user.id,
       login: user.login,
-      passWord: user.passWord,
-      firstName: user.firstName,
-      lastName: user.lastName,
+      name: user.name,
       email: user.email,
-      activated: user.activated,
-      langKey: user.langKey,
       authorities: user.authorities,
       department: user.department,
       contact: user.contact,
@@ -97,12 +105,8 @@ export class UserManagementUpdateComponent implements OnInit {
 
   private updateUser(user: User): void {
     user.login = this.editForm.get(['login'])!.value;
-    user.passWord = this.editForm.get(['passWord'])!.value;
-    user.firstName = this.editForm.get(['firstName'])!.value;
-    user.lastName = this.editForm.get(['lastName'])!.value;
+    user.name = this.editForm.get(['name'])!.value;
     user.email = this.editForm.get(['email'])!.value;
-    user.activated = this.editForm.get(['activated'])!.value;
-    user.langKey = this.editForm.get(['langKey'])!.value;
     user.authorities = this.editForm.get(['authorities'])!.value;
     user.department = this.editForm.get(['department'])!.value;
     user.contact = this.editForm.get(['contact'])!.value;

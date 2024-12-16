@@ -1,8 +1,9 @@
 export interface ICountEmployee {
   code?: string;
-  count?: number;
+  countEmployee?: number;
+  isDepartment?: boolean;
 }
 
 export class CountEmployee implements ICountEmployee {
-  constructor(public code?: string, public count?: number) {}
+  constructor(public code?: string, public countEmployee?: number, public isDepartment?: boolean) {}
 }

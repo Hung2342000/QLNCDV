@@ -10,6 +10,7 @@ import { HttpResponse } from '@angular/common/http';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EmployeeService } from '../entities/employee/service/employee.service';
 import { ICountEmployee } from '../entities/employee/count-employee.model';
+import { IDepartment } from '../entities/employee/department.model';
 
 @Component({
   selector: 'jhi-home',
@@ -21,6 +22,8 @@ export class HomeComponent implements OnInit, OnDestroy {
   account: Account | null = null;
   isSaving = false;
   countEmployee?: ICountEmployee[] | any;
+  count?: number | any;
+  departments?: IDepartment[] | any;
   barChartData = [
     {
       data: [],
@@ -34,7 +37,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   ];
 
   // Nhãn trục X
-  barChartLabels: string[] | any;
+  barChartLabels: string[] = [];
 
   // Tùy chọn biểu đồ
   barChartOptions = {
@@ -66,13 +69,17 @@ export class HomeComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.barChartLabels = [];
     this.employeeService.queryCountEmployee().subscribe({
       next: (res: HttpResponse<ICountEmployee[]>) => {
         this.countEmployee = res.body;
         if (this.countEmployee && this.countEmployee.length > 0) {
           for (let i = 0; i < this.countEmployee.length; i++) {
-            this.barChartLabels.push(this.countEmployee[i].code);
+            if (this.countEmployee[i].department) {
+              this.count = this.countEmployee[i].countEmployee;
+            }
+            if (typeof this.countEmployee[i].code === 'string') {
+              this.barChartLabels.push(this.countEmployee[i].code);
+            }
           }
         }
       },

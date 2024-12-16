@@ -15,6 +15,15 @@ public class CountEmployee implements Serializable {
     private String code;
 
     private Long countEmployee;
+    private Boolean isDepartment;
+
+    public Boolean getDepartment() {
+        return isDepartment;
+    }
+
+    public void setDepartment(Boolean department) {
+        isDepartment = department;
+    }
 
     public String getCode() {
         return code;

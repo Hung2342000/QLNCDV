@@ -1,18 +1,16 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
     <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
-      <h3 [hidden]="user.id">Thêm mới tài khoản</h3>
-      <h3 [hidden]="!user.id">Chỉnh sửa tài khoản</h3>
+      <h4 [hidden]="user.id">Thêm mới tài khoản</h4>
+      <h4 [hidden]="!user.id">Chỉnh sửa tài khoản</h4>
 
       <div *ngIf="user">
-        <jhi-alert-error></jhi-alert-error>
-
         <div class="mb-3">
-          <label class="form-label">Login</label>
+          <label class="form-label">Tên đăng nhập</label>
           <input type="text" class="form-control" name="login" formControlName="login" />
 
           <div *ngIf="editForm.get('login')!.invalid && (editForm.get('login')!.dirty || editForm.get('login')!.touched)">
-            <small class="form-text text-danger" *ngIf="editForm.get('login')?.errors?.required"> This field is required. </small>
+            <small class="form-text text-danger" *ngIf="editForm.get('login')?.errors?.required"> Trường bắt buộc </small>
 
             <small class="form-text text-danger" *ngIf="editForm.get('login')?.errors?.maxlength"> Không vượt quá 50 ký tự. </small>
 
@@ -21,31 +19,12 @@
             </small>
           </div>
         </div>
-
         <div class="mb-3">
-          <label class="form-label">PassWord</label>
-          <input type="text" class="form-control" name="passWord" formControlName="passWord" />
+          <label class="form-label">Họ và tên</label>
+          <input type="text" class="form-control" name="name" formControlName="name" />
 
-          <div *ngIf="editForm.get('passWord')!.invalid && (editForm.get('passWord')!.dirty || editForm.get('passWord')!.touched)">
-            <small class="form-text text-danger" *ngIf="editForm.get('passWord')?.errors?.maxlength"> Không vượt quá 50 ký tự. </small>
-          </div>
-        </div>
-
-        <div class="mb-3">
-          <label class="form-label">First Name</label>
-          <input type="text" class="form-control" name="firstName" formControlName="firstName" />
-
-          <div *ngIf="editForm.get('firstName')!.invalid && (editForm.get('firstName')!.dirty || editForm.get('firstName')!.touched)">
-            <small class="form-text text-danger" *ngIf="editForm.get('firstName')?.errors?.maxlength"> Không vượt quá 50 ký tự. </small>
-          </div>
-        </div>
-
-        <div class="mb-3">
-          <label>Last Name</label>
-          <input type="text" class="form-control" name="lastName" formControlName="lastName" />
-
-          <div *ngIf="editForm.get('lastName')!.invalid && (editForm.get('lastName')!.dirty || editForm.get('lastName')!.touched)">
-            <small class="form-text text-danger" *ngIf="editForm.get('lastName')?.errors?.maxlength"> Không vượt quá 50 ký tự. </small>
+          <div *ngIf="editForm.get('name')!.invalid && (editForm.get('name')!.dirty || editForm.get('name')!.touched)">
+            <small class="form-text text-danger" *ngIf="editForm.get('name')?.errors?.maxlength"> Không vượt quá 50 ký tự. </small>
           </div>
         </div>
 
@@ -54,7 +33,7 @@
           <input type="email" class="form-control" name="email" formControlName="email" />
 
           <div *ngIf="editForm.get('email')!.invalid && (editForm.get('email')!.dirty || editForm.get('email')!.touched)">
-            <small class="form-text text-danger" *ngIf="editForm.get('email')?.errors?.required"> This field is required. </small>
+            <small class="form-text text-danger" *ngIf="editForm.get('email')?.errors?.required"> Trường bắt buộc </small>
 
             <small class="form-text text-danger" *ngIf="editForm.get('email')?.errors?.maxlength"> Không vượt quá 50 ký tự. </small>
 
@@ -62,7 +41,7 @@
               Bắt buộc phải có ít nhất 5 ký tự.
             </small>
 
-            <small class="form-text text-danger" *ngIf="editForm.get('email')?.errors?.email"> Your email is invalid. </small>
+            <small class="form-text text-danger" *ngIf="editForm.get('email')?.errors?.email"> email không hợp lệ </small>
           </div>
         </div>
 
@@ -71,35 +50,53 @@
           <input type="text" class="form-control" name="contact" formControlName="contact" />
         </div>
 
-        <div class="form-check">
-          <label class="form-check-label" for="activated">
-            <input
-              class="form-check-input"
-              [attr.disabled]="user.id === undefined ? 'disabled' : null"
-              type="checkbox"
-              id="activated"
-              name="activated"
-              formControlName="activated"
-            />
-            <span>Activated</span>
-          </label>
+        <!--        <div class="form-check">-->
+        <!--          <label class="form-check-label" for="activated">-->
+        <!--            <input-->
+        <!--              class="form-check-input"-->
+        <!--              [attr.disabled]="user.id === undefined ? 'disabled' : null"-->
+        <!--              type="checkbox"-->
+        <!--              id="activated"-->
+        <!--              name="activated"-->
+        <!--              formControlName="activated"-->
+        <!--            />-->
+        <!--            <span>Activated</span>-->
+        <!--          </label>-->
+        <!--        </div>-->
+
+        <div class="mb-3">
+          <label>Phân quyền</label>
+          <ng-multiselect-dropdown
+            style="margin-left: -10px"
+            id="field_authority"
+            data-cy="authority"
+            name="authority"
+            formControlName="authorities"
+            [placeholder]="'chọn quyền'"
+            [data]="authorities"
+            [settings]="dropdownSettings"
+          >
+          </ng-multiselect-dropdown>
+          <!--          <select class="form-control"  name="authority" formControlName="authorities" data-cy="authority">-->
+          <!--            <option *ngFor="let authority of authorities" [value]="authority">{{ authority }}</option>-->
+          <!--          </select>-->
         </div>
 
         <div class="mb-3">
-          <label>Profiles</label>
-          <select class="form-control" multiple name="authority" formControlName="authorities">
-            <option *ngFor="let authority of authorities" [value]="authority">{{ authority }}</option>
+          <label class="form-label" for="field_department">Phòng ban</label>
+          <select class="form-select" id="field_department" formControlName="department" data-cy="department" name="department">
+            <option *ngFor="let department of departments" [value]="department.code">{{ department.name }}</option>
           </select>
         </div>
       </div>
 
       <div *ngIf="user">
         <button type="button" class="btn btn-secondary" (click)="previousState()">
-          <span>Cancel</span>
+          <span>Trờ lại</span>
         </button>
 
-        <button type="submit" [disabled]="editForm.invalid || isSaving" class="btn btn-primary">
-          <fa-icon icon="save"></fa-icon>&nbsp;<span>Save</span>
+        <button type="submit" class="btn btn-primary">
+          <span>Lưu</span>
         </button>
       </div>
     </form>

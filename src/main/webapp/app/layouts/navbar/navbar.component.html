@@ -122,10 +122,9 @@
             id="account-menu"
             data-cy="accountMenu"
           >
-            {{ account.name }}
             <span *ngIf="!account?.imageUrl">
               <fa-icon icon="user"></fa-icon>
-              <span>{{ account?.login }}</span>
+              <span>{{ account?.name }}</span>
             </span>
             <!--            <span *ngIf="account?.imageUrl">-->
             <!--              <img [src]="account!.imageUrl" class="profile-image rounded-circle" alt="Avatar" />-->

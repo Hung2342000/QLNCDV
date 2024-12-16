@@ -108,6 +108,13 @@ public class EmployeeService {
     }
 
     public List<CountEmployee> getAllCountEmployee() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username;
+        User user = new User();
+        Object principal = authentication.getPrincipal();
+        UserDetails userDetails = (UserDetails) principal;
+        username = userDetails.getUsername();
+        user = userRepository.findOneByLogin(username).get();
         List<CountEmployee> employeeList = countEmployeeRepository.listAllCountEmployee();
         List<Department> listDepartment = new ArrayList<>();
         listDepartment = this.departmentRepository.findAll();
@@ -119,6 +126,12 @@ public class EmployeeService {
                     countEmployee.setCode(dp.getName());
                     employeeList.add(countEmployee);
                 }
+            }
+        }
+        for (CountEmployee countEmployee : employeeList) {
+            if (countEmployee.getCode().equals(user.getDepartmentName())) {
+                countEmployee.setDepartment(true);
+                break;
             }
         }
         return employeeList;

@@ -33,7 +33,6 @@ spring:
       enabled: false
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    #url: jdbc:oracle:thin:@10.1.178.12:1521:dbcty4
     url: jdbc:oracle:thin:@10.14.36.105:1521:orcl
     username: CTY4_HRM
     password: CTY4_HRM
