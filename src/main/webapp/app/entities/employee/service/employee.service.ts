@@ -93,8 +93,14 @@ export class EmployeeService {
 
   protected convertDateFromClient(employee: IEmployee): IEmployee {
     return Object.assign({}, employee, {
-      birthday: employee.birthday?.isValid() ? employee.birthday.format(DATE_FORMAT) : undefined,
-      startDate: employee.startDate?.isValid() ? employee.startDate.format(DATE_FORMAT) : undefined,
+      birthday:
+        typeof employee.birthday !== 'string'
+          ? dayjs(employee.birthday).format(DATE_FORMAT)
+          : dayjs(employee.birthday, 'DD-MM-YYYY').format(DATE_FORMAT),
+      startDate:
+        typeof employee.startDate !== 'string'
+          ? dayjs(employee.startDate).format(DATE_FORMAT)
+          : dayjs(employee.startDate, 'DD-MM-YYYY').format(DATE_FORMAT),
     });
   }
 

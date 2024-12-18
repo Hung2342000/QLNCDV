@@ -121,4 +121,10 @@ public class AttendanceDetailResource {
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
     }
+
+    @PostMapping("/attendanceDetail/all")
+    public void createAttendanceDetailAll(@Valid @RequestBody List<AttendanceDetail> attendanceDetail) throws URISyntaxException {
+        attendanceDetailService.createAttendanceDetailAll(attendanceDetail);
+        //AttendanceDetail result = attendanceDetailService.createAttendanceDetail(attendanceDetail);
+    }
 }

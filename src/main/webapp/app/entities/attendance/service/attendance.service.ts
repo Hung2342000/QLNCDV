@@ -105,9 +105,16 @@ export class AttendanceService {
     return attendanceCollection;
   }
 
+  createAll(attendanceDetails: IAttendanceDetail[]): Observable<any> {
+    return this.http.post<any>(this.resourceUrlDetail + '/all', attendanceDetails);
+  }
+
   protected convertDateDetailFromClient(attendanceDetail: IAttendanceDetail): IAttendance {
     return Object.assign({}, attendanceDetail, {
-      time: attendanceDetail.time ? dayjs(attendanceDetail.time).format(DATE_FORMAT) : undefined,
+      time:
+        typeof attendanceDetail.time !== 'string'
+          ? dayjs(attendanceDetail.time).format(DATE_FORMAT)
+          : dayjs(attendanceDetail.time, 'DD-MM-YYYY').format(DATE_FORMAT),
       inTime:
         typeof attendanceDetail.inTime !== 'string' && attendanceDetail.inTime !== undefined
           ? dayjs(attendanceDetail.inTime).format(TIME_FORMAT)

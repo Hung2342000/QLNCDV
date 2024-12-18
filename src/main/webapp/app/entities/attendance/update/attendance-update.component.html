@@ -87,6 +87,9 @@
     </form>
 
     <div class="text-end">
+      <button *ngIf="attendance.id !== undefined" (click)="import()" class="btn btn-secondary ml-2 btn-sm" data-cy="entityCreateButton">
+        <span> Import</span>
+      </button>
       <button *ngIf="attendance.id !== undefined" (click)="exportToExcel()" class="btn btn-secondary ml-2 btn-sm">
         <span>Export</span>
       </button>
@@ -94,63 +97,65 @@
         <span>Thêm chi tiết</span>
       </button>
     </div>
-    <table class="table table-hover" *ngIf="attendance.id !== undefined">
-      <thead>
-        <tr>
-          <th style="width: 5%"><span>STT</span></th>
-          <th style="width: 15%">
-            <span>Ngày chấm công</span>
-          </th>
-          <th style="width: 12%">
-            <span>Thời gian đến</span>
-          </th>
-          <th style="width: 12%">
-            <span>Thời gian về</span>
-          </th>
-          <th style="width: 12%">
-            <span>Số giờ làm việc</span>
-          </th>
-          <th style="width: 12%">
-            <span>Trạng thái</span>
-          </th>
-          <th><span>Ghi chú</span></th>
-          <th style="width: 7%">Thao tác</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let attendanceDetail of attendanceDetails; let i = index" data-cy="entityTable">
-          <td>
-            {{ i + 1 }}
-          </td>
-          <td>{{ attendanceDetail.time | formatDateVnPipe }}</td>
-          <td>{{ attendanceDetail.inTime }}</td>
-          <td>{{ attendanceDetail.outTime }}</td>
-          <td>{{ attendanceDetail.countTime }}</td>
-          <td>{{ attendanceDetail.status }}</td>
-          <td>{{ attendanceDetail.note }}</td>
-          <td class="text-end">
-            <button type="submit" (click)="edit(attendanceDetail)" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
-              <fa-icon icon="pencil-alt"></fa-icon>
-            </button>
-            <div class="btn-group">
-              <button (click)="delete(attendanceDetail)" type="submit" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
-                <fa-icon icon="times"></fa-icon>
+    <div style="max-height: 650px; overflow-y: auto">
+      <table class="table table-hover" *ngIf="attendance.id !== undefined">
+        <thead style="position: sticky; top: 0; z-index: 1; background-color: #fff">
+          <tr>
+            <th style="width: 5%"><span>STT</span></th>
+            <th style="width: 15%">
+              <span>Ngày chấm công</span>
+            </th>
+            <th style="width: 12%">
+              <span>Thời gian đến</span>
+            </th>
+            <th style="width: 12%">
+              <span>Thời gian về</span>
+            </th>
+            <th style="width: 12%">
+              <span>Số giờ làm việc</span>
+            </th>
+            <th style="width: 12%">
+              <span>Trạng thái</span>
+            </th>
+            <th><span>Ghi chú</span></th>
+            <th style="width: 7%">Thao tác</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let attendanceDetail of attendanceDetails; let i = index" data-cy="entityTable">
+            <td>
+              {{ i + 1 }}
+            </td>
+            <td>{{ attendanceDetail.time | formatDateVnPipe }}</td>
+            <td>{{ attendanceDetail.inTime }}</td>
+            <td>{{ attendanceDetail.outTime }}</td>
+            <td>{{ attendanceDetail.countTime }}</td>
+            <td>{{ attendanceDetail.status }}</td>
+            <td>{{ attendanceDetail.note }}</td>
+            <td class="text-end">
+              <button type="submit" (click)="edit(attendanceDetail)" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                <fa-icon icon="pencil-alt"></fa-icon>
               </button>
-            </div>
-          </td>
-        </tr>
-        <tr *ngFor="let l of newArr(10 - attendanceDetails.length)">
-          <td class="text-center empty-row" style="width: 50px">&nbsp;</td>
-          <td class="text-center empty-row">&nbsp;</td>
-          <td class="text-center empty-row">&nbsp;</td>
-          <td class="text-center empty-row">&nbsp;</td>
-          <td class="text-center empty-row">&nbsp;</td>
-          <td class="text-center empty-row">&nbsp;</td>
-          <td class="text-center empty-row"></td>
-          <td class="text-center empty-row"></td>
-        </tr>
-      </tbody>
-    </table>
+              <div class="btn-group">
+                <button (click)="delete(attendanceDetail)" type="submit" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                  <fa-icon icon="times"></fa-icon>
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr *ngFor="let l of newArr(10 - attendanceDetails.length)">
+            <td class="text-center empty-row" style="width: 50px">&nbsp;</td>
+            <td class="text-center empty-row">&nbsp;</td>
+            <td class="text-center empty-row">&nbsp;</td>
+            <td class="text-center empty-row">&nbsp;</td>
+            <td class="text-center empty-row">&nbsp;</td>
+            <td class="text-center empty-row">&nbsp;</td>
+            <td class="text-center empty-row"></td>
+            <td class="text-center empty-row"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
 
@@ -173,6 +178,7 @@
                 id="field_time"
                 name="time"
                 formControlName="time"
+                [dateFormat]="'d-m-Y'"
                 [convertModelValue]="true"
                 [maxDate]="maxDate"
                 [minDate]="minDate"
@@ -233,4 +239,35 @@
     </form>
   </div>
   <div class="modal-footer"></div>
+</ng-template>
+<ng-template #contentImportExcel let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" data-cy="toolDeleteDialogHeading">Import Excel</h4>
+    <button type="button" class="btn-close btn-sm" data-dismiss="modal" aria-hidden="true" (click)="closeModal()"></button>
+  </div>
+  <div class="modal-body">
+    <div style="margin-bottom: 10px">
+      <span style="margin-bottom: 10px; display: inline-block">
+        <b>File đúng theo file mẫu</b>
+      </span>
+    </div>
+    <div>
+      <input type="file" accept=".xlsx, .xls" (change)="onFileChange($event)" />
+    </div>
+    <div style="margin-left: 4px; color: red" *ngIf="!checkUpload && importClicked">Chưa có file upload</div>
+  </div>
+  <div class="modal-footer">
+    <button
+      id="jhi-confirm-delete-tool"
+      data-cy="entityConfirmDeleteButton"
+      type="submit"
+      class="btn btn-danger btn-sm"
+      (click)="importExcel()"
+    >
+      <span>Import</span>
+    </button>
+    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal" (click)="closeModal()">
+      <span>Đóng</span>
+    </button>
+  </div>
 </ng-template>

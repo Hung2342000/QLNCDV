@@ -8,6 +8,7 @@ import { finalize } from 'rxjs/operators';
 import { IEmployee, Employee } from '../employee.model';
 import { EmployeeService } from '../service/employee.service';
 import { IDepartment } from '../department.model';
+import { DATE_FORMAT_CUSTOM } from '../../../config/input.constants';
 
 @Component({
   selector: 'jhi-employee-update',
@@ -83,7 +84,7 @@ export class EmployeeUpdateComponent implements OnInit {
       id: employee.id,
       codeEmployee: employee.codeEmployee,
       name: employee.name,
-      birthday: employee.birthday,
+      birthday: employee.birthday?.format(DATE_FORMAT_CUSTOM),
       otherId: employee.otherId,
       address: employee.address,
       mobilePhone: employee.mobilePhone,
@@ -91,7 +92,7 @@ export class EmployeeUpdateComponent implements OnInit {
       workEmail: employee.workEmail,
       privateEmail: employee.privateEmail,
       department: employee.department,
-      startDate: employee.startDate,
+      startDate: employee.startDate?.format(DATE_FORMAT_CUSTOM),
       basicSalary: employee.basicSalary,
     });
   }

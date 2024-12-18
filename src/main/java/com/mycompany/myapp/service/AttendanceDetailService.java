@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalTime;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
@@ -105,5 +106,12 @@ public class AttendanceDetailService {
         attendance.setCount(coutTime);
         attendance.setCountNot(coutSuccessTime);
         attendanceRepository.save(attendance);
+    }
+
+    public void createAttendanceDetailAll(List<AttendanceDetail> attendanceDetails) {
+        List<AttendanceDetail> attendanceDetailList = attendanceDetails;
+        for (AttendanceDetail attendanceDetailImport : attendanceDetailList) {
+            this.createAttendanceDetail(attendanceDetailImport);
+        }
     }
 }

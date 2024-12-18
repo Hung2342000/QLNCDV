@@ -4,7 +4,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
-
+import * as XLSX from 'xlsx';
 import { IAttendance, Attendance } from '../attendance.model';
 import { AttendanceService } from '../service/attendance.service';
 import { AttendanceDetail, IAttendanceDetail } from '../attendanceDetail.model';
@@ -12,7 +12,8 @@ import { IEmployee } from '../../employee/employee.model';
 import { EmployeeService } from '../../employee/service/employee.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AttendanceDeleteDetailDialogComponent } from '../deleteDetail/attendanceDetail-delete-dialog.component';
-import { DATE_FORMAT } from '../../../config/input.constants';
+import { DATE_FORMAT, DATE_FORMAT_CUSTOM, TIME_FORMAT } from '../../../config/input.constants';
+import dayjs from 'dayjs/esm';
 
 @Component({
   selector: 'jhi-attendance-update',
@@ -21,12 +22,17 @@ import { DATE_FORMAT } from '../../../config/input.constants';
 export class AttendanceUpdateComponent implements OnInit {
   @ViewChild('addDetail') addDetail: TemplateRef<any> | undefined;
   @ViewChild('deleteDetail') deleteDetail: TemplateRef<any> | undefined;
+  @ViewChild('contentImportExcel') contentImportExcel: TemplateRef<any> | undefined;
   isSaving = false;
   attendanceDetails?: IAttendanceDetail[] | any;
+  attendanceDetailsCheckImport?: IAttendanceDetail[] | any;
+  attendanceDetailsImport?: IAttendanceDetail[] | any;
   attendance?: IAttendance | any;
   employeeList?: IEmployee[] | any;
   maxDate: Date = new Date();
   minDate: Date = new Date();
+  checkUpload = false;
+  importClicked = false;
   editForm = this.fb.group({
     id: [null, [Validators.required]],
     employeeId: [null, [Validators.required]],
@@ -124,6 +130,9 @@ export class AttendanceUpdateComponent implements OnInit {
     this.updateFormDetail(attendanceDetail);
     this.modalService.open(this.addDetail, { size: 'lg', backdrop: 'static' });
   }
+  import(): void {
+    this.modalService.open(this.contentImportExcel, { size: 'md', backdrop: 'static' });
+  }
   save(): void {
     this.isSaving = true;
     const attendance = this.createFromForm();
@@ -188,6 +197,68 @@ export class AttendanceUpdateComponent implements OnInit {
       },
     });
   }
+
+  onFileChange(evt: any): void {
+    if (evt.target.files && evt.target.files.length > 0) {
+      this.checkUpload = true;
+    }
+    /* wire up file reader */
+    const target: DataTransfer = <DataTransfer>evt.target;
+    const reader: FileReader = new FileReader();
+    reader.onload = (e: any) => {
+      /* read workbook */
+      const bstr: string = e.target.result;
+      const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
+
+      /* grab first sheet */
+      const wsname: string = wb.SheetNames[0];
+      const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+
+      /* save data */
+      this.attendanceDetailsCheckImport = XLSX.utils.sheet_to_json(ws, { header: 1 });
+    };
+    reader.readAsBinaryString(target.files[0]);
+  }
+
+  importExcel(): void {
+    this.importClicked = true;
+    if (this.checkUpload) {
+      this.attendanceDetailsImport = [];
+      if (this.attendanceDetailsCheckImport.length > 1) {
+        for (let i = 1; i < this.attendanceDetailsCheckImport.length; i++) {
+          const resultObject: IAttendanceDetail = {};
+          resultObject.attendanceId = this.attendance.id;
+          resultObject.time = dayjs(this.attendanceDetailsCheckImport[i][0], 'DD/MM/YYYY').add(1, 'day');
+          resultObject.inTime =
+            typeof this.attendanceDetailsCheckImport[i][1] !== 'string'
+              ? this.attendanceDetailsCheckImport[i][1]
+              : this.attendanceDetailsCheckImport[i][1];
+          resultObject.outTime =
+            typeof this.attendanceDetailsCheckImport[i][2] !== 'string'
+              ? this.attendanceDetailsCheckImport[i][2]
+              : this.attendanceDetailsCheckImport[i][2];
+          resultObject.note = this.attendanceDetailsCheckImport[i][3];
+          this.attendanceDetailsImport.push(resultObject);
+        }
+      }
+    }
+    if (this.attendanceDetailsImport.length > 0) {
+      this.attendanceService.createAll(this.attendanceDetailsImport).subscribe(
+        data => {
+          alert('Thành công');
+          this.loadDetail();
+          this.resetModalData();
+          this.modalService.dismissAll();
+          this.loadPage();
+        },
+        error => {
+          alert('có lỗi sảy ra');
+        }
+      );
+    } else {
+      alert('Dữ liệu không hợp lệ');
+    }
+  }
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IAttendance>>): void {
     result.pipe(finalize(() => this.onSaveFinalize())).subscribe({
       next: () => this.onSaveSuccess(),
@@ -227,7 +298,7 @@ export class AttendanceUpdateComponent implements OnInit {
     this.editFormDetail.patchValue({
       id: attendanceDetail.id,
       attendanceId: attendanceDetail.attendanceId,
-      time: attendanceDetail.time?.format(DATE_FORMAT),
+      time: attendanceDetail.time?.format(DATE_FORMAT_CUSTOM),
       inTime: attendanceDetail.inTime,
       outTime: attendanceDetail.outTime,
       note: attendanceDetail.note,

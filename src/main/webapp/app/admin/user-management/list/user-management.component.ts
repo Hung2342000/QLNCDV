@@ -47,6 +47,13 @@ export class UserManagementComponent implements OnInit {
     return item.id!;
   }
 
+  newArr(lenght: number): any[] {
+    if (lenght > 0) {
+      return new Array(lenght);
+    } else {
+      return new Array(0);
+    }
+  }
   deleteUser(user: User): void {
     const modalRef = this.modalService.open(UserManagementDeleteDialogComponent, { size: 'lg', backdrop: 'static' });
     modalRef.componentInstance.user = user;

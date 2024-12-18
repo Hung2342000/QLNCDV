@@ -43,19 +43,18 @@
 
           <div class="row mb-3">
             <label class="form-label" jhiTranslate="qldvApp.employee.birthday" for="field_birthday">Ngày sinh</label>
-            <div class="input-group">
-              <input
-                id="field_birthday"
-                data-cy="birthday"
-                type="text"
-                class="form-control"
-                name="birthday"
-                ngbDatepicker
-                #birthdayDp="ngbDatepicker"
-                formControlName="birthday"
-              />
-              <button type="button" class="btn btn-secondary" (click)="birthdayDp.toggle()"><fa-icon icon="calendar-alt"></fa-icon></button>
-            </div>
+            <input
+              style="background-color: #fff"
+              class="form-control"
+              type="text"
+              mwlFlatpickr
+              data-cy="birthday"
+              id="field_birthday"
+              name="birthday"
+              formControlName="birthday"
+              [dateFormat]="'d-m-Y'"
+              [convertModelValue]="true"
+            />
           </div>
 
           <div class="row mb-3">
@@ -121,21 +120,18 @@
 
           <div class="row mb-3">
             <label class="form-label" jhiTranslate="qldvApp.employee.startDate" for="field_startDate">Ngày vào làm việc</label>
-            <div class="input-group">
-              <input
-                id="field_startDate"
-                data-cy="startDate"
-                type="text"
-                class="form-control"
-                name="startDate"
-                ngbDatepicker
-                #startDateDp="ngbDatepicker"
-                formControlName="startDate"
-              />
-              <button type="button" class="btn btn-secondary" (click)="startDateDp.toggle()">
-                <fa-icon icon="calendar-alt"></fa-icon>
-              </button>
-            </div>
+            <input
+              style="background-color: #fff"
+              class="form-control"
+              type="text"
+              mwlFlatpickr
+              data-cy="startDate"
+              id="field_startDate"
+              name="startDate"
+              formControlName="startDate"
+              [dateFormat]="'d-m-Y'"
+              [convertModelValue]="true"
+            />
           </div>
           <div class="row mb-3">
             <label class="form-label" for="field_basicSalary">Lương cơ bản</label>
