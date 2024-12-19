@@ -50,23 +50,23 @@ public class SalaryService {
             SalaryDetail salaryDetail = new SalaryDetail();
             salaryDetail.setEmployeeId(employeeSelect.getId());
             salaryDetail.setSalaryId(salaryCreate.getId());
-            BigDecimal numberWorking = attendanceRepository.getNumberWorkingByEmployeeId(
-                employeeSelect.getId(),
-                salary.getMonth(),
-                salary.getYear()
-            );
-            if (numberWorking != null && employeeSelect.getBasicSalary() != null) {
-                salaryDetail.setBasicSalary(employeeSelect.getBasicSalary());
-                salaryDetail.setNumberWorking(numberWorking);
-                salaryDetail.setNumberWorkInMonth(new BigDecimal(salary.getNumberWork()));
-                BigDecimal amount = numberWorking
-                    .multiply(employeeSelect.getBasicSalary())
-                    .divide(new BigDecimal(salary.getNumberWork()), 10, RoundingMode.HALF_UP)
-                    .setScale(4, RoundingMode.HALF_UP);
-                if (amount != null) {
-                    salaryDetail.setAmount(amount);
-                }
-            }
+            //            BigDecimal numberWorking = attendanceRepository.getNumberWorkingByEmployeeId(
+            //                employeeSelect.getId(),
+            //                salary.getMonth(),
+            //                salary.getYear()
+            //            );
+            //            if (numberWorking != null && employeeSelect.getBasicSalary() != null) {
+            //                salaryDetail.setBasicSalary(employeeSelect.getBasicSalary());
+            //                salaryDetail.setNumberWorking(numberWorking);
+            //                salaryDetail.setNumberWorkInMonth(new BigDecimal(salary.getNumberWork()));
+            //                BigDecimal amount = numberWorking
+            //                    .multiply(employeeSelect.getBasicSalary())
+            //                    .divide(new BigDecimal(salary.getNumberWork()), 10, RoundingMode.HALF_UP)
+            //                    .setScale(4, RoundingMode.HALF_UP);
+            //                if (amount != null) {
+            //                    salaryDetail.setAmount(amount);
+            //                }
+            //            }
             salaryDetailRepository.save(salaryDetail);
         }
 

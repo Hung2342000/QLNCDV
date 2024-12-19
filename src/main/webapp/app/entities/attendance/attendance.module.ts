@@ -8,9 +8,10 @@ import { AttendanceRoutingModule } from './route/attendance-routing.module';
 import { DateTimePickerModule } from 'ngx-datetime-picker';
 import { FlatpickrModule } from 'angularx-flatpickr';
 import { AttendanceDeleteDetailDialogComponent } from './deleteDetail/attendanceDetail-delete-dialog.component';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
 @NgModule({
-  imports: [SharedModule, AttendanceRoutingModule, DateTimePickerModule, FlatpickrModule],
+  imports: [SharedModule, AttendanceRoutingModule, DateTimePickerModule, FlatpickrModule, NgMultiSelectDropDownModule],
   declarations: [
     AttendanceComponent,
     AttendanceDetailComponent,

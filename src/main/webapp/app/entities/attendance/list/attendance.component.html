@@ -2,7 +2,7 @@
   <h4 id="page-heading" data-cy="AttendanceHeading">
     <span style="color: rgba(0, 81, 255, 0.85)">Chấm công</span>
     <div class="d-flex justify-content-end">
-      <button id="jh-create-entity" data-cy="entityCreateButton" class="btn btn-primary btn-sm" [routerLink]="['/attendance/new']">
+      <button id="jh-create-entity" data-cy="entityCreateButton" class="btn btn-primary btn-sm" (click)="create()">
         <span> Thêm </span>
       </button>
     </div>
@@ -12,15 +12,9 @@
     <table class="table table-hover" aria-describedby="page-heading">
       <thead>
         <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="loadPage()">
-          <th style="width: 5%" scope="col" jhiSortBy="id"><span>STT</span> <fa-icon icon="sort"></fa-icon></th>
-          <th style="width: 20%" scope="col" jhiSortBy="employeeId"><span>Nhân viên</span> <fa-icon icon="sort"></fa-icon></th>
+          <th style="width: 5%" scope="col" jhiSortBy="id"><span>STT</span></th>
+          <th style="width: 20%" scope="col"><span>Tên bảng chấm công</span></th>
           <th style="width: 15%" scope="col" jhiSortBy="month"><span>Thời gian</span> <fa-icon icon="sort"></fa-icon></th>
-          <th class="text-center" style="width: 15%" scope="col" jhiSortBy="inTime">
-            <span>Số ngày chấm công</span> <fa-icon icon="sort"></fa-icon>
-          </th>
-          <th class="text-center" style="width: 15%" scope="col" jhiSortBy="outTime">
-            <span>Số ngày hoàn thành chấm công</span> <fa-icon icon="sort"></fa-icon>
-          </th>
           <th scope="col" jhiSortBy="note"><span>Ghi chú</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" style="width: 6%">Thao tác</th>
         </tr>
@@ -30,21 +24,11 @@
           <td>
             {{ i + 1 }}
           </td>
-          <td>{{ employeeName(attendance.employeeId) }}</td>
+          <td class="text-center">{{ attendance.name }}</td>
           <td>{{ formatMonthYear(attendance) }}</td>
-          <td class="text-center">{{ attendance.count }}</td>
-          <td class="text-center">{{ attendance.countNot }}</td>
           <td>{{ attendance.note }}</td>
           <td class="text-center">
             <div class="btn-group">
-              <!--              <button-->
-              <!--                type="submit"-->
-              <!--                [routerLink]="['/attendance', attendance.id, 'view']"-->
-              <!--                class="btn btn-info btn-sm"-->
-              <!--                data-cy="entityDetailsButton"-->
-              <!--              >-->
-              <!--                <fa-icon icon="eye"></fa-icon>-->
-              <!--              </button>-->
               <button
                 type="submit"
                 [routerLink]="['/attendance', attendance.id, 'edit']"
@@ -66,8 +50,6 @@
           <td class="text-center empty-row">&nbsp;</td>
           <td class="text-center empty-row">&nbsp;</td>
           <td class="text-center empty-row">&nbsp;</td>
-          <td class="text-center empty-row">&nbsp;</td>
-          <td class="text-right empty-row">&nbsp;</td>
         </tr>
       </tbody>
     </table>
@@ -96,3 +78,83 @@
     </div>
   </div>
 </div>
+
+<ng-template #add let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" data-cy="toolDeleteDialogHeading">Thêm mới bảng chấm công</h4>
+    <button type="button" class="btn-close" data-dismiss="modal" aria-hidden="true" (click)="closeModal()"></button>
+  </div>
+  <div class="modal-body">
+    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <div class="row">
+        <div class="col-md-6">
+          <div>
+            <label class="form-label" for="field_createDate">Ngày tạo</label>
+            <div class="input-group">
+              <input
+                type="text"
+                mwlFlatpickr
+                data-cy="createDate"
+                id="field_createDate"
+                name="createDate"
+                formControlName="createDate"
+                [convertModelValue]="true"
+                class="form-control"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label class="form-label" for="field_name">Tên bảng chấm công</label>
+            <input type="text" class="form-control" name="name" id="field_name" data-cy="name" formControlName="name" />
+          </div>
+          <div>
+            <label class="form-label" for="field_employees">Nhân viên</label>
+            <ng-multiselect-dropdown
+              style="margin-left: -10px"
+              id="field_employees"
+              data-cy="employees"
+              formControlName="employees"
+              [placeholder]="'Nhân viên'"
+              [data]="employeesList"
+              [settings]="dropdownSettings"
+            >
+            </ng-multiselect-dropdown>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label class="form-label" for="field_month">Tháng</label>
+              <select class="form-select" id="field_month" formControlName="month" data-cy="month" name="month">
+                <option [value]="1">1</option>
+                <option [value]="2">2</option>
+                <option [value]="3">3</option>
+                <option [value]="4">4</option>
+                <option [value]="5">5</option>
+                <option [value]="6">6</option>
+                <option [value]="7">7</option>
+                <option [value]="8">8</option>
+                <option [value]="9">9</option>
+                <option [value]="10">10</option>
+                <option [value]="11">11</option>
+                <option [value]="12">12</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="field_year">Năm</label>
+              <input type="number" class="form-control" name="year" id="field_year" data-cy="year" formControlName="year" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <button style="margin-top: 20px" type="button" class="btn btn-secondary btn-sm" data-dismiss="modal" (click)="closeModal()">
+        <span>Đóng</span>
+      </button>
+      <button style="margin-top: 20px" type="submit" class="btn btn-primary btn-sm" data-dismiss="modal">
+        <span>Lưu</span>
+      </button>
+    </form>
+  </div>
+  <div class="modal-footer"></div>
+</ng-template>

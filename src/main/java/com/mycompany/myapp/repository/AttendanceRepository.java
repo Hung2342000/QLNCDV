@@ -14,9 +14,7 @@ import org.springframework.stereotype.Repository;
 @SuppressWarnings("unused")
 @Repository
 public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
-    @Query("select a.numberWorking from Attendance a where a.employeeId =  :id and a.month = :month and a.year = :year")
-    BigDecimal getNumberWorkingByEmployeeId(@Param("id") Long id, @Param("month") Long month, @Param("year") Long year);
+    //    @Query("select a.numberWorking from Attendance a where a.employeeId =  :id and a.month = :month and a.year = :year")
+    //    BigDecimal getNumberWorkingByEmployeeId(@Param("id") Long id, @Param("month") Long month, @Param("year") Long year);
 
-    @Query("select a from Attendance a where a.department =  :department ")
-    Page<Attendance> getAllAttendanceByDepartment(@Param("department") String department, Pageable pageable);
 }

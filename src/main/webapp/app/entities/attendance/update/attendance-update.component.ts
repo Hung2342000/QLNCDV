@@ -1,56 +1,34 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
-import * as XLSX from 'xlsx';
-import { IAttendance, Attendance } from '../attendance.model';
+import { IAttendance } from '../attendance.model';
 import { AttendanceService } from '../service/attendance.service';
-import { AttendanceDetail, IAttendanceDetail } from '../attendanceDetail.model';
+import { IAttendanceDetail } from '../attendanceDetail.model';
 import { IEmployee } from '../../employee/employee.model';
 import { EmployeeService } from '../../employee/service/employee.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { AttendanceDeleteDetailDialogComponent } from '../deleteDetail/attendanceDetail-delete-dialog.component';
-import { DATE_FORMAT, DATE_FORMAT_CUSTOM, TIME_FORMAT } from '../../../config/input.constants';
-import dayjs from 'dayjs/esm';
 
 @Component({
   selector: 'jhi-attendance-update',
   templateUrl: './attendance-update.component.html',
+  styleUrls: ['./attendance-update.component.scss'],
 })
 export class AttendanceUpdateComponent implements OnInit {
   @ViewChild('addDetail') addDetail: TemplateRef<any> | undefined;
   @ViewChild('deleteDetail') deleteDetail: TemplateRef<any> | undefined;
   @ViewChild('contentImportExcel') contentImportExcel: TemplateRef<any> | undefined;
+  @ViewChild('thongBao') thongBao: TemplateRef<any> | undefined;
   isSaving = false;
   attendanceDetails?: IAttendanceDetail[] | any;
-  attendanceDetailsCheckImport?: IAttendanceDetail[] | any;
-  attendanceDetailsImport?: IAttendanceDetail[] | any;
   attendance?: IAttendance | any;
   employeeList?: IEmployee[] | any;
-  maxDate: Date = new Date();
-  minDate: Date = new Date();
-  checkUpload = false;
-  importClicked = false;
-  editForm = this.fb.group({
-    id: [null, [Validators.required]],
-    employeeId: [null, [Validators.required]],
-    month: [],
-    year: [],
-    count: [],
-    countNot: [],
-    note: [],
-  });
-
-  editFormDetail = this.fb.group({
-    id: [null, [Validators.required]],
-    attendanceId: [],
-    time: [],
-    inTime: [],
-    outTime: [],
-    note: [],
-  });
+  form!: FormGroup;
+  checkMonth?: number;
+  content?: string;
+  private updatedData: any;
 
   constructor(
     protected attendanceService: AttendanceService,
@@ -62,39 +40,113 @@ export class AttendanceUpdateComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.attendanceDetails = [];
     this.activatedRoute.data.subscribe(({ attendance }) => {
-      this.updateForm(attendance);
       this.attendance = attendance;
+      this.checkMonth = this.getDaysInMonth(attendance.month, attendance.year);
     });
-    this.loadPage();
+
+    this.attendanceService.queryAll(this.attendance.id).subscribe({
+      next: (res: HttpResponse<IAttendanceDetail[]>) => {
+        this.attendanceDetails = res.body;
+        this.form = this.fb.group({
+          details: this.fb.array(this.attendanceDetails.map((item: IAttendanceDetail) => this.createRowForm(item))),
+        });
+      },
+    });
+
     this.employeeService.queryAll().subscribe({
       next: (res: HttpResponse<IEmployee[]>) => {
         this.employeeList = res.body;
       },
     });
   }
+
+  getDaysInMonth(month: number, year: number): number {
+    // Tháng là 1-based (1: Tháng 1, 2: Tháng 2, ...)
+    // Kiểm tra nếu tháng không hợp lệ
+    if (month < 1 || month > 12) {
+      throw new Error('Tháng không hợp lệ. Tháng phải từ 1 đến 12.');
+    }
+
+    // Kiểm tra số ngày của tháng
+    switch (month) {
+      case 4:
+      case 6:
+      case 9:
+      case 11:
+        return 30; // Các tháng 4, 6, 9, 11 có 30 ngày
+      case 2:
+        // Kiểm tra năm nhuận cho tháng 2
+        return year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0) ? 29 : 28;
+      default:
+        return 31; // Các tháng còn lại có 31 ngày
+    }
+  }
+
+  createRowForm(item: any): FormGroup {
+    return this.fb.group({
+      id: [item.id],
+      attendanceId: [item.attendanceId],
+      employeeId: [item.employeeId],
+      day1: [item.day1],
+      day2: [item.day2],
+      day3: [item.day3],
+      day4: [item.day4],
+      day5: [item.day5],
+      day6: [item.day6],
+      day7: [item.day7],
+      day8: [item.day8],
+      day9: [item.day9],
+      day10: [item.day10],
+      day11: [item.day11],
+      day12: [item.day12],
+      day13: [item.day13],
+      day14: [item.day14],
+      day15: [item.day15],
+      day16: [item.day16],
+      day17: [item.day17],
+      day18: [item.day18],
+      day19: [item.day19],
+      day20: [item.day20],
+      day21: [item.day21],
+      day22: [item.day22],
+      day23: [item.day23],
+      day24: [item.day24],
+      day25: [item.day25],
+      day26: [item.day26],
+      day27: [item.day27],
+      day28: [item.day28],
+      day29: [item.day29],
+      day30: [item.day30],
+      day31: [item.day31],
+      paidWorking: [item.paidWorking],
+      numberWork: [item.numberWork],
+    });
+  }
+
+  onSubmit(): void {
+    this.updatedData = this.form.value.details; // Lấy toàn bộ dữ liệu từ FormArray
+    if (this.updatedData.length > 0) {
+      this.attendanceService.createAllDetail(this.updatedData).subscribe(
+        data => {
+          this.content = 'Thành công';
+          this.modalService.open(this.thongBao, { size: 'sm', backdrop: 'static' });
+        },
+        error => {
+          this.content = 'Có lỗi xảy ra';
+          this.modalService.open(this.thongBao, { size: 'sm', backdrop: 'static' });
+        }
+      );
+    } else {
+      this.content = 'Lỗi dữ liệu';
+      this.modalService.open(this.thongBao, { size: 'sm', backdrop: 'static' });
+    }
+  }
   closeModal(): void {
-    this.loadPage();
-    this.resetModalData();
     this.modalService.dismissAll();
   }
   closeModalDetail(): void {
-    this.loadDetail();
-    this.resetModalData();
     this.modalService.dismissAll();
-    this.loadPage();
-  }
-  loadDetail(): void {
-    this.attendanceService.find(this.attendance.id).subscribe({
-      next: (res: HttpResponse<IAttendance>) => {
-        this.attendance = res.body;
-        this.updateForm(this.attendance);
-      },
-    });
-  }
-  resetModalData(): void {
-    this.editFormDetail.reset();
   }
   previousState(): void {
     window.history.back();
@@ -102,62 +154,9 @@ export class AttendanceUpdateComponent implements OnInit {
 
   saveDetail(): void {
     this.isSaving = true;
-    const attendanceDetail = this.createFromDetail();
-    if (attendanceDetail.outTime === null) {
-      attendanceDetail.outTime = undefined;
-    }
-    if (attendanceDetail.inTime === null) {
-      attendanceDetail.inTime = undefined;
-    }
-    attendanceDetail.attendanceId = this.attendance.id;
-    if (attendanceDetail.id && typeof attendanceDetail.id === 'number') {
-      this.subscribeToSaveResponseDetail(this.attendanceService.updateDetail(attendanceDetail));
-    } else {
-      this.subscribeToSaveResponseDetail(this.attendanceService.createDetail(attendanceDetail));
-    }
-  }
-  edit(attendanceDetail: IAttendanceDetail): void {
-    if (this.attendance.month && this.attendance.year) {
-      const year = String(this.attendance.year);
-      const month = String(this.attendance.month);
-      this.minDate = new Date(`${year}-${month}-1`);
-      if ([1, 3, 5, 7, 8, 10, 12].includes(this.attendance.month)) {
-        this.maxDate = new Date(`${year}-${month}-31`);
-      } else if ([4, 6, 9, 11].includes(this.attendance.month)) {
-        this.maxDate = new Date(`${year}-${month}-30`);
-      }
-    }
-    this.updateFormDetail(attendanceDetail);
-    this.modalService.open(this.addDetail, { size: 'lg', backdrop: 'static' });
   }
   import(): void {
     this.modalService.open(this.contentImportExcel, { size: 'md', backdrop: 'static' });
-  }
-  save(): void {
-    this.isSaving = true;
-    const attendance = this.createFromForm();
-    if (attendance.id !== undefined) {
-      this.subscribeToSaveResponse(this.attendanceService.update(attendance));
-    } else {
-      this.subscribeToSaveResponse(this.attendanceService.create(attendance));
-    }
-  }
-
-  exportToExcel(): void {
-    this.attendanceService
-      .exportToExcel({
-        attendanceId: this.attendance.id,
-      })
-      .subscribe(response => {
-        const blob = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'bangchamcong.xlsx';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-      });
   }
   newArr(lenght: number): any[] {
     if (lenght > 0) {
@@ -166,98 +165,22 @@ export class AttendanceUpdateComponent implements OnInit {
       return new Array(0);
     }
   }
-  addDetails(attendanceCheck: IAttendance): void {
-    if (attendanceCheck.month && attendanceCheck.year) {
-      this.minDate = new Date(attendanceCheck.year.toString() + '-' + attendanceCheck.month.toString() + '-1');
-      if ([1, 3, 5, 7, 8, 10, 12].includes(attendanceCheck.month)) {
-        this.maxDate = new Date(attendanceCheck.year.toString() + '-' + attendanceCheck.month.toString() + '-31');
-      } else if ([4, 6, 9, 11].includes(attendanceCheck.month)) {
-        this.maxDate = new Date(attendanceCheck.year.toString() + '-' + attendanceCheck.month.toString() + '-30');
-      }
-    }
 
-    this.modalService.open(this.addDetail, { size: 'lg', backdrop: 'static' });
-  }
-  delete(attendanceDetail: AttendanceDetail): void {
-    const modalRef = this.modalService.open(AttendanceDeleteDetailDialogComponent, { size: 'sm', backdrop: 'static' });
-    modalRef.componentInstance.attendanceDetail = attendanceDetail;
-
-    modalRef.closed.subscribe(reason => {
-      if (reason === 'deleted') {
-        this.loadPage();
-        this.loadDetail();
-      }
-    });
+  isWeekend(date: Date): boolean {
+    const day = date.getDay(); // Lấy chỉ số ngày trong tuần (0: Chủ Nhật, 6: Thứ 7)
+    return day === 0 || day === 6; // Kiểm tra nếu là Chủ Nhật (0) hoặc Thứ 7 (6)
   }
 
-  loadPage(): void {
-    this.attendanceService.queryAttendanceDetail(this.attendance.id).subscribe({
-      next: (res: HttpResponse<IAttendanceDetail[]>) => {
-        this.attendanceDetails = res.body;
-      },
-    });
-  }
+  // loadPage(): void {
+  //   this.attendanceService.queryAttendanceDetail(this.attendance.id).subscribe({
+  //     next: (res: HttpResponse<IAttendanceDetail[]>) => {
+  //       this.attendanceDetails = res.body;
+  //     },
+  //   });
+  // }
 
-  onFileChange(evt: any): void {
-    if (evt.target.files && evt.target.files.length > 0) {
-      this.checkUpload = true;
-    }
-    /* wire up file reader */
-    const target: DataTransfer = <DataTransfer>evt.target;
-    const reader: FileReader = new FileReader();
-    reader.onload = (e: any) => {
-      /* read workbook */
-      const bstr: string = e.target.result;
-      const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
-
-      /* grab first sheet */
-      const wsname: string = wb.SheetNames[0];
-      const ws: XLSX.WorkSheet = wb.Sheets[wsname];
-
-      /* save data */
-      this.attendanceDetailsCheckImport = XLSX.utils.sheet_to_json(ws, { header: 1 });
-    };
-    reader.readAsBinaryString(target.files[0]);
-  }
-
-  importExcel(): void {
-    this.importClicked = true;
-    if (this.checkUpload) {
-      this.attendanceDetailsImport = [];
-      if (this.attendanceDetailsCheckImport.length > 1) {
-        for (let i = 1; i < this.attendanceDetailsCheckImport.length; i++) {
-          const resultObject: IAttendanceDetail = {};
-          resultObject.attendanceId = this.attendance.id;
-          resultObject.time = dayjs(this.attendanceDetailsCheckImport[i][0], 'DD/MM/YYYY').add(1, 'day');
-          resultObject.inTime =
-            typeof this.attendanceDetailsCheckImport[i][1] !== 'string'
-              ? this.attendanceDetailsCheckImport[i][1]
-              : this.attendanceDetailsCheckImport[i][1];
-          resultObject.outTime =
-            typeof this.attendanceDetailsCheckImport[i][2] !== 'string'
-              ? this.attendanceDetailsCheckImport[i][2]
-              : this.attendanceDetailsCheckImport[i][2];
-          resultObject.note = this.attendanceDetailsCheckImport[i][3];
-          this.attendanceDetailsImport.push(resultObject);
-        }
-      }
-    }
-    if (this.attendanceDetailsImport.length > 0) {
-      this.attendanceService.createAll(this.attendanceDetailsImport).subscribe(
-        data => {
-          alert('Thành công');
-          this.loadDetail();
-          this.resetModalData();
-          this.modalService.dismissAll();
-          this.loadPage();
-        },
-        error => {
-          alert('có lỗi sảy ra');
-        }
-      );
-    } else {
-      alert('Dữ liệu không hợp lệ');
-    }
+  get details(): FormArray {
+    return this.form.get('details') as FormArray;
   }
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IAttendance>>): void {
     result.pipe(finalize(() => this.onSaveFinalize())).subscribe({
@@ -281,52 +204,5 @@ export class AttendanceUpdateComponent implements OnInit {
   }
   protected onSaveFinalize(): void {
     this.isSaving = false;
-  }
-  protected updateForm(attendance: IAttendance): void {
-    this.editForm.patchValue({
-      id: attendance.id,
-      employeeId: attendance.employeeId,
-      month: attendance.month,
-      year: attendance.year,
-      count: attendance.count,
-      countNot: attendance.countNot,
-      note: attendance.note,
-    });
-  }
-
-  protected updateFormDetail(attendanceDetail: IAttendanceDetail): void {
-    this.editFormDetail.patchValue({
-      id: attendanceDetail.id,
-      attendanceId: attendanceDetail.attendanceId,
-      time: attendanceDetail.time?.format(DATE_FORMAT_CUSTOM),
-      inTime: attendanceDetail.inTime,
-      outTime: attendanceDetail.outTime,
-      note: attendanceDetail.note,
-    });
-  }
-
-  protected createFromForm(): IAttendance {
-    return {
-      ...new Attendance(),
-      id: this.editForm.get(['id'])!.value,
-      employeeId: this.editForm.get(['employeeId'])!.value,
-      month: this.editForm.get(['month'])!.value,
-      year: this.editForm.get(['year'])!.value,
-      count: this.editForm.get(['count'])!.value,
-      countNot: this.editForm.get(['countNot'])!.value,
-      note: this.editForm.get(['note'])!.value,
-    };
-  }
-
-  protected createFromDetail(): IAttendanceDetail {
-    return {
-      ...new AttendanceDetail(),
-      id: this.editFormDetail.get(['id'])!.value,
-      attendanceId: this.editFormDetail.get(['attendanceId'])!.value,
-      time: this.editFormDetail.get(['time'])!.value,
-      inTime: this.editFormDetail.get(['inTime'])!.value,
-      outTime: this.editFormDetail.get(['outTime'])!.value,
-      note: this.editFormDetail.get(['note'])!.value,
-    };
   }
 }

@@ -11,6 +11,7 @@ import { createRequestOption } from 'app/core/request/request-util';
 import { IAttendance, getAttendanceIdentifier } from '../attendance.model';
 import { IDepartment } from '../../employee/department.model';
 import { getAttendanceDetailIdentifier, IAttendanceDetail } from '../attendanceDetail.model';
+import { ISalary } from '../../salary/salary.model';
 
 export type EntityResponseType = HttpResponse<IAttendance>;
 export type EntityResponseDetailType = HttpResponse<IAttendanceDetail>;
@@ -24,14 +25,12 @@ export class AttendanceService {
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) {}
 
   create(attendance: IAttendance): Observable<EntityResponseType> {
+    const copy = this.convertDateFromClient(attendance);
     return this.http.post<IAttendance>(this.resourceUrl, attendance, { observe: 'response' }).pipe(map((res: EntityResponseType) => res));
   }
 
-  createDetail(attendanceDetail: IAttendanceDetail): Observable<EntityResponseType> {
-    const copy = this.convertDateDetailFromClient(attendanceDetail);
-    return this.http
-      .post<IAttendanceDetail>(this.resourceUrlDetail, copy, { observe: 'response' })
-      .pipe(map((res: EntityResponseType) => this.convertDateDetailFromServer(res)));
+  createAllDetail(attendanceDetails: IAttendanceDetail[]): Observable<any> {
+    return this.http.post<any>(this.resourceUrlDetail + '/all', attendanceDetails);
   }
 
   update(attendance: IAttendance): Observable<EntityResponseType> {
@@ -40,14 +39,6 @@ export class AttendanceService {
       .pipe(map((res: EntityResponseType) => res));
   }
 
-  updateDetail(attendanceDetail: IAttendanceDetail): Observable<EntityResponseType> {
-    const copy = this.convertDateDetailFromClient(attendanceDetail);
-    return this.http
-      .put<IAttendanceDetail>(`${this.resourceUrlDetail}/${getAttendanceDetailIdentifier(attendanceDetail) as number}`, copy, {
-        observe: 'response',
-      })
-      .pipe(map((res: EntityResponseType) => this.convertDateDetailFromServer(res)));
-  }
   partialUpdate(attendance: IAttendance): Observable<EntityResponseType> {
     return this.http
       .patch<IAttendance>(`${this.resourceUrl}/${getAttendanceIdentifier(attendance) as number}`, attendance, { observe: 'response' })
@@ -65,12 +56,6 @@ export class AttendanceService {
   find(id: number): Observable<EntityResponseType> {
     return this.http.get<IAttendance>(`${this.resourceUrl}/${id}`, { observe: 'response' }).pipe(map((res: EntityResponseType) => res));
   }
-
-  queryAttendanceDetail(id: number): Observable<EntityArrayResponseType> {
-    return this.http
-      .get<IAttendanceDetail[]>(`${this.resourceUrlDetail}/${id}`, { observe: 'response' })
-      .pipe(map((res: EntityArrayResponseDetailType) => this.convertDateArrayDetailFromServer(res)));
-  }
   query(req?: any): Observable<EntityArrayResponseType> {
     const options = createRequestOption(req);
     return this.http
@@ -78,6 +63,9 @@ export class AttendanceService {
       .pipe(map((res: EntityArrayResponseType) => res));
   }
 
+  queryAll(id: number): Observable<EntityArrayResponseDetailType> {
+    return this.http.get<IAttendanceDetail[]>(`${this.resourceUrlDetail}/all/${id}`, { observe: 'response' });
+  }
   delete(id: number): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
@@ -109,36 +97,9 @@ export class AttendanceService {
     return this.http.post<any>(this.resourceUrlDetail + '/all', attendanceDetails);
   }
 
-  protected convertDateDetailFromClient(attendanceDetail: IAttendanceDetail): IAttendance {
-    return Object.assign({}, attendanceDetail, {
-      time:
-        typeof attendanceDetail.time !== 'string'
-          ? dayjs(attendanceDetail.time).format(DATE_FORMAT)
-          : dayjs(attendanceDetail.time, 'DD-MM-YYYY').format(DATE_FORMAT),
-      inTime:
-        typeof attendanceDetail.inTime !== 'string' && attendanceDetail.inTime !== undefined
-          ? dayjs(attendanceDetail.inTime).format(TIME_FORMAT)
-          : attendanceDetail.inTime,
-      outTime:
-        typeof attendanceDetail.outTime !== 'string' && attendanceDetail.outTime !== undefined
-          ? dayjs(attendanceDetail.outTime).format(TIME_FORMAT)
-          : attendanceDetail.outTime,
+  protected convertDateFromClient(attendance: IAttendance): ISalary {
+    return Object.assign({}, attendance, {
+      createDate: attendance.createDate ? dayjs(attendance.createDate).format(DATE_FORMAT) : undefined,
     });
-  }
-
-  protected convertDateDetailFromServer(res: EntityResponseDetailType): EntityResponseDetailType {
-    if (res.body) {
-      res.body.time = res.body.time ? dayjs(res.body.inTime) : undefined;
-    }
-    return res;
-  }
-
-  protected convertDateArrayDetailFromServer(res: EntityArrayResponseDetailType): EntityArrayResponseDetailType {
-    if (res.body) {
-      res.body.forEach((attendance: IAttendanceDetail) => {
-        attendance.time = attendance.time ? dayjs(attendance.time) : undefined;
-      });
-    }
-    return res;
   }
 }

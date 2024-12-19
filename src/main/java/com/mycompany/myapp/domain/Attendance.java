@@ -3,6 +3,7 @@ package com.mycompany.myapp.domain;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
@@ -13,20 +14,17 @@ import javax.validation.constraints.*;
 @Table(name = "attendance")
 public class Attendance implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
     @SequenceGenerator(name = "sequenceGenerator")
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @NotNull
-    @Column(name = "employee_id", nullable = false)
-    private Long employeeId;
+    @Column(name = "name")
+    private String name;
 
-    @Column(name = "department")
-    private String department;
+    @Column(name = "create_date")
+    private LocalDate createDate;
 
     @Column(name = "month")
     private Long month;
@@ -34,14 +32,13 @@ public class Attendance implements Serializable {
     @Column(name = "year")
     private Long year;
 
-    @Column(name = "count")
-    private Long count;
-
-    @Column(name = "numberWorking")
-    private BigDecimal numberWorking;
-
-    @Column(name = "countNot")
-    private Long countNot;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "attendance_employee",
+        joinColumns = @JoinColumn(name = "attendance_id", referencedColumnName = "id"),
+        inverseJoinColumns = @JoinColumn(name = "employee_id", referencedColumnName = "id")
+    )
+    private List<Employee> employees;
 
     @Column(name = "note")
     private String note;
@@ -49,29 +46,27 @@ public class Attendance implements Serializable {
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
-        return this.id;
-    }
-
-    public Attendance id(Long id) {
-        this.setId(id);
-        return this;
+        return id;
     }
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    public Long getEmployeeId() {
-        return this.employeeId;
+    public String getName() {
+        return name;
     }
 
-    public Attendance employeeId(Long employeeId) {
-        this.setEmployeeId(employeeId);
-        return this;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setEmployeeId(Long employeeId) {
-        this.employeeId = employeeId;
+    public LocalDate getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(LocalDate createDate) {
+        this.createDate = createDate;
     }
 
     public Long getMonth() {
@@ -90,49 +85,20 @@ public class Attendance implements Serializable {
         this.year = year;
     }
 
-    public Long getCount() {
-        return count;
+    public List<Employee> getEmployees() {
+        return employees;
     }
 
-    public void setCount(Long count) {
-        this.count = count;
-    }
-
-    public Long getCountNot() {
-        return countNot;
-    }
-
-    public void setCountNot(Long countNot) {
-        this.countNot = countNot;
+    public void setEmployees(List<Employee> employees) {
+        this.employees = employees;
     }
 
     public String getNote() {
-        return this.note;
-    }
-
-    public Attendance note(String note) {
-        this.setNote(note);
-        return this;
+        return note;
     }
 
     public void setNote(String note) {
         this.note = note;
-    }
-
-    public BigDecimal getNumberWorking() {
-        return numberWorking;
-    }
-
-    public void setNumberWorking(BigDecimal numberWorking) {
-        this.numberWorking = numberWorking;
-    }
-
-    public String getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(String department) {
-        this.department = department;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
@@ -159,7 +125,6 @@ public class Attendance implements Serializable {
     public String toString() {
         return "Attendance{" +
             "id=" + getId() +
-            ", employeeId=" + getEmployeeId() +
             ", note='" + getNote() + "'" +
             "}";
     }

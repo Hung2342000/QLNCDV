@@ -106,63 +106,6 @@ public class AttendanceResource {
     }
 
     /**
-     * {@code PATCH  /attendances/:id} : Partial updates given fields of an existing attendance, field will ignore if it is null
-     *
-     * @param id the id of the attendance to save.
-     * @param attendance the attendance to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated attendance,
-     * or with status {@code 400 (Bad Request)} if the attendance is not valid,
-     * or with status {@code 404 (Not Found)} if the attendance is not found,
-     * or with status {@code 500 (Internal Server Error)} if the attendance couldn't be updated.
-     * @throws URISyntaxException if the Location URI syntax is incorrect.
-     */
-    @PatchMapping(value = "/attendances/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public ResponseEntity<Attendance> partialUpdateAttendance(
-        @PathVariable(value = "id", required = false) final Long id,
-        @NotNull @RequestBody Attendance attendance
-    ) throws URISyntaxException {
-        log.debug("REST request to partial update Attendance partially : {}, {}", id, attendance);
-        if (attendance.getId() == null) {
-            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
-        }
-        if (!Objects.equals(id, attendance.getId())) {
-            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
-        }
-
-        if (!attendanceRepository.existsById(id)) {
-            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
-        }
-
-        Optional<Attendance> result = attendanceRepository
-            .findById(attendance.getId())
-            .map(existingAttendance -> {
-                if (attendance.getEmployeeId() != null) {
-                    existingAttendance.setEmployeeId(attendance.getEmployeeId());
-                }
-                if (attendance.getMonth() != null) {
-                    existingAttendance.setMonth(attendance.getMonth());
-                }
-                if (attendance.getCount() != null) {
-                    existingAttendance.setCount(attendance.getCount());
-                }
-                if (attendance.getCountNot() != null) {
-                    existingAttendance.setCountNot(attendance.getCountNot());
-                }
-                if (attendance.getNote() != null) {
-                    existingAttendance.setNote(attendance.getNote());
-                }
-
-                return existingAttendance;
-            })
-            .map(attendanceRepository::save);
-
-        return ResponseUtil.wrapOrNotFound(
-            result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, attendance.getId().toString())
-        );
-    }
-
-    /**
      * {@code GET  /attendances} : get all the attendances.
      *
      * @param pageable the pagination information.
@@ -204,14 +147,13 @@ public class AttendanceResource {
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
     }
-
-    @GetMapping("/attendances/export")
-    public ResponseEntity<byte[]> exportSalary(Long attendanceId) throws IOException {
-        byte[] excelBytes = attendanceService.exportAttendance(attendanceId);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
-        headers.setContentDispositionFormData("attachment", "bangchamcong.xlsx");
-
-        return new ResponseEntity<>(excelBytes, headers, HttpStatus.OK);
-    }
+    //    @GetMapping("/attendances/export")
+    //    public ResponseEntity<byte[]> exportSalary(Long attendanceId) throws IOException {
+    //        byte[] excelBytes = attendanceService.exportAttendance(attendanceId);
+    //        HttpHeaders headers = new HttpHeaders();
+    //        headers.setContentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+    //        headers.setContentDispositionFormData("attachment", "bangchamcong.xlsx");
+    //
+    //        return new ResponseEntity<>(excelBytes, headers, HttpStatus.OK);
+    //    }
 }

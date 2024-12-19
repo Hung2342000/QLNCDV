@@ -99,9 +99,9 @@ public class AttendanceDetailResource {
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
-    @GetMapping("/attendanceDetail/{id}")
+    @GetMapping("/attendanceDetail/all/{id}")
     public ResponseEntity<List<AttendanceDetail>> getAllAttendanceDetailAll(@PathVariable Long id) {
-        List<AttendanceDetail> attendancDetailList = attendanceDetailRepository.findAttendanceDetailByAttendanceId(id);
+        List<AttendanceDetail> attendancDetailList = attendanceDetailRepository.selectAllByAttId(id);
         return ResponseEntity.ok().body(attendancDetailList);
     }
 
@@ -112,15 +112,15 @@ public class AttendanceDetailResource {
     //        return ResponseUtil.wrapOrNotFound(attendance);
     //    }
 
-    @DeleteMapping("/attendanceDetail/{id}")
-    public ResponseEntity<Void> deleteAttendance(@PathVariable Long id) {
-        log.debug("REST request to delete Attendance : {}", id);
-        attendanceDetailService.delete(id);
-        return ResponseEntity
-            .noContent()
-            .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
-            .build();
-    }
+    //    @DeleteMapping("/attendanceDetail/{id}")
+    //    public ResponseEntity<Void> deleteAttendance(@PathVariable Long id) {
+    //        log.debug("REST request to delete Attendance : {}", id);
+    //        attendanceDetailService.delete(id);
+    //        return ResponseEntity
+    //            .noContent()
+    //            .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
+    //            .build();
+    //    }
 
     @PostMapping("/attendanceDetail/all")
     public void createAttendanceDetailAll(@Valid @RequestBody List<AttendanceDetail> attendanceDetail) throws URISyntaxException {

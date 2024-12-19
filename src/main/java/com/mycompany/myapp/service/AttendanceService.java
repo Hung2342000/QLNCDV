@@ -10,7 +10,11 @@ import com.mycompany.myapp.repository.EmployeeRepository;
 import com.mycompany.myapp.repository.UserRepository;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,14 +62,104 @@ public class AttendanceService {
     }
 
     public Attendance createAttendance(Attendance attendance) {
-        attendance.setCount((long) 0);
-        attendance.setCountNot((long) 0);
-        if (attendance.getEmployeeId() != null) {
-            Employee employee = employeeRepository.findById(attendance.getEmployeeId()).get();
-            attendance.setDepartment(employee.getDepartment());
-        }
         Attendance attendanceCreate = this.attendanceRepository.save(attendance);
+
+        List<Employee> listEmployee = attendance.getEmployees();
+        for (Employee employee : listEmployee) {
+            AttendanceDetail attendanceDetail = new AttendanceDetail();
+            attendanceDetail.setAttendanceId(attendance.getId());
+            attendanceDetail.setEmployeeId(employee.getId());
+            Field[] fields = attendanceDetail.getClass().getDeclaredFields();
+            int[] day31 = { 1, 3, 5, 7, 8, 10, 12 };
+            BigDecimal countDay = BigDecimal.ZERO;
+            int[] day30 = { 4, 6, 9, 11 };
+            for (Field field : fields) {
+                field.setAccessible(true); // Cho phép truy cập thuộc tính private
+                try {
+                    // Kiểm tra kiểu dữ liệu và cập nhật giá trị
+                    if (field.getName().contains("day")) {
+                        String daycheck = field.getName().replaceAll("day", "");
+
+                        // check tháng có 31 ngày
+                        if (Arrays.stream(day31).anyMatch(day -> day == attendance.getMonth().intValue())) {
+                            LocalDate date = LocalDate.of(
+                                attendance.getYear().intValue(),
+                                attendance.getMonth().intValue(),
+                                Integer.parseInt(daycheck)
+                            );
+                            Boolean check = isWeekend(date);
+                            if (check) {
+                                field.set(attendanceDetail, "weekend");
+                            } else {
+                                field.set(attendanceDetail, "+");
+                                countDay = countDay.add(BigDecimal.valueOf(1));
+                            }
+                        }
+                        //check tháng có 30 ngày
+                        else if (Arrays.stream(day30).anyMatch(day -> day == attendance.getMonth().intValue())) {
+                            if (!daycheck.equals("31")) {
+                                LocalDate date = LocalDate.of(
+                                    attendance.getYear().intValue(),
+                                    attendance.getMonth().intValue(),
+                                    Integer.parseInt(daycheck)
+                                );
+                                Boolean check = isWeekend(date);
+                                if (check) {
+                                    field.set(attendanceDetail, "weekend");
+                                } else {
+                                    field.set(attendanceDetail, "+");
+                                    countDay = countDay.add(BigDecimal.valueOf(1));
+                                }
+                            }
+                        } else {
+                            //check tháng 2 và thêm dữ liệu
+                            if (attendance.getYear().intValue() % 4 == 0) {
+                                if (!daycheck.equals("30") && !daycheck.equals("31")) {
+                                    LocalDate date = LocalDate.of(
+                                        attendance.getYear().intValue(),
+                                        attendance.getMonth().intValue(),
+                                        Integer.parseInt(daycheck)
+                                    );
+                                    Boolean check = isWeekend(date);
+                                    if (check) {
+                                        field.set(attendanceDetail, "weekend");
+                                    } else {
+                                        field.set(attendanceDetail, "+");
+                                        countDay = countDay.add(BigDecimal.valueOf(1));
+                                    }
+                                }
+                            } else {
+                                if (!daycheck.equals("29") && !daycheck.equals("30") && !daycheck.equals("31")) {
+                                    LocalDate date = LocalDate.of(
+                                        attendance.getYear().intValue(),
+                                        attendance.getMonth().intValue(),
+                                        Integer.parseInt(daycheck)
+                                    );
+                                    Boolean check = isWeekend(date);
+                                    if (check) {
+                                        field.set(attendanceDetail, "weekend");
+                                    } else {
+                                        field.set(attendanceDetail, "+");
+                                        countDay = countDay.add(BigDecimal.valueOf(1));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+            attendanceDetail.setPaidWorking(countDay);
+            attendanceDetail.setNumberWork(countDay);
+            attendanceDetailRepository.save(attendanceDetail);
+        }
         return attendanceCreate;
+    }
+
+    public static boolean isWeekend(LocalDate date) {
+        DayOfWeek dayOfWeek = date.getDayOfWeek();
+        return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY;
     }
 
     public Page<Attendance> getAllByDepartment(Pageable pageable) {
@@ -87,7 +181,7 @@ public class AttendanceService {
         } else if (
             authentication != null && !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority))
         ) {
-            page = this.attendanceRepository.getAllAttendanceByDepartment(user.getDepartment(), pageable);
+            //            page = this.attendanceRepository.getAllAttendanceByDepartment(user.getDepartment(), pageable);
         }
         return page;
     }
@@ -100,136 +194,135 @@ public class AttendanceService {
         }
         this.attendanceRepository.deleteById(id);
     }
-
-    public byte[] exportAttendance(Long att) throws IOException {
-        List<AttendanceDetail> attendanceDetails = new ArrayList<>();
-        attendanceDetails = this.attendanceDetailRepository.selectAllByAttId(att);
-
-        Attendance attendance = this.attendanceRepository.findById(att).get();
-
-        Employee employee = new Employee();
-        employee = employeeRepository.findById(attendance.getEmployeeId()).get();
-
-        XSSFWorkbook workbook = new XSSFWorkbook();
-        Sheet sheet = workbook.createSheet("Data");
-
-        Font font = workbook.createFont();
-        font.setBold(true);
-        font.setFontName("Times New Roman");
-
-        Font fontDetail = workbook.createFont();
-        fontDetail.setFontName("Times New Roman");
-
-        CellStyle boldStyle = workbook.createCellStyle();
-        boldStyle.setFont(font);
-
-        CellStyle detailStyle = workbook.createCellStyle();
-        detailStyle.setFont(fontDetail);
-        detailStyle.setBorderRight(BorderStyle.THIN);
-        detailStyle.setBorderLeft(BorderStyle.THIN);
-
-        CellStyle tableName = workbook.createCellStyle();
-        tableName.setFont(font);
-        tableName.setAlignment(HorizontalAlignment.CENTER);
-        tableName.setVerticalAlignment(VerticalAlignment.CENTER);
-        // Tạo một CellStyle mới và thiết lập Font chữ đậm và căn giữa cho nó
-        CellStyle centeredBoldStyle = workbook.createCellStyle();
-        centeredBoldStyle.setFont(font);
-        centeredBoldStyle.setAlignment(HorizontalAlignment.CENTER);
-        centeredBoldStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-        centeredBoldStyle.setBorderBottom(BorderStyle.THIN);
-        centeredBoldStyle.setBorderTop(BorderStyle.THIN);
-        centeredBoldStyle.setBorderRight(BorderStyle.THIN);
-        centeredBoldStyle.setBorderLeft(BorderStyle.THIN);
-
-        // Sample data (replace with your own data)
-        String[] headers = { "STT", "Ngày chấm công", "Thời gian đến", "Thời gian về", "Số giờ làm việc", "Trạng thái", "Ghi chú" };
-
-        sheet.setColumnWidth(0, 2000);
-        sheet.setColumnWidth(1, 7000);
-        sheet.setColumnWidth(2, 6000);
-        sheet.setColumnWidth(3, 6000);
-        sheet.setColumnWidth(4, 6000);
-        sheet.setColumnWidth(5, 6000);
-        sheet.setColumnWidth(6, 6000);
-
-        Row rowTieuDe = sheet.createRow(0);
-        Cell cellTieuDe = rowTieuDe.createCell(0);
-        cellTieuDe.setCellValue("TỔNG CÔNG TY VIÊN THÔNG MOBIFONE");
-        cellTieuDe.setCellStyle(boldStyle);
-        sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 3));
-
-        Row rowDonVi = sheet.createRow(1);
-        Cell cellDonVi = rowDonVi.createCell(0);
-        cellDonVi.setCellValue("ĐƠN VỊ: MOBIFONE KHU VỰC 4");
-        cellDonVi.setCellStyle(boldStyle);
-        sheet.addMergedRegion(new CellRangeAddress(1, 1, 0, 3));
-
-        Row rowTableName = sheet.createRow(3);
-        Cell cellTableName = rowTableName.createCell(0);
-        cellTableName.setCellValue("BẢNG CHẤM CÔNG");
-        cellTableName.setCellStyle(tableName);
-        sheet.addMergedRegion(new CellRangeAddress(3, 3, 0, 6));
-
-        Row rowEmployee = sheet.createRow(5);
-        Cell cellEmployee = rowEmployee.createCell(0);
-        cellEmployee.setCellValue("Họ và tên nhân viên: " + employee.getName());
-        cellEmployee.setCellStyle(boldStyle);
-        sheet.addMergedRegion(new CellRangeAddress(5, 5, 0, 6));
-
-        Row rowDate = sheet.createRow(6);
-        Cell cellDate = rowDate.createCell(0);
-        cellDate.setCellValue("Bảng chấm công tháng " + attendance.getMonth() + " năm " + attendance.getYear());
-        cellDate.setCellStyle(boldStyle);
-        sheet.addMergedRegion(new CellRangeAddress(6, 6, 0, 6));
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy"); // Định dạng
-
-        int rowNum = 8;
-        Row headerRow = sheet.createRow(rowNum++);
-        for (int i = 0; i < headers.length; i++) {
-            Cell cell = headerRow.createCell(i);
-            cell.setCellValue(headers[i]);
-            cell.setCellStyle(centeredBoldStyle);
-        }
-        int stt = 1;
-        for (AttendanceDetail rowData : attendanceDetails) {
-            Row row = sheet.createRow(rowNum++);
-            Cell cell0 = row.createCell(0);
-            cell0.setCellValue(stt);
-            cell0.setCellStyle(detailStyle);
-
-            Cell cell1 = row.createCell(1);
-            cell1.setCellValue(rowData.getTime() != null ? rowData.getTime().format(formatter).toString() : "");
-            cell1.setCellStyle(detailStyle);
-
-            Cell cell2 = row.createCell(2);
-            cell2.setCellValue(rowData.getInTime() != null ? rowData.getInTime().toString() : "");
-            cell2.setCellStyle(detailStyle);
-
-            Cell cell3 = row.createCell(3);
-            cell3.setCellValue(rowData.getOutTime() != null ? rowData.getOutTime().toString() : "");
-            cell3.setCellStyle(detailStyle);
-
-            Cell cell4 = row.createCell(4);
-            cell4.setCellValue(rowData.getCountTime() != null ? rowData.getCountTime().toString() : "");
-            cell4.setCellStyle(detailStyle);
-
-            Cell cell5 = row.createCell(5);
-            cell5.setCellValue(rowData.getStatus() != null ? rowData.getStatus().toString() : "");
-            cell5.setCellStyle(detailStyle);
-
-            Cell cell6 = row.createCell(6);
-            cell6.setCellValue(rowData.getNote() != null ? rowData.getNote().toString() : "");
-            cell6.setCellStyle(detailStyle);
-            stt++;
-        }
-
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        workbook.write(bos);
-        workbook.close();
-
-        byte[] excelBytes = bos.toByteArray();
-        return excelBytes;
-    }
+    //    public byte[] exportAttendance(Long att) throws IOException {
+    //        List<AttendanceDetail> attendanceDetails = new ArrayList<>();
+    //        attendanceDetails = this.attendanceDetailRepository.selectAllByAttId(att);
+    //
+    //        Attendance attendance = this.attendanceRepository.findById(att).get();
+    //
+    //        Employee employee = new Employee();
+    //        employee = employeeRepository.findById(attendance.getEmployeeId()).get();
+    //
+    //        XSSFWorkbook workbook = new XSSFWorkbook();
+    //        Sheet sheet = workbook.createSheet("Data");
+    //
+    //        Font font = workbook.createFont();
+    //        font.setBold(true);
+    //        font.setFontName("Times New Roman");
+    //
+    //        Font fontDetail = workbook.createFont();
+    //        fontDetail.setFontName("Times New Roman");
+    //
+    //        CellStyle boldStyle = workbook.createCellStyle();
+    //        boldStyle.setFont(font);
+    //
+    //        CellStyle detailStyle = workbook.createCellStyle();
+    //        detailStyle.setFont(fontDetail);
+    //        detailStyle.setBorderRight(BorderStyle.THIN);
+    //        detailStyle.setBorderLeft(BorderStyle.THIN);
+    //
+    //        CellStyle tableName = workbook.createCellStyle();
+    //        tableName.setFont(font);
+    //        tableName.setAlignment(HorizontalAlignment.CENTER);
+    //        tableName.setVerticalAlignment(VerticalAlignment.CENTER);
+    //        // Tạo một CellStyle mới và thiết lập Font chữ đậm và căn giữa cho nó
+    //        CellStyle centeredBoldStyle = workbook.createCellStyle();
+    //        centeredBoldStyle.setFont(font);
+    //        centeredBoldStyle.setAlignment(HorizontalAlignment.CENTER);
+    //        centeredBoldStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+    //        centeredBoldStyle.setBorderBottom(BorderStyle.THIN);
+    //        centeredBoldStyle.setBorderTop(BorderStyle.THIN);
+    //        centeredBoldStyle.setBorderRight(BorderStyle.THIN);
+    //        centeredBoldStyle.setBorderLeft(BorderStyle.THIN);
+    //
+    //        // Sample data (replace with your own data)
+    //        String[] headers = { "STT", "Ngày chấm công", "Thời gian đến", "Thời gian về", "Số giờ làm việc", "Trạng thái", "Ghi chú" };
+    //
+    //        sheet.setColumnWidth(0, 2000);
+    //        sheet.setColumnWidth(1, 7000);
+    //        sheet.setColumnWidth(2, 6000);
+    //        sheet.setColumnWidth(3, 6000);
+    //        sheet.setColumnWidth(4, 6000);
+    //        sheet.setColumnWidth(5, 6000);
+    //        sheet.setColumnWidth(6, 6000);
+    //
+    //        Row rowTieuDe = sheet.createRow(0);
+    //        Cell cellTieuDe = rowTieuDe.createCell(0);
+    //        cellTieuDe.setCellValue("TỔNG CÔNG TY VIÊN THÔNG MOBIFONE");
+    //        cellTieuDe.setCellStyle(boldStyle);
+    //        sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 3));
+    //
+    //        Row rowDonVi = sheet.createRow(1);
+    //        Cell cellDonVi = rowDonVi.createCell(0);
+    //        cellDonVi.setCellValue("ĐƠN VỊ: MOBIFONE KHU VỰC 4");
+    //        cellDonVi.setCellStyle(boldStyle);
+    //        sheet.addMergedRegion(new CellRangeAddress(1, 1, 0, 3));
+    //
+    //        Row rowTableName = sheet.createRow(3);
+    //        Cell cellTableName = rowTableName.createCell(0);
+    //        cellTableName.setCellValue("BẢNG CHẤM CÔNG");
+    //        cellTableName.setCellStyle(tableName);
+    //        sheet.addMergedRegion(new CellRangeAddress(3, 3, 0, 6));
+    //
+    //        Row rowEmployee = sheet.createRow(5);
+    //        Cell cellEmployee = rowEmployee.createCell(0);
+    //        cellEmployee.setCellValue("Họ và tên nhân viên: " + employee.getName());
+    //        cellEmployee.setCellStyle(boldStyle);
+    //        sheet.addMergedRegion(new CellRangeAddress(5, 5, 0, 6));
+    //
+    //        Row rowDate = sheet.createRow(6);
+    //        Cell cellDate = rowDate.createCell(0);
+    //        cellDate.setCellValue("Bảng chấm công tháng " + attendance.getMonth() + " năm " + attendance.getYear());
+    //        cellDate.setCellStyle(boldStyle);
+    //        sheet.addMergedRegion(new CellRangeAddress(6, 6, 0, 6));
+    //
+    //        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy"); // Định dạng
+    //
+    //        int rowNum = 8;
+    //        Row headerRow = sheet.createRow(rowNum++);
+    //        for (int i = 0; i < headers.length; i++) {
+    //            Cell cell = headerRow.createCell(i);
+    //            cell.setCellValue(headers[i]);
+    //            cell.setCellStyle(centeredBoldStyle);
+    //        }
+    //        int stt = 1;
+    //        for (AttendanceDetail rowData : attendanceDetails) {
+    //            Row row = sheet.createRow(rowNum++);
+    //            Cell cell0 = row.createCell(0);
+    //            cell0.setCellValue(stt);
+    //            cell0.setCellStyle(detailStyle);
+    //
+    //            Cell cell1 = row.createCell(1);
+    //            cell1.setCellValue(rowData.getTime() != null ? rowData.getTime().format(formatter).toString() : "");
+    //            cell1.setCellStyle(detailStyle);
+    //
+    //            Cell cell2 = row.createCell(2);
+    //            cell2.setCellValue(rowData.getInTime() != null ? rowData.getInTime().toString() : "");
+    //            cell2.setCellStyle(detailStyle);
+    //
+    //            Cell cell3 = row.createCell(3);
+    //            cell3.setCellValue(rowData.getOutTime() != null ? rowData.getOutTime().toString() : "");
+    //            cell3.setCellStyle(detailStyle);
+    //
+    //            Cell cell4 = row.createCell(4);
+    //            cell4.setCellValue(rowData.getCountTime() != null ? rowData.getCountTime().toString() : "");
+    //            cell4.setCellStyle(detailStyle);
+    //
+    //            Cell cell5 = row.createCell(5);
+    //            cell5.setCellValue(rowData.getStatus() != null ? rowData.getStatus().toString() : "");
+    //            cell5.setCellStyle(detailStyle);
+    //
+    //            Cell cell6 = row.createCell(6);
+    //            cell6.setCellValue(rowData.getNote() != null ? rowData.getNote().toString() : "");
+    //            cell6.setCellStyle(detailStyle);
+    //            stt++;
+    //        }
+    //
+    //        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    //        workbook.write(bos);
+    //        workbook.close();
+    //
+    //        byte[] excelBytes = bos.toByteArray();
+    //        return excelBytes;
+    //    }
 }

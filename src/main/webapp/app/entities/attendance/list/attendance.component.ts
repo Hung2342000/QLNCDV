@@ -1,22 +1,26 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { HttpHeaders, HttpResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
-import { combineLatest } from 'rxjs';
+import { combineLatest, Observable } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
-import { IAttendance } from '../attendance.model';
+import { Attendance, IAttendance } from '../attendance.model';
 
 import { ASC, DESC, ITEMS_PER_PAGE, SORT } from 'app/config/pagination.constants';
 import { AttendanceService } from '../service/attendance.service';
 import { AttendanceDeleteDialogComponent } from '../delete/attendance-delete-dialog.component';
 import { IEmployee } from '../../employee/employee.model';
 import { EmployeeService } from '../../employee/service/employee.service';
+import { FormBuilder, Validators } from '@angular/forms';
+import { finalize } from 'rxjs/operators';
+import { IAttendanceDetail } from '../attendanceDetail.model';
 
 @Component({
   selector: 'jhi-attendance',
   templateUrl: './attendance.component.html',
 })
 export class AttendanceComponent implements OnInit {
+  @ViewChild('add') add: TemplateRef<any> | undefined;
   attendances?: IAttendance[] | any;
   isLoading = false;
   totalItems = 0;
@@ -26,8 +30,22 @@ export class AttendanceComponent implements OnInit {
   ascending!: boolean;
   ngbPaginationPage = 1;
   employeeList?: IEmployee[] | any;
+  isSaving = false;
+  employeesList: IEmployee[] | any;
+  dropdownSettings: any;
+
+  editForm = this.fb.group({
+    id: [null, [Validators.required]],
+    createDate: [],
+    name: [],
+    employees: [],
+    month: [],
+    year: [],
+    note: [],
+  });
 
   constructor(
+    protected fb: FormBuilder,
     protected employeeService: EmployeeService,
     protected attendanceService: AttendanceService,
     protected activatedRoute: ActivatedRoute,
@@ -63,6 +81,14 @@ export class AttendanceComponent implements OnInit {
     });
   }
 
+  addAtt(attendance: IAttendance): void {
+    this.updateForm(attendance);
+    this.modalService.open(this.add, { size: 'lg', backdrop: 'static' });
+  }
+  closeModal(): void {
+    this.loadPage();
+    this.modalService.dismissAll();
+  }
   newArr(lenght: number): any[] {
     if (lenght > 0) {
       return new Array(lenght);
@@ -71,10 +97,40 @@ export class AttendanceComponent implements OnInit {
     }
   }
 
+  save(): void {
+    this.isSaving = true;
+    const attendance = this.createFrom();
+    if (attendance.id && typeof attendance.id === 'number') {
+      this.subscribeToSaveResponse(this.attendanceService.update(attendance));
+    } else {
+      this.subscribeToSaveResponse(this.attendanceService.create(attendance));
+    }
+  }
+
   ngOnInit(): void {
+    this.dropdownSettings = {
+      singleSelection: false,
+      idField: 'id',
+      textField: 'name',
+      itemsShowLimit: 5,
+      allowSearchFilter: true,
+    };
+    this.employeeService.queryAll().subscribe({
+      next: (res: HttpResponse<IEmployee[]>) => {
+        this.employeesList = res.body;
+      },
+    });
     this.handleNavigation();
   }
 
+  create(): void {
+    this.employeeService.queryAll().subscribe({
+      next: (res: HttpResponse<IEmployee[]>) => {
+        this.employeesList = res.body;
+      },
+    });
+    const modalRef = this.modalService.open(this.add, { size: 'lg', backdrop: 'static' });
+  }
   trackId(_index: number, item: IAttendance): number {
     return item.id!;
   }
@@ -112,6 +168,10 @@ export class AttendanceComponent implements OnInit {
     return text;
   }
 
+  previousState(): void {
+    window.history.back();
+  }
+
   protected sort(): string[] {
     const result = [this.predicate + ',' + (this.ascending ? ASC : DESC)];
     if (this.predicate !== 'id') {
@@ -135,6 +195,18 @@ export class AttendanceComponent implements OnInit {
     });
   }
 
+  protected updateForm(attendance: IAttendance): void {
+    this.editForm.patchValue({
+      id: attendance.id,
+      createDate: attendance.createDate,
+      name: attendance.name,
+      employees: attendance.employees,
+      month: attendance.month,
+      year: attendance.year,
+      note: attendance.note,
+    });
+  }
+
   protected onSuccess(data: IAttendance[] | null, headers: HttpHeaders, page: number, navigate: boolean): void {
     this.totalItems = Number(headers.get('X-Total-Count'));
     this.page = page;
@@ -153,5 +225,35 @@ export class AttendanceComponent implements OnInit {
 
   protected onError(): void {
     this.ngbPaginationPage = this.page ?? 1;
+  }
+
+  protected subscribeToSaveResponse(result: Observable<HttpResponse<IAttendance>>): void {
+    result.pipe(finalize(() => this.onSaveFinalize())).subscribe({
+      next: () => this.closeModal(),
+      error: () => this.onSaveError(),
+    });
+  }
+
+  protected onSaveSuccess(): void {
+    this.previousState();
+  }
+
+  protected onSaveFinalize(): void {
+    this.isSaving = false;
+  }
+  protected onSaveError(): void {
+    // Api for inheritance.
+  }
+  protected createFrom(): IAttendance {
+    return {
+      ...new Attendance(),
+      id: this.editForm.get(['id'])!.value,
+      createDate: this.editForm.get(['createDate'])!.value,
+      name: this.editForm.get(['name'])!.value,
+      employees: this.editForm.get(['employees'])!.value,
+      month: this.editForm.get(['month'])!.value,
+      year: this.editForm.get(['year'])!.value,
+      note: this.editForm.get(['note'])!.value,
+    };
   }
 }

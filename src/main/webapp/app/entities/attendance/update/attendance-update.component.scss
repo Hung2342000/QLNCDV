@@ -1,0 +1,13 @@
+.bold-select option {
+  font-weight: 600; /* Đặt mặc định cho các option */
+}
+
+.bold-select option[value='+'] {
+  font-weight: 700; /* Dấu cộng hiển thị đậm */
+}
+select {
+  height: 33px;
+  appearance: none; /* Ẩn mũi tên trỏ xuống mặc định */
+  -webkit-appearance: none; /* Hỗ trợ trình duyệt WebKit */
+  background: transparent; /* Làm nền trong suốt /* Đảm bảo khoảng trống để hiển thị mũi tên */
+}
