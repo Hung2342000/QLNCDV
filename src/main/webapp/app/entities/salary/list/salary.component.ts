@@ -15,6 +15,8 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { Attendance, IAttendance } from '../../attendance/attendance.model';
 import { IEmployee } from '../../employee/employee.model';
 import { EmployeeService } from '../../employee/service/employee.service';
+import { ISalaryDetail } from '../salaryDetail.model';
+import { AttendanceService } from '../../attendance/service/attendance.service';
 
 @Component({
   selector: 'jhi-employee',
@@ -34,6 +36,7 @@ export class SalaryComponent implements OnInit {
   isSaving = false;
   dropdownSettings: any;
   employeesList: IEmployee[] | any;
+  attendanceList: IAttendance[] | any;
 
   editForm = this.fb.group({
     id: [null, [Validators.required]],
@@ -42,6 +45,7 @@ export class SalaryComponent implements OnInit {
     month: [],
     year: [],
     numberWork: [],
+    attendanceId: [],
     employees: [],
     isAttendance: [],
   });
@@ -49,6 +53,7 @@ export class SalaryComponent implements OnInit {
     protected employeeService: EmployeeService,
     protected salaryService: SalaryService,
     protected activatedRoute: ActivatedRoute,
+    protected attendanceService: AttendanceService,
     protected router: Router,
     protected fb: FormBuilder,
     protected modalService: NgbModal
@@ -87,6 +92,12 @@ export class SalaryComponent implements OnInit {
     this.employeeService.queryAll().subscribe({
       next: (res: HttpResponse<IEmployee[]>) => {
         this.employeesList = res.body;
+      },
+    });
+
+    this.attendanceService.queryAttendanceAll().subscribe({
+      next: (res: HttpResponse<IAttendance[]>) => {
+        this.attendanceList = res.body;
       },
     });
     this.handleNavigation();
@@ -157,7 +168,7 @@ export class SalaryComponent implements OnInit {
       this.subscribeToSaveResponse(this.salaryService.create(salary));
     }
   }
-  protected subscribeToSaveResponse(result: Observable<HttpResponse<IAttendanceDetail>>): void {
+  protected subscribeToSaveResponse(result: Observable<HttpResponse<ISalaryDetail>>): void {
     result.pipe(finalize(() => this.onSaveFinalize())).subscribe({
       next: () => this.closeModal(),
       error: () => this.onSaveError(),
@@ -225,6 +236,7 @@ export class SalaryComponent implements OnInit {
       month: this.editForm.get(['month'])!.value,
       year: this.editForm.get(['year'])!.value,
       numberWork: this.editForm.get(['numberWork'])!.value,
+      attendanceId: this.editForm.get(['attendanceId'])!.value,
       employees: this.editForm.get(['employees'])!.value,
       isAttendance: this.editForm.get(['isAttendance'])!.value,
     };

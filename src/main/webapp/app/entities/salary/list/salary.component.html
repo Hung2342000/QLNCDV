@@ -89,6 +89,7 @@
             <div class="input-group">
               <input
                 type="text"
+                style="background-color: white"
                 mwlFlatpickr
                 data-cy="createDate"
                 id="field_createDate"
@@ -138,6 +139,12 @@
                 formControlName="numberWork"
               />
             </div>
+          </div>
+          <div>
+            <label class="form-label" for="field_attendanceId">Bảng chấm công</label>
+            <select class="form-select" id="field_attendanceId" formControlName="attendanceId" data-cy="attendanceId" name="attendanceId">
+              <option *ngFor="let attendance of attendanceList" [value]="attendance.id">{{ attendance.name }}</option>
+            </select>
           </div>
           <div class="row mb-3">
             <div class="col-md-6">

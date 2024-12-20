@@ -181,9 +181,28 @@ public class AttendanceService {
         } else if (
             authentication != null && !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority))
         ) {
-            //            page = this.attendanceRepository.getAllAttendanceByDepartment(user.getDepartment(), pageable);
+            page = this.attendanceRepository.getAttendanceByDepartment(user.getDepartment(), pageable);
         }
         return page;
+    }
+
+    public List<Attendance> getAllByDepartmentAll() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username;
+        User user = new User();
+        Object principal = authentication.getPrincipal();
+        UserDetails userDetails = (UserDetails) principal;
+        username = userDetails.getUsername();
+        user = userRepository.findOneByLogin(username).get();
+        List<Attendance> list = new ArrayList<>();
+        if (authentication != null && getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority))) {
+            list = this.attendanceRepository.findAll();
+        } else if (
+            authentication != null && !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority))
+        ) {
+            list = this.attendanceRepository.getAttendanceByDepartment(user.getDepartment());
+        }
+        return list;
     }
 
     public void deleteAttendance(Long id) {

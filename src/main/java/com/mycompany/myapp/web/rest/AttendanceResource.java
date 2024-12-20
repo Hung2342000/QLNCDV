@@ -1,6 +1,7 @@
 package com.mycompany.myapp.web.rest;
 
 import com.mycompany.myapp.domain.Attendance;
+import com.mycompany.myapp.domain.AttendanceDetail;
 import com.mycompany.myapp.repository.AttendanceRepository;
 import com.mycompany.myapp.service.AttendanceService;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
@@ -146,6 +147,12 @@ public class AttendanceResource {
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    @GetMapping("/attendances/all")
+    public ResponseEntity<List<Attendance>> getAllAttendanceAll() {
+        List<Attendance> attendanceList = attendanceService.getAllByDepartmentAll();
+        return ResponseEntity.ok().body(attendanceList);
     }
     //    @GetMapping("/attendances/export")
     //    public ResponseEntity<byte[]> exportSalary(Long attendanceId) throws IOException {

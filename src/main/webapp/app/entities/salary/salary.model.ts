@@ -8,6 +8,7 @@ export interface ISalary {
   month?: number | null;
   year?: number | null;
   numberWork?: number | null;
+  attendanceId?: number | null;
   employees?: IEmployee[] | null;
   isAttendance?: boolean | null;
 }
@@ -20,6 +21,7 @@ export class Salary implements ISalary {
     public month?: number | null,
     public year?: number | null,
     public numberWork?: number | null,
+    public attendanceId?: number | null,
     public employees?: IEmployee[] | null,
     public isAttendance?: boolean | null
   ) {}

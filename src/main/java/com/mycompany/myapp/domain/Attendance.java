@@ -43,6 +43,9 @@ public class Attendance implements Serializable {
     @Column(name = "note")
     private String note;
 
+    @Column(name = "departmentCode")
+    private String departmentCode;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -99,6 +102,14 @@ public class Attendance implements Serializable {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public String getDepartmentCode() {
+        return departmentCode;
+    }
+
+    public void setDepartmentCode(String departmentCode) {
+        this.departmentCode = departmentCode;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

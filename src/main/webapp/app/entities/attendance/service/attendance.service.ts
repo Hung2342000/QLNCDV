@@ -66,6 +66,9 @@ export class AttendanceService {
   queryAll(id: number): Observable<EntityArrayResponseDetailType> {
     return this.http.get<IAttendanceDetail[]>(`${this.resourceUrlDetail}/all/${id}`, { observe: 'response' });
   }
+  queryAttendanceAll(): Observable<EntityArrayResponseType> {
+    return this.http.get<IAttendance[]>(`${this.resourceUrl}/all`, { observe: 'response' });
+  }
   delete(id: number): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }

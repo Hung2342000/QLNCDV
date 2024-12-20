@@ -1,6 +1,7 @@
 package com.mycompany.myapp.domain;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import javax.persistence.*;
@@ -34,7 +35,10 @@ public class Salary implements Serializable {
     private Long year;
 
     @Column(name = "numberWork")
-    private Long numberWork;
+    private BigDecimal numberWork;
+
+    @Column(name = "attendanceId")
+    private Long attendanceId;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -89,11 +93,11 @@ public class Salary implements Serializable {
         this.year = year;
     }
 
-    public Long getNumberWork() {
+    public BigDecimal getNumberWork() {
         return numberWork;
     }
 
-    public void setNumberWork(Long numberWork) {
+    public void setNumberWork(BigDecimal numberWork) {
         this.numberWork = numberWork;
     }
 
@@ -111,6 +115,14 @@ public class Salary implements Serializable {
 
     public void setAttendance(Boolean attendance) {
         isAttendance = attendance;
+    }
+
+    public Long getAttendanceId() {
+        return attendanceId;
+    }
+
+    public void setAttendanceId(Long attendanceId) {
+        this.attendanceId = attendanceId;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
