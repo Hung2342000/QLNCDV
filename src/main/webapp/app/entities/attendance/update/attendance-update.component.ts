@@ -10,6 +10,7 @@ import { IAttendanceDetail } from '../attendanceDetail.model';
 import { IEmployee } from '../../employee/employee.model';
 import { EmployeeService } from '../../employee/service/employee.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ToastComponent } from '../../../layouts/toast/toast.component';
 
 @Component({
   selector: 'jhi-attendance-update',
@@ -20,8 +21,9 @@ export class AttendanceUpdateComponent implements OnInit {
   @ViewChild('addDetail') addDetail: TemplateRef<any> | undefined;
   @ViewChild('deleteDetail') deleteDetail: TemplateRef<any> | undefined;
   @ViewChild('contentImportExcel') contentImportExcel: TemplateRef<any> | undefined;
-  @ViewChild('thongBao') thongBao: TemplateRef<any> | undefined;
+  @ViewChild('toast') toast!: ToastComponent;
   isSaving = false;
+  isEdit = true;
   attendanceDetails?: IAttendanceDetail[] | any;
   attendance?: IAttendance | any;
   employeeList?: IEmployee[] | any;
@@ -60,7 +62,30 @@ export class AttendanceUpdateComponent implements OnInit {
       },
     });
   }
+  exportToExcel(): void {
+    this.attendanceService
+      .exportToExcel({
+        attendanceId: this.attendance.id,
+      })
+      .subscribe(response => {
+        const blob = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'bangchamcong.xlsx';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      });
+  }
 
+  edit(): void {
+    this.isEdit = true;
+  }
+
+  close(): void {
+    this.router.navigate([`/attendance`]);
+  }
   getDaysInMonth(month: number, year: number): number {
     // Tháng là 1-based (1: Tháng 1, 2: Tháng 2, ...)
     // Kiểm tra nếu tháng không hợp lệ
@@ -129,17 +154,20 @@ export class AttendanceUpdateComponent implements OnInit {
     if (this.updatedData.length > 0) {
       this.attendanceService.createAllDetail(this.updatedData).subscribe(
         data => {
-          this.content = 'Thành công';
-          this.modalService.open(this.thongBao, { size: 'sm', backdrop: 'static' });
+          this.content = 'Lưu thành công';
+          this.toast.showToast(this.content);
+          setTimeout(() => {
+            this.isEdit = false;
+          }, 500);
         },
         error => {
           this.content = 'Có lỗi xảy ra';
-          this.modalService.open(this.thongBao, { size: 'sm', backdrop: 'static' });
+          this.toast.showToast(this.content);
         }
       );
     } else {
       this.content = 'Lỗi dữ liệu';
-      this.modalService.open(this.thongBao, { size: 'sm', backdrop: 'static' });
+      this.toast.showToast(this.content);
     }
   }
   closeModal(): void {

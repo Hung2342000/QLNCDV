@@ -46,6 +46,9 @@ public class SalaryService {
     public Salary createSalary(Salary salary) {
         Salary salaryCreate = this.salaryRepository.save(salary);
         Attendance attendance = new Attendance();
+        if ((salary.getMonth() == null || salary.getYear() == null) && salary.getAttendanceId() != null) {
+            attendance = this.attendanceRepository.findById(salary.getAttendanceId()).get();
+        }
 
         for (Employee employee : salary.getEmployees()) {
             Employee employeeSelect = employeeRepository.findById(employee.getId()).get();
@@ -78,6 +81,10 @@ public class SalaryService {
                     attendanceDetail.getPaidWorking() != null &&
                     employeeSelect.getBasicSalary() != null
                 ) {
+                    salaryCreate.setMonth(attendance.getMonth());
+                    salaryCreate.setYear(attendance.getYear());
+                    salaryCreate.setNumberWork(attendanceDetail.getNumberWork());
+                    salaryDetail.setBasicSalary(employeeSelect.getBasicSalary());
                     salaryAmount =
                         attendanceDetail
                             .getPaidWorking()
@@ -85,9 +92,11 @@ public class SalaryService {
                             .multiply(employeeSelect.getBasicSalary());
                 }
             }
+
             salaryDetail.setAmount(salaryAmount);
             salaryDetailRepository.save(salaryDetail);
         }
+        salaryRepository.save(salaryCreate);
 
         return salary;
     }

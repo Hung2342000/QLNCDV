@@ -1,9 +1,9 @@
 <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h3 id="jhi-attendance-heading" data-cy="AttendanceCreateUpdateHeading" class="mb-0">Bảng lương</h3>
-    <button type="submit" id="save-entity" data-cy="entityCreateSaveButton" class="btn btn-primary btn-sm">
-      <span>Lưu</span>
-    </button>
+    <!--    <button type="submit" id="save-entity" data-cy="entityCreateSaveButton" class="btn btn-primary btn-sm">-->
+    <!--      <span>Lưu</span>-->
+    <!--    </button>-->
   </div>
   <div class="row">
     <div class="col-md-3">
@@ -78,7 +78,7 @@
         <th scope="col" style="width: 5%" jhiSortBy="id"><span>STT</span></th>
         <th scope="col" style="width: 10%"><span>Tên nhân viên</span></th>
         <th style="width: 20%" scope="col"><span>Lương cơ bản</span></th>
-        <th scope="col"><span>Số ngày nhận lương</span></th>
+        <th scope="col" class="text-center"><span>Số ngày nhận lương</span></th>
         <th scope="col"><span>Phụ cấp</span></th>
         <th scope="col"><span>Lương khuyến khích</span></th>
         <th scope="col"><span>Thành tiền</span></th>
@@ -90,7 +90,7 @@
         <td>{{ i + 1 }}</td>
         <td>{{ employeeName(salaryDetail.employeeId) }}</td>
         <td>{{ salaryDetail.basicSalary }}</td>
-        <td>{{ salaryDetail.numberWorking }}</td>
+        <td class="text-center">{{ salaryDetail.numberWorkInMonth }}</td>
         <td>{{ salaryDetail.allowance }}</td>
         <td>{{ salaryDetail.incentiveSalary }}</td>
         <td>{{ salaryDetail.amount }}</td>

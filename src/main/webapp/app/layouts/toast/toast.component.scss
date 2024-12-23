@@ -1,0 +1,52 @@
+/* Kiểu dáng tổng thể */
+.success-toast {
+  position: fixed;
+  top: 20px; /* Khoảng cách từ trên xuống */
+  right: 20px; /* Khoảng cách từ phải vào */
+  background-color: #d4edda; /* Màu nền xanh nhạt */
+  color: #155724; /* Màu chữ xanh đậm */
+  padding: 15px 20px; /* Khoảng cách bên trong */
+  border: 1px solid #c3e6cb; /* Viền */
+  border-radius: 8px; /* Bo góc */
+  font-size: 16px; /* Kích thước chữ */
+  font-family: 'Arial', sans-serif;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Đổ bóng */
+  z-index: 1000; /* Đảm bảo thông báo nằm trên các thành phần khác */
+  opacity: 1; /* Hiển thị mặc định */
+  transition: opacity 0.5s ease-in-out; /* Hiệu ứng mờ dần */
+}
+
+/* Biểu tượng */
+.success-toast .icon {
+  font-size: 20px; /* Kích thước biểu tượng */
+  margin-right: 10px; /* Khoảng cách với chữ */
+}
+
+/* Hiệu ứng khi thông báo xuất hiện */
+@keyframes slideIn {
+  from {
+    transform: translateX(100%); /* Trượt từ ngoài màn hình */
+    opacity: 0; /* Bắt đầu với độ mờ */
+  }
+  to {
+    transform: translateX(0); /* Trượt vào vị trí gốc */
+    opacity: 1; /* Hoàn toàn hiện thị */
+  }
+}
+
+/* Hiệu ứng khi thông báo ẩn đi */
+@keyframes slideOut {
+  from {
+    transform: translateX(0); /* Từ vị trí gốc */
+    opacity: 1; /* Đang hiển thị */
+  }
+  to {
+    transform: translateX(100%); /* Trượt ra khỏi màn hình */
+    opacity: 0; /* Hoàn toàn mờ */
+  }
+}
+
+/* Áp dụng hiệu ứng khi xuất hiện và ẩn */
+.animate-toast {
+  animation: slideIn 0.5s ease-out, slideOut 0.5s ease-in 2.5s forwards;
+}

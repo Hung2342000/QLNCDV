@@ -14,6 +14,7 @@ import { EmployeeService } from '../../employee/service/employee.service';
 import { FormBuilder, Validators } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
 import { IAttendanceDetail } from '../attendanceDetail.model';
+import { ToastComponent } from '../../../layouts/toast/toast.component';
 
 @Component({
   selector: 'jhi-attendance',
@@ -21,6 +22,8 @@ import { IAttendanceDetail } from '../attendanceDetail.model';
 })
 export class AttendanceComponent implements OnInit {
   @ViewChild('add') add: TemplateRef<any> | undefined;
+  @ViewChild('toast') toast!: ToastComponent;
+
   attendances?: IAttendance[] | any;
   isLoading = false;
   totalItems = 0;
@@ -84,6 +87,12 @@ export class AttendanceComponent implements OnInit {
   addAtt(attendance: IAttendance): void {
     this.updateForm(attendance);
     this.modalService.open(this.add, { size: 'lg', backdrop: 'static' });
+  }
+
+  success(): void {
+    this.closeModal();
+    this.editForm.reset();
+    this.toast.showToast('Thành công');
   }
   closeModal(): void {
     this.loadPage();
@@ -229,7 +238,7 @@ export class AttendanceComponent implements OnInit {
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IAttendance>>): void {
     result.pipe(finalize(() => this.onSaveFinalize())).subscribe({
-      next: () => this.closeModal(),
+      next: () => this.success(),
       error: () => this.onSaveError(),
     });
   }

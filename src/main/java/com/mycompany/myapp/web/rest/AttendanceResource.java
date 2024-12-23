@@ -154,13 +154,14 @@ public class AttendanceResource {
         List<Attendance> attendanceList = attendanceService.getAllByDepartmentAll();
         return ResponseEntity.ok().body(attendanceList);
     }
-    //    @GetMapping("/attendances/export")
-    //    public ResponseEntity<byte[]> exportSalary(Long attendanceId) throws IOException {
-    //        byte[] excelBytes = attendanceService.exportAttendance(attendanceId);
-    //        HttpHeaders headers = new HttpHeaders();
-    //        headers.setContentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
-    //        headers.setContentDispositionFormData("attachment", "bangchamcong.xlsx");
-    //
-    //        return new ResponseEntity<>(excelBytes, headers, HttpStatus.OK);
-    //    }
+
+    @GetMapping("/attendances/export")
+    public ResponseEntity<byte[]> exportSalary(Long attendanceId) throws IOException {
+        byte[] excelBytes = attendanceService.exportAttendance(attendanceId);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+        headers.setContentDispositionFormData("attachment", "bangchamcong.xlsx");
+
+        return new ResponseEntity<>(excelBytes, headers, HttpStatus.OK);
+    }
 }

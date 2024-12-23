@@ -167,7 +167,7 @@ public class SalaryDetailService {
             cell2.setCellStyle(detailStyle);
 
             Cell cell3 = row.createCell(3);
-            cell3.setCellValue(rowData.getNumberWorking() != null ? rowData.getNumberWorking().toString() : "");
+            cell3.setCellValue(rowData.getNumberWorkInMonth() != null ? rowData.getNumberWorkInMonth().toString() : "");
             cell3.setCellStyle(detailStyle);
 
             Cell cell4 = row.createCell(4);
