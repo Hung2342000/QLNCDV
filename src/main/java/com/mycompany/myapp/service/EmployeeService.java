@@ -3,14 +3,8 @@ package com.mycompany.myapp.service;
 import static com.mycompany.myapp.security.AuthoritiesConstants.*;
 import static com.mycompany.myapp.security.SecurityUtils.getAuthorities;
 
-import com.mycompany.myapp.domain.CountEmployee;
-import com.mycompany.myapp.domain.Department;
-import com.mycompany.myapp.domain.Employee;
-import com.mycompany.myapp.domain.User;
-import com.mycompany.myapp.repository.CountEmployeeRepository;
-import com.mycompany.myapp.repository.DepartmentRepository;
-import com.mycompany.myapp.repository.EmployeeRepository;
-import com.mycompany.myapp.repository.UserRepository;
+import com.mycompany.myapp.domain.*;
+import com.mycompany.myapp.repository.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -40,17 +34,20 @@ public class EmployeeService {
     private EmployeeRepository employeeRepository;
     private CountEmployeeRepository countEmployeeRepository;
     private DepartmentRepository departmentRepository;
+    private ServiceTypeRepository serviceTypeRepository;
 
     public EmployeeService(
         UserRepository userRepository,
         EmployeeRepository employeeRepository,
         CountEmployeeRepository countEmployeeRepository,
-        DepartmentRepository departmentRepository
+        DepartmentRepository departmentRepository,
+        ServiceTypeRepository serviceTypeRepository
     ) {
         this.userRepository = userRepository;
         this.employeeRepository = employeeRepository;
         this.countEmployeeRepository = countEmployeeRepository;
         this.departmentRepository = departmentRepository;
+        this.serviceTypeRepository = serviceTypeRepository;
     }
 
     public Page<Employee> getAllEmployees(Pageable pageable, String searchCode, String searchName, String searchDepartment) {
@@ -81,6 +78,29 @@ public class EmployeeService {
                 );
         }
         return page;
+    }
+
+    public Employee saveEmployee(Employee employee) {
+        ServiceType serviceType = new ServiceType();
+        if (employee.getServiceType() != null && !employee.getIsTeller()) {
+            serviceType =
+                serviceTypeRepository.findServiceTypeByServiceNameAndRegion(
+                    serviceTypeRepository.findById(employee.getServiceType()).get().getServiceName(),
+                    employee.getRegion()
+                );
+        } else if (employee.getServiceType() != null && employee.getIsTeller() && employee.getRank() != null) {
+            serviceType =
+                serviceTypeRepository.findServiceTypeByServiceNameAndRegionRank(
+                    serviceTypeRepository.findById(employee.getServiceType()).get().getServiceName(),
+                    employee.getRegion(),
+                    employee.getRank()
+                );
+        }
+        if (serviceType.getBasicSalary() != null) {
+            employee.setBasicSalary(serviceType.getBasicSalary());
+        }
+        employeeRepository.save(employee);
+        return employee;
     }
 
     public List<Employee> getAllEmployeeNoPage() {

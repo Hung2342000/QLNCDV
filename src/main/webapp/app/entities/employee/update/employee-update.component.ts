@@ -9,6 +9,7 @@ import { IEmployee, Employee } from '../employee.model';
 import { EmployeeService } from '../service/employee.service';
 import { IDepartment } from '../department.model';
 import { DATE_FORMAT_CUSTOM } from '../../../config/input.constants';
+import { IServiceType } from '../service-type.model';
 
 @Component({
   selector: 'jhi-employee-update',
@@ -17,6 +18,8 @@ import { DATE_FORMAT_CUSTOM } from '../../../config/input.constants';
 export class EmployeeUpdateComponent implements OnInit {
   isSaving = false;
   departments?: IDepartment[] | any;
+  serviceTypes?: IServiceType[] | any;
+  serviceTypesCustom?: IServiceType[] | any;
 
   editForm = this.fb.group({
     id: [null, [Validators.required]],
@@ -32,6 +35,10 @@ export class EmployeeUpdateComponent implements OnInit {
     department: [],
     startDate: [],
     basicSalary: [],
+    serviceType: [],
+    region: [],
+    isTeller: [false],
+    rank: [],
   });
 
   constructor(protected employeeService: EmployeeService, protected activatedRoute: ActivatedRoute, protected fb: FormBuilder) {}
@@ -43,6 +50,12 @@ export class EmployeeUpdateComponent implements OnInit {
     this.employeeService.queryDepartment().subscribe({
       next: (res: HttpResponse<IDepartment[]>) => {
         this.departments = res.body;
+      },
+    });
+
+    this.employeeService.queryServiceTypeCustom().subscribe({
+      next: (res: HttpResponse<IServiceType[]>) => {
+        this.serviceTypesCustom = res.body;
       },
     });
   }
@@ -93,7 +106,10 @@ export class EmployeeUpdateComponent implements OnInit {
       privateEmail: employee.privateEmail,
       department: employee.department,
       startDate: employee.startDate?.format(DATE_FORMAT_CUSTOM),
-      basicSalary: employee.basicSalary,
+      serviceType: employee.serviceType,
+      region: employee.region,
+      isTeller: employee.isTeller,
+      rank: employee.rank,
     });
   }
 
@@ -112,7 +128,10 @@ export class EmployeeUpdateComponent implements OnInit {
       privateEmail: this.editForm.get(['privateEmail'])!.value,
       department: this.editForm.get(['department'])!.value,
       startDate: this.editForm.get(['startDate'])!.value,
-      basicSalary: this.editForm.get(['basicSalary'])!.value,
+      serviceType: this.editForm.get(['serviceType'])!.value,
+      region: this.editForm.get(['region'])!.value,
+      isTeller: this.editForm.get(['isTeller'])!.value,
+      rank: this.editForm.get(['rank'])!.value,
     };
   }
 }

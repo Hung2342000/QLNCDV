@@ -14,6 +14,10 @@ export interface IEmployee {
   department?: string | null;
   startDate?: dayjs.Dayjs | null;
   basicSalary?: number | null;
+  serviceType?: number | null;
+  region?: string | null;
+  isTeller?: boolean | null;
+  rank?: string | null;
 }
 
 export class Employee implements IEmployee {
@@ -30,7 +34,11 @@ export class Employee implements IEmployee {
     public privateEmail?: string | null,
     public department?: string | null,
     public startDate?: dayjs.Dayjs | null,
-    public basicSalary?: number | null
+    public basicSalary?: number | null,
+    public serviceType?: number | null,
+    public region?: string | null,
+    public isTeller?: boolean | null,
+    public rank?: string | null
   ) {}
 }
 

@@ -69,7 +69,8 @@ public class EmployeeResource {
         if (employee.getId() != null) {
             throw new BadRequestAlertException("A new employee cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Employee result = employeeRepository.save(employee);
+
+        Employee result = employeeService.saveEmployee(employee);
         return ResponseEntity
             .created(new URI("/api/employees/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -103,7 +104,7 @@ public class EmployeeResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Employee result = employeeRepository.save(employee);
+        Employee result = employeeService.saveEmployee(employee);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, employee.getId().toString()))

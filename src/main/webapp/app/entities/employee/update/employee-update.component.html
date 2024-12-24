@@ -1,9 +1,10 @@
 <div class="d-flex justify-content-center">
-  <div class="col-8">
+  <div class="col-10 border shadow-sm p-3 mb-3 rounded" style="margin-top: 50px; background-color: rgb(248 249 250)">
+    <h4 style="margin-bottom: 30px" id="jhi-employee-heading" data-cy="EmployeeCreateUpdateHeading">Nhân viên</h4>
     <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
-      <h3 id="jhi-employee-heading" data-cy="EmployeeCreateUpdateHeading">Nhân viên</h3>
       <div class="row">
-        <div class="col-md-5">
+        <!-- Cột 1 -->
+        <div style="margin-left: 4%" class="col-md-3">
           <div class="row mb-3">
             <label class="form-label" jhiTranslate="qldvApp.employee.codeEmployee" for="field_codeEmployee">Code Employee</label>
             <input
@@ -35,12 +36,10 @@
               </small>
             </div>
           </div>
-
           <div class="row mb-3">
             <label class="form-label" jhiTranslate="qldvApp.employee.name" for="field_name">Họ và tên</label>
             <input type="text" class="form-control" name="name" id="field_name" data-cy="name" formControlName="name" />
           </div>
-
           <div class="row mb-3">
             <label class="form-label" jhiTranslate="qldvApp.employee.birthday" for="field_birthday">Ngày sinh</label>
             <input
@@ -56,17 +55,18 @@
               [convertModelValue]="true"
             />
           </div>
-
           <div class="row mb-3">
             <label class="form-label" jhiTranslate="qldvApp.employee.otherId" for="field_otherId">Căn cước công dân</label>
             <input type="text" class="form-control" name="otherId" id="field_otherId" data-cy="otherId" formControlName="otherId" />
           </div>
-
           <div class="row mb-3">
             <label class="form-label" jhiTranslate="qldvApp.employee.address" for="field_address">Địa chỉ</label>
             <input type="text" class="form-control" name="address" id="field_address" data-cy="address" formControlName="address" />
           </div>
-
+        </div>
+        <div class="col-md-1"></div>
+        <!-- Cột 2 -->
+        <div class="col-md-3">
           <div class="row mb-3">
             <label class="form-label" jhiTranslate="qldvApp.employee.mobilePhone" for="field_mobilePhone">Số điện thoại cá nhân</label>
             <input
@@ -78,19 +78,14 @@
               formControlName="mobilePhone"
             />
           </div>
-        </div>
-        <div class="col-md-2"></div>
-        <div class="col-md-5">
           <div class="row mb-3">
             <label class="form-label" jhiTranslate="qldvApp.employee.workPhone" for="field_workPhone">Số điện thoại công việc</label>
             <input type="text" class="form-control" name="workPhone" id="field_workPhone" data-cy="workPhone" formControlName="workPhone" />
           </div>
-
           <div class="row mb-3">
             <label class="form-label" jhiTranslate="qldvApp.employee.workEmail" for="field_workEmail">Email công việc</label>
             <input type="text" class="form-control" name="workEmail" id="field_workEmail" data-cy="workEmail" formControlName="workEmail" />
           </div>
-
           <div class="row mb-3">
             <label class="form-label" jhiTranslate="qldvApp.employee.privateEmail" for="field_privateEmail">Email cá nhân</label>
             <input
@@ -102,22 +97,16 @@
               formControlName="privateEmail"
             />
           </div>
-
+        </div>
+        <div class="col-md-1"></div>
+        <!-- Cột 3 -->
+        <div class="col-md-3">
           <div class="row mb-3">
             <label class="form-label" jhiTranslate="qldvApp.employee.department" for="field_department">Phòng ban</label>
             <select class="form-select" id="field_department" formControlName="department" data-cy="department" name="department">
               <option *ngFor="let department of departments" [value]="department.code">{{ department.name }}</option>
             </select>
-            <!--            <input-->
-            <!--              type="text"-->
-            <!--              class="form-control"-->
-            <!--              name="department"-->
-            <!--              id="field_department"-->
-            <!--              data-cy="department"-->
-            <!--              formControlName="department"-->
-            <!--            />-->
           </div>
-
           <div class="row mb-3">
             <label class="form-label" jhiTranslate="qldvApp.employee.startDate" for="field_startDate">Ngày vào làm việc</label>
             <input
@@ -134,23 +123,44 @@
             />
           </div>
           <div class="row mb-3">
-            <label class="form-label" for="field_basicSalary">Lương cơ bản</label>
+            <label class="form-label" for="field_serviceType">Loại hình dịch vụ</label>
+            <select class="form-select" id="field_serviceType" formControlName="serviceType" data-cy="serviceType" name="serviceType">
+              <option *ngFor="let s of serviceTypesCustom" [value]="s.id">{{ s.serviceName }}</option>
+            </select>
+          </div>
+          <div class="row mb-3">
+            <label class="form-label" for="field_region">Vùng</label>
+            <select class="form-select" id="field_region" formControlName="region" data-cy="region" name="region">
+              <option [value]="'2'">2</option>
+              <option [value]="'3'">3</option>
+            </select>
+          </div>
+          <div>
             <input
-              type="number"
-              class="form-control"
-              name="basicSalary"
-              id="field_basicSalary"
-              data-cy="basicSalary"
-              formControlName="basicSalary"
+              type="checkbox"
+              class="form-check-input"
+              id="field_isTeller"
+              formControlName="isTeller"
+              data-cy="isTeller"
+              name="isTeller"
             />
+            <label class="form-label" for="field_isTeller">Là giao dịch viên</label>
+          </div>
+
+          <div *ngIf="editForm.get('isTeller')?.value" class="row mb-3">
+            <label class="form-label" for="field_rank">Cấp bậc</label>
+            <select class="form-select" id="field_rank" formControlName="rank" data-cy="rank" name="rank">
+              <option [value]="'I'">I</option>
+              <option [value]="'SiS'">SiS</option>
+              <option [value]="'Khác'">Khác</option>
+            </select>
           </div>
         </div>
       </div>
-      <div>
+      <div class="text-end" style="margin-bottom: 30px; margin-top: 20px">
         <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-info btn-sm" (click)="previousState()">
           <span>Quay lại</span>
         </button>
-
         <button type="submit" id="save-entity" data-cy="entityCreateSaveButton" class="btn btn-primary btn-sm">
           <span>Lưu</span>
         </button>

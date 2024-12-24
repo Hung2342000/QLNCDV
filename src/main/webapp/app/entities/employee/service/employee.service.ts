@@ -11,15 +11,20 @@ import { createRequestOption } from 'app/core/request/request-util';
 import { IEmployee, getEmployeeIdentifier } from '../employee.model';
 import { IDepartment } from '../department.model';
 import { ICountEmployee } from '../count-employee.model';
+import { ISalaryDetail } from '../../salary/salaryDetail.model';
+import { IServiceType } from '../service-type.model';
 
 export type EntityResponseType = HttpResponse<IEmployee>;
 export type EntityArrayResponseType = HttpResponse<IEmployee[]>;
+export type EntityArrayResponseDepartmentType = HttpResponse<IDepartment[]>;
+export type EntityArrayResponseServiceType = HttpResponse<IServiceType[]>;
 export type EntityArrayResponseCountEmployeeType = HttpResponse<ICountEmployee[]>;
 
 @Injectable({ providedIn: 'root' })
 export class EmployeeService {
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/employees');
   protected resourceUrlDepartment = this.applicationConfigService.getEndpointFor('api/department/all');
+  protected resourceUrlServiceType = this.applicationConfigService.getEndpointFor('api/serviceType/all');
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) {}
 
   create(employee: IEmployee): Observable<EntityResponseType> {
@@ -43,8 +48,15 @@ export class EmployeeService {
       .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
   }
 
-  queryDepartment(): Observable<EntityArrayResponseType> {
+  queryDepartment(): Observable<EntityArrayResponseDepartmentType> {
     return this.http.get<IDepartment[]>(this.resourceUrlDepartment, { observe: 'response' });
+  }
+  queryServiceType(): Observable<EntityArrayResponseServiceType> {
+    return this.http.get<IDepartment[]>(this.resourceUrlServiceType, { observe: 'response' });
+  }
+
+  queryServiceTypeCustom(): Observable<EntityArrayResponseServiceType> {
+    return this.http.get<IDepartment[]>(this.resourceUrlServiceType + '/custom', { observe: 'response' });
   }
 
   queryCountEmployee(): Observable<EntityArrayResponseCountEmployeeType> {

@@ -21,7 +21,7 @@
           <!--            <span jhiTranslate="qldvApp.employee.otherId">Other Id</span> <fa-icon icon="sort"></fa-icon>-->
           <!--          </th>-->
           <th style="width: 12%" scope="col" jhiSortBy="mobilePhone"><span>Số điện thoại cá nhân</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="address"><span>Địa chỉ</span> <fa-icon icon="sort"></fa-icon></th>
+          <!--          <th scope="col" jhiSortBy="address"><span>Địa chỉ</span> <fa-icon icon="sort"></fa-icon></th>-->
           <!--          <th scope="col" jhiSortBy="privateEmail">-->
           <!--            <span jhiTranslate="qldvApp.employee.privateEmail">Private Email</span> <fa-icon icon="sort"></fa-icon>-->
           <!--          </th>-->
@@ -32,6 +32,9 @@
           <!--            <span jhiTranslate="qldvApp.employee.workEmail">Work Email</span> <fa-icon icon="sort"></fa-icon>-->
           <!--          </th>-->
           <th style="width: 10%" scope="col" jhiSortBy="department"><span>Phòng ban</span> <fa-icon icon="sort"></fa-icon></th>
+          <th style="max-width: 100px" scope="col" jhiSortBy="department">
+            <span>Loại hình dịch vụ</span> <fa-icon icon="sort"></fa-icon>
+          </th>
           <th scope="col" jhiSortBy="startDate"><span>Ngày vào làm việc</span> <fa-icon icon="sort"></fa-icon></th>
           <th style="width: 6%" class="text-center" scope="col">Thao tác</th>
         </tr>
@@ -61,7 +64,7 @@
           </th>
           <th scope="col"></th>
           <th scope="col"></th>
-          <th scope="col"></th>
+
           <th scope="col">
             <select style="height: 30px; width: 100%" [(ngModel)]="searchDepartment" (change)="loadPageSearch()">
               <option [value]=""></option>
@@ -78,11 +81,14 @@
           <td>{{ employee.birthday | formatDateVnPipe }}</td>
           <!--          <td>{{ employee.otherId }}</td>-->
           <td>{{ employee.mobilePhone }}</td>
-          <td>{{ employee.address }}</td>
+          <!--          <td>{{ employee.address }}</td>-->
           <!--          <td>{{ employee.workPhone }}</td>-->
           <!--          <td>{{ employee.workEmail }}</td>-->
           <!--          <td>{{ employee.privateEmail }}</td>-->
           <td>{{ departmentName(employee.department) }}</td>
+          <td style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">
+            {{ serviceTypeName(employee.serviceType) }}
+          </td>
           <td>{{ employee.startDate | formatDateVnPipe }}</td>
           <td class="text-end">
             <div class="btn-group">

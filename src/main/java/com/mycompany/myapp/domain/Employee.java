@@ -58,6 +58,19 @@ public class Employee implements Serializable {
     @Column(name = "basic_salary")
     private BigDecimal basicSalary;
 
+    @Column(name = "service_type")
+    private Long serviceType;
+
+    @Column(name = "region")
+    private String region;
+
+    @NotNull
+    @Column(nullable = false)
+    private boolean isTeller;
+
+    @Column(name = "rank")
+    private String rank;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -222,6 +235,38 @@ public class Employee implements Serializable {
 
     public void setBasicSalary(BigDecimal basicSalary) {
         this.basicSalary = basicSalary;
+    }
+
+    public Long getServiceType() {
+        return serviceType;
+    }
+
+    public void setServiceType(Long serviceType) {
+        this.serviceType = serviceType;
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
+    public boolean getIsTeller() {
+        return isTeller;
+    }
+
+    public void setIsTeller(boolean isTeller) {
+        isTeller = isTeller;
+    }
+
+    public String getRank() {
+        return rank;
+    }
+
+    public void setRank(String rank) {
+        this.rank = rank;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

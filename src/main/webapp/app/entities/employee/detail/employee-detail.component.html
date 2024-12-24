@@ -4,7 +4,7 @@
       <h3 data-cy="employeeDetailsHeading" style="margin-top: 12px"><span>Nhân viên</span></h3>
       <hr />
       <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-4">
           <div style="display: flex; margin-bottom: 15px; flex-wrap: wrap">
             <span style="margin-right: 10px; font-weight: bold">Mã nhân viên</span>
             <span>{{ employee.codeEmployee }}</span>
@@ -21,13 +21,9 @@
             <span style="margin-right: 10px; font-weight: bold">Căn cước công dân</span>
             <span>{{ employee.otherId }}</span>
           </div>
-          <div style="display: flex; margin-bottom: 15px; flex-wrap: wrap">
-            <span style="margin-right: 10px; font-weight: bold">Địa chỉ</span>
-            <span>{{ employee.address }}</span>
-          </div>
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-4">
           <div style="display: flex; margin-bottom: 15px; flex-wrap: wrap">
             <span style="margin-right: 10px; font-weight: bold">Số điện thoại cá nhân</span>
             <span>{{ employee.mobilePhone }}</span>
@@ -44,13 +40,35 @@
             <span style="margin-right: 10px; font-weight: bold">Email công việc</span>
             <span>{{ employee.workEmail }}</span>
           </div>
+
+          <div style="display: flex; margin-bottom: 15px; flex-wrap: wrap">
+            <span style="margin-right: 10px; font-weight: bold">Địa chỉ</span>
+            <span>{{ employee.address }}</span>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div style="display: flex; margin-bottom: 15px; flex-wrap: wrap">
+            <span style="margin-right: 10px; font-weight: bold">Ngày vào làm việc</span>
+            <span>{{ employee.startDate | formatDateVnPipe }}</span>
+          </div>
           <div style="display: flex; margin-bottom: 15px; flex-wrap: wrap">
             <span style="margin-right: 10px; font-weight: bold">Phòng ban</span>
             <span>{{ departmentName(employee.department) }}</span>
           </div>
+
           <div style="display: flex; margin-bottom: 15px; flex-wrap: wrap">
-            <span style="margin-right: 10px; font-weight: bold">Ngày vào làm việc</span>
-            <span>{{ employee.startDate | formatMediumDate }}</span>
+            <span style="margin-right: 10px; font-weight: bold">Loại hình dịch vụ</span>
+            <span>{{ serviceTypeName(employee.serviceType) }}</span>
+          </div>
+
+          <div style="display: flex; margin-bottom: 15px; flex-wrap: wrap">
+            <span style="margin-right: 10px; font-weight: bold">Vùng</span>
+            <span>{{ employee.region }}</span>
+          </div>
+
+          <div style="display: flex; margin-bottom: 15px; flex-wrap: wrap">
+            <span style="margin-right: 10px; font-weight: bold">Lương cơ bản</span>
+            <span>{{ employee.basicSalary }}</span>
           </div>
         </div>
       </div>

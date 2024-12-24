@@ -11,6 +11,7 @@ import { EmployeeService } from '../service/employee.service';
 import { EmployeeDeleteDialogComponent } from '../delete/employee-delete-dialog.component';
 import { IDepartment } from '../department.model';
 import { EmployeeDetailComponent } from '../detail/employee-detail.component';
+import { IServiceType } from '../service-type.model';
 
 @Component({
   selector: 'jhi-employee',
@@ -29,6 +30,7 @@ export class EmployeeComponent implements OnInit {
   searchName?: string = '';
   searchCode?: string = '';
   searchDepartment?: string = '';
+  serviceTypesCustom?: IServiceType[] | any;
 
   constructor(
     protected employeeService: EmployeeService,
@@ -67,6 +69,11 @@ export class EmployeeComponent implements OnInit {
     this.employeeService.queryDepartment().subscribe({
       next: (res: HttpResponse<IDepartment[]>) => {
         this.departments = res.body;
+      },
+    });
+    this.employeeService.queryServiceTypeCustom().subscribe({
+      next: (res: HttpResponse<IServiceType[]>) => {
+        this.serviceTypesCustom = res.body;
       },
     });
   }
@@ -118,6 +125,16 @@ export class EmployeeComponent implements OnInit {
     return name;
   }
 
+  serviceTypeName(id: number | null | undefined): any {
+    let name = id;
+    for (let i = 0; i < this.serviceTypesCustom.length; i++) {
+      if (id === this.serviceTypesCustom[i].id) {
+        name = this.serviceTypesCustom[i].serviceName;
+      }
+    }
+    return name;
+  }
+
   newArr(lenght: number): any[] {
     if (lenght > 0) {
       return new Array(lenght);
@@ -126,9 +143,10 @@ export class EmployeeComponent implements OnInit {
     }
   }
   view(employee: IEmployee): void {
-    const modalRef = this.modalService.open(EmployeeDetailComponent, { size: 'lg', backdrop: 'static' });
+    const modalRef = this.modalService.open(EmployeeDetailComponent, { size: 'xl', backdrop: 'static' });
     modalRef.componentInstance.employee = employee;
     modalRef.componentInstance.departments = this.departments;
+    modalRef.componentInstance.serviceTypesCustom = this.serviceTypesCustom;
   }
   protected sort(): string[] {
     const result = [this.predicate + ',' + (this.ascending ? ASC : DESC)];
