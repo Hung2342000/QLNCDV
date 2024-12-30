@@ -25,8 +25,17 @@ public class SalaryDetail implements Serializable {
     @Column(name = "employeeId")
     private Long employeeId;
 
-    @Column(name = "basicSalary")
-    private BigDecimal basicSalary;
+    @Column(name = "chucDanh")
+    private String chucDanh;
+
+    @Column(name = "diemCungCapDV")
+    private String diemCungCapDV;
+
+    @Column(name = "vung")
+    private String vung;
+
+    @Column(name = "donGiaDichVu")
+    private BigDecimal donGiaDichVu;
 
     @Column(name = "numberWorking")
     private BigDecimal numberWorking;
@@ -34,14 +43,23 @@ public class SalaryDetail implements Serializable {
     @Column(name = "numberWorkInMonth")
     private BigDecimal numberWorkInMonth;
 
-    @Column(name = "allowance")
-    private BigDecimal allowance;
+    @Column(name = "donGiaDichVuThucNhan")
+    private BigDecimal donGiaDichVuThucNhan;
 
-    @Column(name = "incentiveSalary")
-    private BigDecimal incentiveSalary;
+    @Column(name = "mucChiToiThieu")
+    private BigDecimal mucChiToiThieu;
 
-    @Column(name = "amount")
-    private BigDecimal amount;
+    @Column(name = "xepLoai")
+    private String xepLoai;
+
+    @Column(name = "htc")
+    private String htc;
+
+    @Column(name = "chiPhiGiamTru")
+    private BigDecimal chiPhiGiamTru;
+
+    @Column(name = "chiPhiThueDichVu")
+    private BigDecimal chiPhiThueDichVu;
 
     @Column(name = "note")
     private String note;
@@ -72,12 +90,36 @@ public class SalaryDetail implements Serializable {
         this.employeeId = employeeId;
     }
 
-    public BigDecimal getBasicSalary() {
-        return basicSalary;
+    public String getChucDanh() {
+        return chucDanh;
     }
 
-    public void setBasicSalary(BigDecimal basicSalary) {
-        this.basicSalary = basicSalary;
+    public void setChucDanh(String chucDanh) {
+        this.chucDanh = chucDanh;
+    }
+
+    public String getDiemCungCapDV() {
+        return diemCungCapDV;
+    }
+
+    public void setDiemCungCapDV(String diemCungCapDV) {
+        this.diemCungCapDV = diemCungCapDV;
+    }
+
+    public String getVung() {
+        return vung;
+    }
+
+    public void setVung(String vung) {
+        this.vung = vung;
+    }
+
+    public BigDecimal getDonGiaDichVu() {
+        return donGiaDichVu;
+    }
+
+    public void setDonGiaDichVu(BigDecimal donGiaDichVu) {
+        this.donGiaDichVu = donGiaDichVu;
     }
 
     public BigDecimal getNumberWorking() {
@@ -88,28 +130,60 @@ public class SalaryDetail implements Serializable {
         this.numberWorking = numberWorking;
     }
 
-    public BigDecimal getAllowance() {
-        return allowance;
+    public BigDecimal getNumberWorkInMonth() {
+        return numberWorkInMonth;
     }
 
-    public void setAllowance(BigDecimal allowance) {
-        this.allowance = allowance;
+    public void setNumberWorkInMonth(BigDecimal numberWorkInMonth) {
+        this.numberWorkInMonth = numberWorkInMonth;
     }
 
-    public BigDecimal getIncentiveSalary() {
-        return incentiveSalary;
+    public BigDecimal getDonGiaDichVuThucNhan() {
+        return donGiaDichVuThucNhan;
     }
 
-    public void setIncentiveSalary(BigDecimal incentiveSalary) {
-        this.incentiveSalary = incentiveSalary;
+    public void setDonGiaDichVuThucNhan(BigDecimal donGiaDichVuThucNhan) {
+        this.donGiaDichVuThucNhan = donGiaDichVuThucNhan;
     }
 
-    public BigDecimal getAmount() {
-        return amount;
+    public BigDecimal getMucChiToiThieu() {
+        return mucChiToiThieu;
     }
 
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
+    public void setMucChiToiThieu(BigDecimal mucChiToiThieu) {
+        this.mucChiToiThieu = mucChiToiThieu;
+    }
+
+    public String getXepLoai() {
+        return xepLoai;
+    }
+
+    public void setXepLoai(String xepLoai) {
+        this.xepLoai = xepLoai;
+    }
+
+    public String getHtc() {
+        return htc;
+    }
+
+    public void setHtc(String htc) {
+        this.htc = htc;
+    }
+
+    public BigDecimal getChiPhiGiamTru() {
+        return chiPhiGiamTru;
+    }
+
+    public void setChiPhiGiamTru(BigDecimal chiPhiGiamTru) {
+        this.chiPhiGiamTru = chiPhiGiamTru;
+    }
+
+    public BigDecimal getChiPhiThueDichVu() {
+        return chiPhiThueDichVu;
+    }
+
+    public void setChiPhiThueDichVu(BigDecimal chiPhiThueDichVu) {
+        this.chiPhiThueDichVu = chiPhiThueDichVu;
     }
 
     public String getNote() {
@@ -118,14 +192,6 @@ public class SalaryDetail implements Serializable {
 
     public void setNote(String note) {
         this.note = note;
-    }
-
-    public BigDecimal getNumberWorkInMonth() {
-        return numberWorkInMonth;
-    }
-
-    public void setNumberWorkInMonth(BigDecimal numberWorkInMonth) {
-        this.numberWorkInMonth = numberWorkInMonth;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

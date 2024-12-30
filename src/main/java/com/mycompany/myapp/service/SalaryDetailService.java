@@ -50,17 +50,17 @@ public class SalaryDetailService {
     }
 
     public SalaryDetail updateSalaryDetail(SalaryDetail salaryDetail) {
-        BigDecimal amount = salaryDetail
-            .getBasicSalary()
-            .multiply(salaryDetail.getNumberWorking())
-            .divide(salaryDetail.getNumberWorkInMonth(), 2, RoundingMode.HALF_UP);
-        if (salaryDetail.getAllowance() != null) {
-            amount = amount.add(salaryDetail.getAllowance());
-        }
-        if (salaryDetail.getIncentiveSalary() != null) {
-            amount = amount.add(salaryDetail.getIncentiveSalary());
-        }
-        salaryDetail.setAmount(amount);
+        //        BigDecimal amount = salaryDetail
+        //            .getBasicSalary()
+        //            .multiply(salaryDetail.getNumberWorking())
+        //            .divide(salaryDetail.getNumberWorkInMonth(), 2, RoundingMode.HALF_UP);
+        //        if (salaryDetail.getAllowance() != null) {
+        //            amount = amount.add(salaryDetail.getAllowance());
+        //        }
+        //        if (salaryDetail.getIncentiveSalary() != null) {
+        //            amount = amount.add(salaryDetail.getIncentiveSalary());
+        //        }
+        //        salaryDetail.setAmount(amount);
         this.salaryDetailRepository.save(salaryDetail);
         return salaryDetail;
     }
@@ -163,7 +163,7 @@ public class SalaryDetailService {
             cell1.setCellStyle(detailStyle);
 
             Cell cell2 = row.createCell(2);
-            cell2.setCellValue(rowData.getBasicSalary() != null ? rowData.getBasicSalary().toString() : "");
+            cell2.setCellValue("");
             cell2.setCellStyle(detailStyle);
 
             Cell cell3 = row.createCell(3);
@@ -171,15 +171,15 @@ public class SalaryDetailService {
             cell3.setCellStyle(detailStyle);
 
             Cell cell4 = row.createCell(4);
-            cell4.setCellValue(rowData.getAllowance() != null ? rowData.getAllowance().toString() : "");
+            cell4.setCellValue("");
             cell4.setCellStyle(detailStyle);
 
             Cell cell5 = row.createCell(5);
-            cell5.setCellValue(rowData.getIncentiveSalary() != null ? rowData.getIncentiveSalary().toString() : "");
+            cell5.setCellValue("");
             cell5.setCellStyle(detailStyle);
 
             Cell cell6 = row.createCell(6);
-            cell6.setCellValue(rowData.getAmount() != null ? rowData.getAmount().toString() : "");
+            cell6.setCellValue("");
             cell6.setCellStyle(detailStyle);
             stt++;
         }

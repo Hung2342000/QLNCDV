@@ -14,13 +14,13 @@ import { IServiceType } from '../service-type.model';
 @Component({
   selector: 'jhi-employee-update',
   templateUrl: './employee-update.component.html',
+  styleUrls: ['./employee-update.component.scss'],
 })
 export class EmployeeUpdateComponent implements OnInit {
   isSaving = false;
   departments?: IDepartment[] | any;
   serviceTypes?: IServiceType[] | any;
   serviceTypesCustom?: IServiceType[] | any;
-
   editForm = this.fb.group({
     id: [null, [Validators.required]],
     codeEmployee: [null, [Validators.required]],
@@ -37,7 +37,6 @@ export class EmployeeUpdateComponent implements OnInit {
     basicSalary: [],
     serviceType: [],
     region: [],
-    isTeller: [false],
     rank: [],
   });
 
@@ -53,7 +52,7 @@ export class EmployeeUpdateComponent implements OnInit {
       },
     });
 
-    this.employeeService.queryServiceTypeCustom().subscribe({
+    this.employeeService.queryServiceType().subscribe({
       next: (res: HttpResponse<IServiceType[]>) => {
         this.serviceTypesCustom = res.body;
       },
@@ -62,7 +61,6 @@ export class EmployeeUpdateComponent implements OnInit {
   previousState(): void {
     window.history.back();
   }
-
   save(): void {
     this.isSaving = true;
     const employee = this.createFromForm();
@@ -108,7 +106,6 @@ export class EmployeeUpdateComponent implements OnInit {
       startDate: employee.startDate?.format(DATE_FORMAT_CUSTOM),
       serviceType: employee.serviceType,
       region: employee.region,
-      isTeller: employee.isTeller,
       rank: employee.rank,
     });
   }
@@ -130,7 +127,6 @@ export class EmployeeUpdateComponent implements OnInit {
       startDate: this.editForm.get(['startDate'])!.value,
       serviceType: this.editForm.get(['serviceType'])!.value,
       region: this.editForm.get(['region'])!.value,
-      isTeller: this.editForm.get(['isTeller'])!.value,
       rank: this.editForm.get(['rank'])!.value,
     };
   }

@@ -2,12 +2,18 @@ export interface ISalaryDetail {
   id?: number;
   salaryId?: number | null;
   employeeId?: number | null;
-  basicSalary?: number | null;
+  diemCungCapDV?: string | null;
+  chucDanh?: string | null;
+  vung?: string | null;
+  donGiaDichVu?: number | null;
   numberWorking?: number | null;
   numberWorkInMonth?: number | null;
-  allowance?: number | null;
-  incentiveSalary?: number | null;
-  amount?: number | null;
+  donGiaDichVuThucNhan?: number | null;
+  mucChiToiThieu?: number | null;
+  xepLoai?: string | null;
+  htc?: string | null;
+  chiPhiGiamTru?: number | null;
+  chiPhiThueDichVu?: number | null;
   note?: string | null;
 }
 
@@ -16,12 +22,18 @@ export class SalaryDetail implements ISalaryDetail {
     public id?: number,
     public salaryId?: number | null,
     public employeeId?: number | null,
-    public basicSalary?: number | null,
+    public diemCungCapDV?: string | null,
+    public chucDanh?: string | null,
+    public vung?: string | null,
+    public donGiaDichVu?: number | null,
     public numberWorking?: number | null,
     public numberWorkInMonth?: number | null,
-    public allowance?: number | null,
-    public incentiveSalary?: number | null,
-    public amount?: number | null,
+    public donGiaDichVuThucNhan?: number | null,
+    public mucChiToiThieu?: number | null,
+    public xepLoai?: string | null,
+    public htc?: string | null,
+    public chiPhiGiamTru?: number | null,
+    public chiPhiThueDichVu?: number | null,
     public note?: string | null
   ) {}
 }

@@ -1,5 +1,6 @@
 package com.mycompany.myapp.web.rest;
 
+import com.mycompany.myapp.domain.AttendanceDetail;
 import com.mycompany.myapp.domain.Salary;
 import com.mycompany.myapp.domain.SalaryDetail;
 import com.mycompany.myapp.repository.SalaryDetailRepository;
@@ -154,5 +155,11 @@ public class SalaryDetailResource {
         headers.setContentDispositionFormData("attachment", "bangluong.xlsx");
 
         return new ResponseEntity<>(excelBytes, headers, HttpStatus.OK);
+    }
+
+    @GetMapping("/salary-detail/all/{id}")
+    public ResponseEntity<List<SalaryDetail>> getAllSalaryDetail(@PathVariable Long id) throws IOException {
+        List<SalaryDetail> salaryDetailList = salaryDetailRepository.getSalaryDetailBySalaryId(id);
+        return ResponseEntity.ok().body(salaryDetailList);
     }
 }

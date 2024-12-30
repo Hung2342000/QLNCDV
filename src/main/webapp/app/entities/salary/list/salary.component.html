@@ -127,25 +127,6 @@
           </div>
         </div>
         <div class="col-md-6">
-          <div>
-            <label class="form-label" for="field_numberWork">Số ngày công trong tháng</label>
-            <div class="input-group">
-              <input
-                class="form-control"
-                type="number"
-                name="numberWork"
-                id="field_numberWork"
-                data-cy="numberWork"
-                formControlName="numberWork"
-              />
-            </div>
-          </div>
-          <div>
-            <label class="form-label" for="field_attendanceId">Bảng chấm công</label>
-            <select class="form-select" id="field_attendanceId" formControlName="attendanceId" data-cy="attendanceId" name="attendanceId">
-              <option *ngFor="let attendance of attendanceList" [value]="attendance.id">{{ attendance.name }}</option>
-            </select>
-          </div>
           <div class="row mb-3">
             <div class="col-md-6">
               <label class="form-label" for="field_month">Tháng</label>
@@ -168,6 +149,37 @@
               <label class="form-label" for="field_year">Năm</label>
               <input type="text" class="form-control" name="year" id="field_year" data-cy="year" formControlName="year" />
             </div>
+          </div>
+
+          <div>
+            <label class="form-label" for="field_numberWork">Số ngày công trong tháng</label>
+            <div class="input-group">
+              <input
+                class="form-control"
+                type="number"
+                name="numberWork"
+                id="field_numberWork"
+                data-cy="numberWork"
+                formControlName="numberWork"
+              />
+            </div>
+          </div>
+          <div style="margin-top: 10px">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              id="field_isAttendance"
+              formControlName="isAttendance"
+              data-cy="isAttendance"
+              name="isAttendance"
+            />
+            <label class="form-label" for="field_isAttendance">Bảng lương theo bảng chấm công</label>
+          </div>
+          <div *ngIf="editForm.get('isAttendance')?.value">
+            <label class="form-label" for="field_attendanceId">Bảng chấm công</label>
+            <select class="form-select" id="field_attendanceId" formControlName="attendanceId" data-cy="attendanceId" name="attendanceId">
+              <option *ngFor="let attendance of attendanceList" [value]="attendance.id">{{ attendance.name }}</option>
+            </select>
           </div>
         </div>
       </div>

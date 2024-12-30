@@ -48,8 +48,8 @@ public class Salary implements Serializable {
     )
     private List<Employee> employees;
 
-    @Column(name = "isAttendance")
-    private Boolean isAttendance;
+    @Column(name = "isAttendance", nullable = false)
+    private boolean isAttendance;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -109,20 +109,20 @@ public class Salary implements Serializable {
         this.employees = employees;
     }
 
-    public Boolean getAttendance() {
-        return isAttendance;
-    }
-
-    public void setAttendance(Boolean attendance) {
-        isAttendance = attendance;
-    }
-
     public Long getAttendanceId() {
         return attendanceId;
     }
 
     public void setAttendanceId(Long attendanceId) {
         this.attendanceId = attendanceId;
+    }
+
+    public boolean getIsAttendance() {
+        return isAttendance;
+    }
+
+    public void setIsAttendance(boolean attendance) {
+        isAttendance = attendance;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

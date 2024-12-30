@@ -71,7 +71,7 @@ export class EmployeeComponent implements OnInit {
         this.departments = res.body;
       },
     });
-    this.employeeService.queryServiceTypeCustom().subscribe({
+    this.employeeService.queryServiceType().subscribe({
       next: (res: HttpResponse<IServiceType[]>) => {
         this.serviceTypesCustom = res.body;
       },

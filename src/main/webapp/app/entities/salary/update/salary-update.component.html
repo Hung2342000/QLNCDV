@@ -66,118 +66,121 @@
     </div>
   </div>
 </form>
-<div class="text-end">
-  <button (click)="exportToExcel()" class="btn btn-secondary ml-2 btn-sm">
-    <span>Export</span>
-  </button>
-</div>
-<div class="table-responsive" id="entities" style="border-top: 1px solid; margin-top: 20px">
-  <table class="table table-hover" aria-describedby="page-heading">
-    <thead>
-      <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="loadPage()">
-        <th scope="col" style="width: 5%" jhiSortBy="id"><span>STT</span></th>
-        <th scope="col" style="width: 10%"><span>Tên nhân viên</span></th>
-        <th style="width: 20%" scope="col"><span>Lương cơ bản</span></th>
-        <th scope="col" class="text-center"><span>Số ngày nhận lương</span></th>
-        <th scope="col"><span>Phụ cấp</span></th>
-        <th scope="col"><span>Lương khuyến khích</span></th>
-        <th scope="col"><span>Thành tiền</span></th>
-        <th style="width: 6%" class="text-center" scope="col">Thao tác</th>
-      </tr>
-    </thead>
-    <tbody style="border-top: 1px solid">
-      <tr *ngFor="let salaryDetail of salaryDetails; trackBy: trackId; let i = index" data-cy="entityTable">
-        <td>{{ i + 1 }}</td>
-        <td>{{ employeeName(salaryDetail.employeeId) }}</td>
-        <td>{{ salaryDetail.basicSalary }}</td>
-        <td class="text-center">{{ salaryDetail.numberWorkInMonth }}</td>
-        <td>{{ salaryDetail.allowance }}</td>
-        <td>{{ salaryDetail.incentiveSalary }}</td>
-        <td>{{ salaryDetail.amount }}</td>
-        <td class="text-end">
-          <div class="btn-group">
-            <button type="submit" (click)="edit(salaryDetail)" class="btn btn-primary btn-sm" data-cy="entityEditButton">
-              <fa-icon icon="pencil-alt"></fa-icon>
-            </button>
+<!--<div class="text-end">-->
+<!--  <button (click)="exportToExcel()" class="btn btn-secondary ml-2 btn-sm">-->
+<!--    <span>Export</span>-->
+<!--  </button>-->
+<!--</div>-->
 
-            <button type="submit" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
-              <fa-icon icon="times"></fa-icon>
-            </button>
-          </div>
-        </td>
-      </tr>
-      <tr *ngFor="let l of newArr(10 - salaryDetails.length)">
-        <td class="text-center empty-row">&nbsp;</td>
-        <td class="text-center empty-row"></td>
-        <td class="text-center empty-row"></td>
-        <td class="text-center empty-row"></td>
-        <td class="text-center empty-row"></td>
-        <td class="text-center empty-row"></td>
-        <td class="text-center empty-row"></td>
-        <td class="text-center empty-row"></td>
-      </tr>
-    </tbody>
-  </table>
-</div>
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div class="d-flex justify-content-end" *ngIf="isEdit == true">
+    <button style="margin-top: 10px; margin-right: 5px; margin-bottom: 20px" type="submit" class="btn btn-primary btn-sm">
+      <span>Lưu</span>
+    </button>
 
-<div *ngIf="salaryDetails && salaryDetails.length > 0" class="d-flex justify-content-end">
-  <div class="p-3 d-flex" style="justify-content: space-between">
-    <select style="border-radius: 7%; height: 35px" [(ngModel)]="itemsPerPage" (change)="loadPage()">
-      <option value="10">10</option>
-      <option value="20">20</option>
-      <option value="30">30</option>
-    </select>
-    <div style="font-size: 20px; margin-right: 15px">
-      <span style="width: 170px; padding-left: 20px; font-size: 15px">Tổng số: {{ this.totalItems }} </span>
-    </div>
-    <ngb-pagination
-      [collectionSize]="totalItems"
-      [(page)]="ngbPaginationPage"
-      [pageSize]="itemsPerPage"
-      [maxSize]="5"
-      [rotate]="true"
-      [boundaryLinks]="true"
-      (pageChange)="loadPage($event)"
-      class=""
-    ></ngb-pagination>
+    <button style="margin-top: 10px; margin-bottom: 20px" (click)="close()" class="btn btn-dark btn-sm">
+      <span>Đóng</span>
+    </button>
   </div>
-</div>
 
-<ng-template style="width: 300px" #addDetailSalary let-modal>
-  <div class="modal-header">
-    <h4 class="modal-title" data-cy="toolDeleteDialogHeading">Chi tiết bảng lương</h4>
-    <button type="button" class="btn-close" data-dismiss="modal" aria-hidden="true" (click)="closeModal()"></button>
-  </div>
-  <div class="modal-body">
-    <form name="editForm" role="form" novalidate (ngSubmit)="saveDetail()" [formGroup]="editFormDetail">
-      <div class="row">
-        <div class="col-md-12">
-          <div class="row mb-3">
-            <label class="form-label" for="field_employeeId">Nhân viên</label>
-            <div class="input-group">
-              <select class="form-select" id="field_employeeId" formControlName="employeeId" data-cy="employeeId" name="employeeId">
-                <option *ngFor="let employee of employeeList" [value]="employee.id">{{ employee.name }}</option>
-              </select>
-            </div>
-          </div>
-          <div class="row mb-3">
-            <label class="form-label" for="field_basicSalary">Lương cơ bản</label>
+  <div style="max-height: 650px; width: 100%; overflow-x: auto; overflow-y: auto; white-space: nowrap">
+    <table class="table lh-table-column--bytes table-bordered">
+      <thead style="background-color: #3b3e66; color: white">
+        <tr>
+          <th style="width: 50px; position: sticky; left: 0; z-index: 2; background: #3b3e66"><span>STT</span></th>
+          <th style="min-width: 240px !important; position: sticky; left: 45px; z-index: 2; background: #3b3e66"><span>Nhân viên</span></th>
+          <th style="min-width: 90px !important">Điểm cung cấp dịch vụ</th>
+          <th style="min-width: 90px !important">Chức danh</th>
+          <th style="min-width: 90px !important">Vùng</th>
+          <th style="min-width: 90px !important">Đơn giá dịch vụ</th>
+          <th style="min-width: 90px !important">Số ngày thực hiện tiêu chuẩn</th>
+          <th style="min-width: 90px !important">Số ngày thực hiện thực tế</th>
+          <th style="min-width: 90px !important">Đơn giá dịch vụ thực tế</th>
+          <th style="min-width: 90px !important">Mức chi trả tối thiểu</th>
+          <th style="min-width: 90px !important">Xếp loại CLDV</th>
+          <th style="min-width: 90px !important">Hệ số hoàn thành</th>
+          <th style="min-width: 90px !important">Chi phí giảm trừ</th>
+          <th style="min-width: 90px !important">Chi phí thuê dịch vụ</th>
+          <th style="min-width: 90px !important">Ghi chú</th>
+        </tr>
+      </thead>
+      <tbody formArrayName="details">
+        <tr *ngFor="let detail of details.value; let i = index" [formGroupName]="i">
+          <td style="position: sticky; left: 0; z-index: 2; background: white">{{ i + 1 }}</td>
+          <td style="position: sticky; left: 45px; z-index: 2; background: white">
+            <select
+              style="border: none; font-weight: 600"
+              class="form-select"
+              id="field_employeeId"
+              formControlName="employeeId"
+              data-cy="employeeId"
+              name="employeeId"
+            >
+              <option *ngFor="let employee of employeeList" [value]="employee.id">{{ employee.name }}</option>
+            </select>
+          </td>
+
+          <td>
             <div class="input-group">
               <input
-                type="number"
+                style="border: none; outline: none"
+                type="text"
                 class="form-control"
-                name="basicSalary"
-                id="field_basicSalary"
-                data-cy="basicSalary"
-                formControlName="basicSalary"
+                name="diemCungCapDV"
+                id="field_diemCungCapDV"
+                data-cy="diemCungCapDV"
+                formControlName="diemCungCapDV"
               />
             </div>
-          </div>
-          <div class="row mb-3">
-            <label class="form-label" for="field_numberWorking">Số ngày tính luương</label>
+          </td>
+
+          <td>
             <div class="input-group">
               <input
-                type="number"
+                style="border: none; outline: none"
+                type="text"
+                class="form-control"
+                name="chucDanh"
+                id="field_chucDanh"
+                data-cy="chucDanh"
+                formControlName="chucDanh"
+              />
+            </div>
+          </td>
+
+          <td>
+            <div class="input-group">
+              <input
+                style="border: none; outline: none"
+                type="text"
+                class="form-control"
+                name="vung"
+                id="field_vung"
+                data-cy="vung"
+                formControlName="vung"
+              />
+            </div>
+          </td>
+
+          <td>
+            <div class="input-group">
+              <input
+                style="border: none; outline: none"
+                type="text"
+                class="form-control"
+                name="donGiaDichVu"
+                id="field_donGiaDichVu"
+                data-cy="donGiaDichVu"
+                formControlName="donGiaDichVu"
+              />
+            </div>
+          </td>
+
+          <td>
+            <div class="input-group">
+              <input
+                style="border: none; outline: none"
+                type="text"
                 class="form-control"
                 name="numberWorking"
                 id="field_numberWorking"
@@ -185,42 +188,121 @@
                 formControlName="numberWorking"
               />
             </div>
-          </div>
-          <div class="row mb-3">
-            <label class="form-label" for="field_allowance">Phụ cấp</label>
+          </td>
+
+          <td>
             <div class="input-group">
               <input
-                type="number"
+                style="border: none; outline: none"
+                type="text"
                 class="form-control"
-                name="allowance"
-                id="field_allowance"
-                data-cy="allowance"
-                formControlName="allowance"
+                name="numberWorkInMonth"
+                id="numberWorkInMonth"
+                data-cy="numberWorkInMonth"
+                formControlName="numberWorkInMonth"
               />
             </div>
-          </div>
-          <div class="row mb-3">
-            <label class="form-label" for="field_incentiveSalary">Lương khuyến khích</label>
+          </td>
+
+          <td>
             <div class="input-group">
               <input
-                type="number"
+                style="border: none; outline: none"
+                type="text"
                 class="form-control"
-                name="incentiveSalary"
-                id="field_incentiveSalary"
-                data-cy="incentiveSalary"
-                formControlName="incentiveSalary"
+                name="donGiaDichVuThucNhan"
+                id="donGiaDichVuThucNhan"
+                data-cy="donGiaDichVuThucNhan"
+                formControlName="donGiaDichVuThucNhan"
               />
             </div>
-          </div>
-        </div>
-      </div>
-      <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal" (click)="closeModal()">
-        <span>Đóng</span>
-      </button>
-      <button type="submit" class="btn btn-primary btn-sm" data-dismiss="modal">
-        <span>Lưu</span>
-      </button>
-    </form>
+          </td>
+
+          <td>
+            <div class="input-group">
+              <input
+                style="border: none; outline: none"
+                type="text"
+                class="form-control"
+                name="mucChiToiThieu"
+                id="mucChiToiThieu"
+                data-cy="mucChiToiThieu"
+                formControlName="mucChiToiThieu"
+              />
+            </div>
+          </td>
+
+          <td>
+            <div class="input-group">
+              <input
+                style="border: none; outline: none"
+                type="text"
+                class="form-control"
+                name="xepLoai"
+                id="xepLoai"
+                data-cy="xepLoai"
+                formControlName="xepLoai"
+              />
+            </div>
+          </td>
+
+          <td>
+            <div class="input-group">
+              <input
+                style="border: none; outline: none"
+                type="text"
+                class="form-control"
+                name="htc"
+                id="htc"
+                data-cy="htc"
+                formControlName="htc"
+              />
+            </div>
+          </td>
+
+          <td>
+            <div class="input-group">
+              <input
+                style="border: none; outline: none"
+                type="text"
+                class="form-control"
+                name="chiPhiGiamTru"
+                id="chiPhiGiamTru"
+                data-cy="chiPhiGiamTru"
+                formControlName="chiPhiGiamTru"
+              />
+            </div>
+          </td>
+
+          <td>
+            <div class="input-group">
+              <input
+                style="border: none; outline: none"
+                type="text"
+                class="form-control"
+                name="chiPhiThueDichVu"
+                id="chiPhiThueDichVu"
+                data-cy="chiPhiThueDichVu"
+                formControlName="chiPhiThueDichVu"
+              />
+            </div>
+          </td>
+
+          <td>
+            <div class="input-group">
+              <input
+                style="border: none; outline: none"
+                type="text"
+                class="form-control"
+                name="note"
+                id="note"
+                data-cy="note"
+                formControlName="note"
+              />
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
-  <div class="modal-footer"></div>
-</ng-template>
+</form>

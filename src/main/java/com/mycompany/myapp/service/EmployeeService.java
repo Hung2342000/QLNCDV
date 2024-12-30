@@ -82,22 +82,22 @@ public class EmployeeService {
 
     public Employee saveEmployee(Employee employee) {
         ServiceType serviceType = new ServiceType();
-        if (employee.getServiceType() != null && !employee.getIsTeller()) {
-            serviceType =
-                serviceTypeRepository.findServiceTypeByServiceNameAndRegion(
-                    serviceTypeRepository.findById(employee.getServiceType()).get().getServiceName(),
-                    employee.getRegion()
-                );
-        } else if (employee.getServiceType() != null && employee.getIsTeller() && employee.getRank() != null) {
-            serviceType =
-                serviceTypeRepository.findServiceTypeByServiceNameAndRegionRank(
-                    serviceTypeRepository.findById(employee.getServiceType()).get().getServiceName(),
-                    employee.getRegion(),
-                    employee.getRank()
-                );
+        if (employee.getServiceType() != null) {
+            serviceType = serviceTypeRepository.findById(employee.getServiceType()).get();
         }
-        if (serviceType.getBasicSalary() != null) {
-            employee.setBasicSalary(serviceType.getBasicSalary());
+        if (serviceType != null) {
+            if (serviceType.getMucChiTraToiThieu() != null) {
+                employee.setMucChiTraToiThieu(serviceType.getMucChiTraToiThieu());
+            }
+            if (serviceType.getBasicSalary() != null) {
+                employee.setBasicSalary(serviceType.getBasicSalary());
+            }
+            if (serviceType.getRank() != null) {
+                employee.setRank(serviceType.getRank());
+            }
+            if (serviceType.getRegion() != null) {
+                employee.setRegion(serviceType.getRegion());
+            }
         }
         employeeRepository.save(employee);
         return employee;

@@ -11,6 +11,8 @@ import { createRequestOption } from 'app/core/request/request-util';
 import { getSalaryIdentifier, ISalary } from '../salary.model';
 import { getEmployeeIdentifier } from '../../employee/employee.model';
 import { getSalaryDetailIdentifier, ISalaryDetail } from '../salaryDetail.model';
+import { IAttendanceDetail } from '../../attendance/attendanceDetail.model';
+import { EntityArrayResponseDetailType } from '../../attendance/service/attendance.service';
 
 export type EntityResponseType = HttpResponse<ISalary>;
 export type EntityDetailResponseType = HttpResponse<ISalaryDetail>;
@@ -56,6 +58,10 @@ export class SalaryService {
       .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
   }
 
+  queryAll(id: number): Observable<EntityDetailArrayResponseType> {
+    return this.http.get<ISalaryDetail[]>(`${this.resourceUrlDetail}/all/${id}`, { observe: 'response' });
+  }
+
   exportToExcel(req?: any): Observable<any> {
     const options = createRequestOption(req);
     return this.http.get(`${this.resourceUrlDetail}/export`, {
@@ -78,12 +84,12 @@ export class SalaryService {
       .pipe(map((res: EntityDetailArrayResponseType) => res));
   }
 
-  queryAll(req?: any): Observable<EntityArrayResponseType> {
-    const options = createRequestOption(req);
-    return this.http
-      .get<ISalary[]>(this.resourceUrl + '/all', { params: options, observe: 'response' })
-      .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
-  }
+  // queryAll(req?: any): Observable<EntityArrayResponseType> {
+  //   const options = createRequestOption(req);
+  //   return this.http
+  //     .get<ISalary[]>(this.resourceUrl + '/all', { params: options, observe: 'response' })
+  //     .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
+  // }
 
   delete(id: number): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });

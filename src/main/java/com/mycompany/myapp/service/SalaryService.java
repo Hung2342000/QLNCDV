@@ -26,6 +26,7 @@ public class SalaryService {
     private SalaryDetailRepository salaryDetailRepository;
     private AttendanceRepository attendanceRepository;
     private AttendanceDetailRepository attendanceDetailRepository;
+    private ServiceTypeRepository serviceTypeRepository;
 
     public SalaryService(
         UserRepository userRepository,
@@ -33,7 +34,8 @@ public class SalaryService {
         SalaryRepository salaryRepository,
         SalaryDetailRepository salaryDetailRepository,
         AttendanceRepository attendanceRepository,
-        AttendanceDetailRepository attendanceDetailRepository
+        AttendanceDetailRepository attendanceDetailRepository,
+        ServiceTypeRepository serviceTypeRepository
     ) {
         this.userRepository = userRepository;
         this.employeeRepository = employeeRepository;
@@ -41,12 +43,13 @@ public class SalaryService {
         this.salaryDetailRepository = salaryDetailRepository;
         this.attendanceRepository = attendanceRepository;
         this.attendanceDetailRepository = attendanceDetailRepository;
+        this.serviceTypeRepository = serviceTypeRepository;
     }
 
     public Salary createSalary(Salary salary) {
         Salary salaryCreate = this.salaryRepository.save(salary);
         Attendance attendance = new Attendance();
-        if ((salary.getMonth() == null || salary.getYear() == null) && salary.getAttendanceId() != null) {
+        if (salary.getAttendanceId() != null && salary.getIsAttendance()) {
             attendance = this.attendanceRepository.findById(salary.getAttendanceId()).get();
         }
 
@@ -59,10 +62,11 @@ public class SalaryService {
             if (salary.getAttendanceId() != null) {
                 attendanceDetail = this.attendanceDetailRepository.selectAllByAttIdAndEm(salary.getAttendanceId(), employeeSelect.getId());
             } else {
-                attendance = this.attendanceRepository.getAttendanceByMonthEndYear(salary.getMonth(), salary.getYear());
-                if (attendance.getId() != null) {
-                    attendanceDetail = this.attendanceDetailRepository.selectAllByAttIdAndEm(attendance.getId(), employeeSelect.getId());
-                }
+                ////                attendance = this.attendanceRepository.getAttendanceByMonthEndYear(salary.getMonth(), salary.getYear());
+                //                if (attendance.getId() != null) {
+                //                    attendanceDetail = this.attendanceDetailRepository.selectAllByAttIdAndEm(attendance.getId(), employeeSelect.getId());
+                //                }
+
             }
             BigDecimal salaryAmount = BigDecimal.ZERO;
             if (attendanceDetail.getId() != null) {
@@ -70,7 +74,6 @@ public class SalaryService {
                 if (
                     salary.getNumberWork() != null && attendanceDetail.getPaidWorking() != null && employeeSelect.getBasicSalary() != null
                 ) {
-                    salaryDetail.setBasicSalary(employeeSelect.getBasicSalary());
                     salaryAmount =
                         attendanceDetail
                             .getPaidWorking()
@@ -84,7 +87,6 @@ public class SalaryService {
                     salaryCreate.setMonth(attendance.getMonth());
                     salaryCreate.setYear(attendance.getYear());
                     salaryCreate.setNumberWork(attendanceDetail.getNumberWork());
-                    salaryDetail.setBasicSalary(employeeSelect.getBasicSalary());
                     salaryAmount =
                         attendanceDetail
                             .getPaidWorking()
@@ -92,13 +94,23 @@ public class SalaryService {
                             .multiply(employeeSelect.getBasicSalary());
                 }
             }
-
-            salaryDetail.setAmount(salaryAmount);
+            salaryDetail.setDonGiaDichVuThucNhan(salaryAmount);
+            salaryDetail.setChucDanh(serviceTypeName(employeeSelect.getServiceType()));
+            salaryDetail.setDonGiaDichVu(employeeSelect.getBasicSalary());
+            salaryDetail.setNumberWorking(attendanceDetail.getNumberWork());
             salaryDetailRepository.save(salaryDetail);
         }
         salaryRepository.save(salaryCreate);
 
         return salary;
+    }
+
+    public String serviceTypeName(Long id) {
+        ServiceType serviceType = serviceTypeRepository.findById(id).get();
+        if (serviceType == null) {
+            return "";
+        }
+        return serviceType.getServiceName();
     }
 
     public void deleteSalary(Long id) {

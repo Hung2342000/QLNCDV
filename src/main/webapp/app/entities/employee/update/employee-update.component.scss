@@ -1,0 +1,44 @@
+/* Tùy chỉnh các cột trong dropdown */
+.option-row {
+  display: grid;
+  grid-template-columns: 5fr 1fr 1fr 2fr;
+  gap: 8px;
+  padding: 10px;
+  cursor: pointer;
+  align-items: center;
+  background-color: white;
+  transition: background-color 0.3s ease; /* Hiệu ứng chuyển đổi nền */
+}
+.custom-ng-select {
+  width: 140% !important; /* Chiếm toàn bộ chiều rộng của thẻ div cha */
+}
+
+/* Nổi bật khi hover */
+.option-row:hover {
+  background-color: #e3f2fd; /* Màu nền sáng hơn khi hover */
+}
+
+/* Điều chỉnh màu sắc của thuộc tính */
+.column {
+  font-size: 13px;
+  color: #333;
+}
+
+/* Làm nổi bật tên thuộc tính */
+.column strong {
+  color: #007bff; /* Màu xanh để làm nổi bật */
+}
+
+/* Tùy chỉnh phần tử ng-select */
+.styled-select .ng-dropdown-panel {
+  background-color: #fff; /* Nền trắng */
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Đổ bóng */
+}
+
+/* Đảm bảo các mục không bị tràn */
+.option-row .column {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

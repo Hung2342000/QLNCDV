@@ -64,12 +64,11 @@ public class Employee implements Serializable {
     @Column(name = "region")
     private String region;
 
-    @NotNull
-    @Column(nullable = false)
-    private boolean isTeller;
-
     @Column(name = "rank")
     private String rank;
+
+    @Column(name = "mucChiTraToiThieu")
+    private BigDecimal mucChiTraToiThieu;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -253,20 +252,20 @@ public class Employee implements Serializable {
         this.region = region;
     }
 
-    public boolean getIsTeller() {
-        return isTeller;
-    }
-
-    public void setIsTeller(boolean isTeller) {
-        isTeller = isTeller;
-    }
-
     public String getRank() {
         return rank;
     }
 
     public void setRank(String rank) {
         this.rank = rank;
+    }
+
+    public BigDecimal getMucChiTraToiThieu() {
+        return mucChiTraToiThieu;
+    }
+
+    public void setMucChiTraToiThieu(BigDecimal mucChiTraToiThieu) {
+        this.mucChiTraToiThieu = mucChiTraToiThieu;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

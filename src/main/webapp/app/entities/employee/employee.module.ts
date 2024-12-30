@@ -6,9 +6,10 @@ import { EmployeeUpdateComponent } from './update/employee-update.component';
 import { EmployeeDeleteDialogComponent } from './delete/employee-delete-dialog.component';
 import { EmployeeRoutingModule } from './route/employee-routing.module';
 import { FlatpickrModule } from 'angularx-flatpickr';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @NgModule({
-  imports: [SharedModule, EmployeeRoutingModule, FlatpickrModule],
+  imports: [SharedModule, EmployeeRoutingModule, FlatpickrModule, NgSelectModule],
   declarations: [EmployeeComponent, EmployeeDetailComponent, EmployeeUpdateComponent, EmployeeDeleteDialogComponent],
   entryComponents: [EmployeeDeleteDialogComponent],
 })

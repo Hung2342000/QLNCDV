@@ -30,6 +30,9 @@ public class ServiceType implements Serializable {
     @Column(name = "basic_salary")
     private BigDecimal basicSalary;
 
+    @Column(name = "mucChiTraToiThieu")
+    private BigDecimal mucChiTraToiThieu;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -70,6 +73,14 @@ public class ServiceType implements Serializable {
 
     public void setBasicSalary(BigDecimal basicSalary) {
         this.basicSalary = basicSalary;
+    }
+
+    public BigDecimal getMucChiTraToiThieu() {
+        return mucChiTraToiThieu;
+    }
+
+    public void setMucChiTraToiThieu(BigDecimal mucChiTraToiThieu) {
+        this.mucChiTraToiThieu = mucChiTraToiThieu;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
