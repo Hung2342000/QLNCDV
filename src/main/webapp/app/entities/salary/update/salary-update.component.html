@@ -71,9 +71,21 @@
 <!--    <span>Export</span>-->
 <!--  </button>-->
 <!--</div>-->
+<div *ngIf="isEdit === false" class="d-flex justify-content-end">
+  <!--  <button style="margin-top: 10px; margin-bottom: 20px; margin-right: 5px" (click)="exportToExcel()" class="btn btn-danger btn-sm">-->
+  <!--    <span>Export</span>-->
+  <!--  </button>-->
+  <button style="margin-top: 10px; margin-bottom: 20px; margin-right: 5px" (click)="edit()" class="btn btn-secondary btn-sm">
+    <span>Sửa</span>
+  </button>
+
+  <button style="margin-top: 10px; margin-bottom: 20px" (click)="close()" class="btn btn-dark btn-sm">
+    <span>Đóng</span>
+  </button>
+</div>
 
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
-  <div class="d-flex justify-content-end" *ngIf="isEdit == true">
+  <div class="d-flex justify-content-end" *ngIf="isEdit === true">
     <button style="margin-top: 10px; margin-right: 5px; margin-bottom: 20px" type="submit" class="btn btn-primary btn-sm">
       <span>Lưu</span>
     </button>
@@ -90,7 +102,7 @@
           <th style="width: 50px; position: sticky; left: 0; z-index: 2; background: #3b3e66"><span>STT</span></th>
           <th style="min-width: 240px !important; position: sticky; left: 45px; z-index: 2; background: #3b3e66"><span>Nhân viên</span></th>
           <th style="min-width: 90px !important">Điểm cung cấp dịch vụ</th>
-          <th style="min-width: 90px !important">Chức danh</th>
+          <th style="min-width: 300px !important">Chức danh</th>
           <th style="min-width: 90px !important">Vùng</th>
           <th style="min-width: 90px !important">Đơn giá dịch vụ</th>
           <th style="min-width: 90px !important">Số ngày thực hiện tiêu chuẩn</th>
@@ -105,7 +117,7 @@
         </tr>
       </thead>
       <tbody formArrayName="details">
-        <tr *ngFor="let detail of details.value; let i = index" [formGroupName]="i">
+        <tr *ngFor="let detail of details.value; let i = index; trackBy: trackId" [formGroupName]="i">
           <td style="position: sticky; left: 0; z-index: 2; background: white">{{ i + 1 }}</td>
           <td style="position: sticky; left: 45px; z-index: 2; background: white">
             <select
@@ -123,7 +135,8 @@
           <td>
             <div class="input-group">
               <input
-                style="border: none; outline: none"
+                [readOnly]="!isEdit"
+                style="border: none; outline: none; background: white"
                 type="text"
                 class="form-control"
                 name="diemCungCapDV"
@@ -137,7 +150,8 @@
           <td>
             <div class="input-group">
               <input
-                style="border: none; outline: none"
+                [readOnly]="!isEdit"
+                style="border: none; outline: none; background: white"
                 type="text"
                 class="form-control"
                 name="chucDanh"
@@ -151,7 +165,8 @@
           <td>
             <div class="input-group">
               <input
-                style="border: none; outline: none"
+                [readOnly]="!isEdit"
+                style="border: none; outline: none; background: white"
                 type="text"
                 class="form-control"
                 name="vung"
@@ -165,7 +180,8 @@
           <td>
             <div class="input-group">
               <input
-                style="border: none; outline: none"
+                [readOnly]="!isEdit"
+                style="border: none; outline: none; background: white"
                 type="text"
                 class="form-control"
                 name="donGiaDichVu"
@@ -179,7 +195,8 @@
           <td>
             <div class="input-group">
               <input
-                style="border: none; outline: none"
+                [readOnly]="!isEdit"
+                style="border: none; outline: none; background: white"
                 type="text"
                 class="form-control"
                 name="numberWorking"
@@ -193,7 +210,8 @@
           <td>
             <div class="input-group">
               <input
-                style="border: none; outline: none"
+                [readOnly]="!isEdit"
+                style="border: none; outline: none; background: white"
                 type="text"
                 class="form-control"
                 name="numberWorkInMonth"
@@ -207,7 +225,8 @@
           <td>
             <div class="input-group">
               <input
-                style="border: none; outline: none"
+                [readOnly]="!isEdit"
+                style="border: none; outline: none; background: white"
                 type="text"
                 class="form-control"
                 name="donGiaDichVuThucNhan"
@@ -221,7 +240,8 @@
           <td>
             <div class="input-group">
               <input
-                style="border: none; outline: none"
+                [readOnly]="!isEdit"
+                style="border: none; outline: none; background: white"
                 type="text"
                 class="form-control"
                 name="mucChiToiThieu"
@@ -235,7 +255,8 @@
           <td>
             <div class="input-group">
               <input
-                style="border: none; outline: none"
+                [readOnly]="!isEdit"
+                style="border: none; outline: none; background: white"
                 type="text"
                 class="form-control"
                 name="xepLoai"
@@ -249,7 +270,8 @@
           <td>
             <div class="input-group">
               <input
-                style="border: none; outline: none"
+                [readOnly]="!isEdit"
+                style="border: none; outline: none; background: white"
                 type="text"
                 class="form-control"
                 name="htc"
@@ -263,7 +285,8 @@
           <td>
             <div class="input-group">
               <input
-                style="border: none; outline: none"
+                [readOnly]="!isEdit"
+                style="border: none; outline: none; background: white"
                 type="text"
                 class="form-control"
                 name="chiPhiGiamTru"
@@ -277,7 +300,8 @@
           <td>
             <div class="input-group">
               <input
-                style="border: none; outline: none"
+                [readOnly]="!isEdit"
+                style="border: none; outline: none; background: white"
                 type="text"
                 class="form-control"
                 name="chiPhiThueDichVu"
@@ -291,7 +315,8 @@
           <td>
             <div class="input-group">
               <input
-                style="border: none; outline: none"
+                [readOnly]="!isEdit"
+                style="border: none; outline: none; background: white"
                 type="text"
                 class="form-control"
                 name="note"
@@ -306,3 +331,5 @@
     </table>
   </div>
 </form>
+
+<jhi-toast #toastSalary></jhi-toast>

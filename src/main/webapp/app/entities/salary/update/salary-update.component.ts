@@ -1,6 +1,6 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { HttpHeaders, HttpResponse } from '@angular/common/http';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { combineLatest, Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
@@ -11,6 +11,7 @@ import { ISalaryDetail, SalaryDetail } from '../salaryDetail.model';
 import { IEmployee } from '../../employee/employee.model';
 import { EmployeeService } from '../../employee/service/employee.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ToastComponent } from '../../../layouts/toast/toast.component';
 
 @Component({
   selector: 'jhi-employee-update',
@@ -18,6 +19,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 })
 export class SalaryUpdateComponent implements OnInit {
   @ViewChild('addDetailSalary') addDetailSalary: TemplateRef<any> | undefined;
+  @ViewChild('toastSalary') toastSalary!: ToastComponent;
   salary?: ISalary | any;
   salaryDetails?: ISalaryDetail[] | any;
   isLoading = false;
@@ -28,9 +30,9 @@ export class SalaryUpdateComponent implements OnInit {
   ascending!: boolean;
   ngbPaginationPage = 1;
   isSaving = false;
-  form!: FormGroup;
   employeeList?: IEmployee[] | any;
   isEdit = true;
+  content?: string = '';
 
   editForm = this.fb.group({
     id: [null, [Validators.required]],
@@ -40,15 +42,11 @@ export class SalaryUpdateComponent implements OnInit {
     numberWork: [],
   });
 
+  form = new FormGroup({
+    details: new FormArray([new FormControl('')]),
+  });
+
   private updatedData: any;
-  // editFormDetail = this.fb.group({
-  //   id: [null, [Validators.required]],
-  //   employeeId: [],
-  //   basicSalary: [],
-  //   numberWorking: [],
-  //   allowance: [],
-  //   incentiveSalary: [],
-  // });
 
   constructor(
     protected modalService: NgbModal,
@@ -84,7 +82,7 @@ export class SalaryUpdateComponent implements OnInit {
   createRowForm(item: any): FormGroup {
     return this.fb.group({
       id: [item.id],
-      salaryId: [item.attendanceId],
+      salaryId: [item.salaryId],
       employeeId: [item.employeeId],
       diemCungCapDV: [item.diemCungCapDV],
       chucDanh: [item.chucDanh],
@@ -124,6 +122,25 @@ export class SalaryUpdateComponent implements OnInit {
 
   onSubmit(): void {
     this.updatedData = this.form.value.details; // Lấy toàn bộ dữ liệu từ FormArray
+    if (this.updatedData.length > 0) {
+      this.salaryService.createAllDetail(this.updatedData).subscribe(
+        data => {
+          this.content = 'Lưu thành công';
+          this.toastSalary.showToast(this.content);
+          this.reload();
+          setTimeout(() => {
+            this.isEdit = false;
+          }, 500);
+        },
+        error => {
+          this.content = 'Có lỗi xảy ra';
+          this.toastSalary.showToast(this.content);
+        }
+      );
+    } else {
+      this.content = 'Lỗi dữ liệu';
+      this.toastSalary.showToast(this.content);
+    }
   }
   previousState(): void {
     window.history.back();
@@ -131,6 +148,17 @@ export class SalaryUpdateComponent implements OnInit {
 
   edit(): void {
     this.isEdit = true;
+  }
+
+  reload(): void {
+    this.salaryService.queryAll(this.salary.id).subscribe({
+      next: (res: HttpResponse<ISalaryDetail[]>) => {
+        this.salaryDetails = res.body;
+        this.form = this.fb.group({
+          details: this.fb.array(this.salaryDetails.map((item: ISalaryDetail) => this.createRowForm(item))),
+        });
+      },
+    });
   }
 
   exportToExcel(): void {
@@ -173,21 +201,7 @@ export class SalaryUpdateComponent implements OnInit {
   close(): void {
     this.router.navigate([`/salary`]);
   }
-  // saveDetail(): void {
-  //   this.isSaving = true;
-  //   const salaryDetail = this.createFromDetail();
-  //   salaryDetail.salaryId = this.salaryDetailUpdate.salaryId;
-  //   salaryDetail.numberWorkInMonth = this.salaryDetailUpdate.numberWorkInMonth;
-  //   if (salaryDetail.id !== undefined) {
-  //     this.subscribeToSaveDetailResponse(this.salaryService.updateDetail(salaryDetail));
-  //   }
-  // }
 
-  // edit(salaryDetail: ISalaryDetail): void {
-  //   // this.updateFormDetail(salaryDetail);
-  //   this.salaryDetailUpdate = salaryDetail;
-  //   this.modalService.open(this.addDetailSalary, { size: 'lg', backdrop: 'static' });
-  // }
   newArr(lenght: number): any[] {
     if (lenght > 0) {
       return new Array(lenght);

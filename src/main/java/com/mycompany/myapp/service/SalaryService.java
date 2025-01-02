@@ -4,6 +4,8 @@ import com.mycompany.myapp.domain.*;
 import com.mycompany.myapp.repository.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
@@ -60,49 +62,63 @@ public class SalaryService {
             salaryDetail.setSalaryId(salaryCreate.getId());
             AttendanceDetail attendanceDetail = new AttendanceDetail();
             if (salary.getAttendanceId() != null) {
+                salaryCreate.setMonth(attendance.getMonth());
+                salaryCreate.setYear(attendance.getYear());
                 attendanceDetail = this.attendanceDetailRepository.selectAllByAttIdAndEm(salary.getAttendanceId(), employeeSelect.getId());
+                if (attendanceDetail.getId() != null) {
+                    if (
+                        attendanceDetail.getNumberWork() != null &&
+                        attendanceDetail.getPaidWorking() != null &&
+                        employeeSelect.getBasicSalary() != null
+                    ) {
+                        salaryDetail.setNumberWorkInMonth(attendanceDetail.getNumberWork());
+                        salaryDetail.setNumberWorking(attendanceDetail.getPaidWorking());
+                        salaryCreate.setNumberWork(attendanceDetail.getNumberWork());
+                    }
+                }
             } else {
-                ////                attendance = this.attendanceRepository.getAttendanceByMonthEndYear(salary.getMonth(), salary.getYear());
-                //                if (attendance.getId() != null) {
-                //                    attendanceDetail = this.attendanceDetailRepository.selectAllByAttIdAndEm(attendance.getId(), employeeSelect.getId());
-                //                }
-
-            }
-            BigDecimal salaryAmount = BigDecimal.ZERO;
-            if (attendanceDetail.getId() != null) {
-                salaryDetail.setNumberWorkInMonth(attendanceDetail.getPaidWorking());
-                if (
-                    salary.getNumberWork() != null && attendanceDetail.getPaidWorking() != null && employeeSelect.getBasicSalary() != null
-                ) {
-                    salaryAmount =
-                        attendanceDetail
-                            .getPaidWorking()
-                            .divide(salary.getNumberWork(), 5, RoundingMode.HALF_UP)
-                            .multiply(employeeSelect.getBasicSalary());
-                } else if (
-                    attendanceDetail.getNumberWork() != null &&
-                    attendanceDetail.getPaidWorking() != null &&
-                    employeeSelect.getBasicSalary() != null
-                ) {
-                    salaryCreate.setMonth(attendance.getMonth());
-                    salaryCreate.setYear(attendance.getYear());
-                    salaryCreate.setNumberWork(attendanceDetail.getNumberWork());
-                    salaryAmount =
-                        attendanceDetail
-                            .getPaidWorking()
-                            .divide(attendanceDetail.getNumberWork(), 5, RoundingMode.HALF_UP)
-                            .multiply(employeeSelect.getBasicSalary());
+                if (salary.getYear() != null && salary.getMonth() != null) {
+                    int numberWorking = countWorkingInMonth(salary.getYear().intValue(), salary.getMonth().intValue());
+                    salaryDetail.setNumberWorking(BigDecimal.valueOf(numberWorking));
+                    salaryDetail.setNumberWorkInMonth(BigDecimal.valueOf(numberWorking));
                 }
             }
+            BigDecimal salaryAmount = BigDecimal.ZERO;
+
+            if (
+                salaryDetail.getNumberWorking() != null &&
+                salaryDetail.getNumberWorkInMonth() != null &&
+                employeeSelect.getBasicSalary() != null
+            ) {
+                salaryAmount =
+                    salaryDetail
+                        .getNumberWorking()
+                        .divide(salaryDetail.getNumberWorkInMonth(), 5, RoundingMode.HALF_UP)
+                        .multiply(employeeSelect.getBasicSalary());
+            }
             salaryDetail.setDonGiaDichVuThucNhan(salaryAmount);
+            salaryDetail.setVung(employeeSelect.getRegion());
+            salaryDetail.setMucChiToiThieu(employeeSelect.getMucChiTraToiThieu());
             salaryDetail.setChucDanh(serviceTypeName(employeeSelect.getServiceType()));
             salaryDetail.setDonGiaDichVu(employeeSelect.getBasicSalary());
-            salaryDetail.setNumberWorking(attendanceDetail.getNumberWork());
             salaryDetailRepository.save(salaryDetail);
         }
         salaryRepository.save(salaryCreate);
-
         return salary;
+    }
+
+    public static int countWorkingInMonth(int year, int month) {
+        YearMonth yearMonth = YearMonth.of(year, month);
+        int totalSundays = 0;
+
+        // Duyệt qua từng ngày trong tháng
+        for (int day = 1; day <= yearMonth.lengthOfMonth(); day++) {
+            LocalDate date = LocalDate.of(year, month, day);
+            if (date.getDayOfWeek().getValue() == 7 || date.getDayOfWeek().getValue() == 6) {
+                totalSundays++;
+            }
+        }
+        return yearMonth.lengthOfMonth() - totalSundays;
     }
 
     public String serviceTypeName(Long id) {

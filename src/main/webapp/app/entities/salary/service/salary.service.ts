@@ -58,6 +58,10 @@ export class SalaryService {
       .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
   }
 
+  createAllDetail(salaryDetails: ISalaryDetail[]): Observable<any> {
+    return this.http.post<any>(this.resourceUrlDetail + '/all', salaryDetails);
+  }
+
   queryAll(id: number): Observable<EntityDetailArrayResponseType> {
     return this.http.get<ISalaryDetail[]>(`${this.resourceUrlDetail}/all/${id}`, { observe: 'response' });
   }

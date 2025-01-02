@@ -9,7 +9,7 @@ export class ToastComponent {
   message = ''; // Nội dung thông báo
 
   // Hiển thị thông báo
-  showToast(message: string): void {
+  public showToast(message: string): void {
     this.message = message;
     this.isVisible = true;
 

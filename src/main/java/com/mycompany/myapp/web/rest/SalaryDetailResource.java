@@ -162,4 +162,10 @@ public class SalaryDetailResource {
         List<SalaryDetail> salaryDetailList = salaryDetailRepository.getSalaryDetailBySalaryId(id);
         return ResponseEntity.ok().body(salaryDetailList);
     }
+
+    @PostMapping("/salary-detail/all")
+    public void createAttendanceDetailAll(@Valid @RequestBody List<SalaryDetail> salaryDetailList) throws URISyntaxException {
+        salaryDetailService.createSalaryDetailAll(salaryDetailList);
+        //AttendanceDetail result = attendanceDetailService.createAttendanceDetail(attendanceDetail);
+    }
 }

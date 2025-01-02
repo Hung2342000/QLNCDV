@@ -1,11 +1,13 @@
 package com.mycompany.myapp.service;
 
+import com.mycompany.myapp.domain.AttendanceDetail;
 import com.mycompany.myapp.domain.Employee;
 import com.mycompany.myapp.domain.Salary;
 import com.mycompany.myapp.domain.SalaryDetail;
 import com.mycompany.myapp.repository.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.format.DateTimeFormatter;
@@ -190,5 +192,47 @@ public class SalaryDetailService {
 
         byte[] excelBytes = bos.toByteArray();
         return excelBytes;
+    }
+
+    public void createSalaryDetailAll(List<SalaryDetail> salaryDetailList) {
+        for (SalaryDetail salaryDetail : salaryDetailList) {
+            BigDecimal chiPhiGiamTru = BigDecimal.ZERO;
+            BigDecimal donGia = BigDecimal.ZERO;
+            if (
+                salaryDetail.getDonGiaDichVu() != null &&
+                salaryDetail.getNumberWorking() != null &&
+                salaryDetail.getNumberWorkInMonth() != null
+            ) {
+                donGia =
+                    salaryDetail
+                        .getNumberWorking()
+                        .divide(salaryDetail.getNumberWorkInMonth(), 5, RoundingMode.HALF_UP)
+                        .multiply(salaryDetail.getDonGiaDichVu());
+            }
+            salaryDetail.setDonGiaDichVuThucNhan(donGia);
+            if (salaryDetail.getXepLoai() != null && salaryDetail.getXepLoai().equals("A")) {
+                salaryDetail.setHtc("1");
+            } else if (salaryDetail.getXepLoai() != null && salaryDetail.getXepLoai().equals("B")) {
+                salaryDetail.setHtc("0.9");
+            } else if (salaryDetail.getXepLoai() != null && salaryDetail.getXepLoai().equals("C")) {
+                salaryDetail.setHtc("0.8");
+            }
+            if (
+                salaryDetail.getMucChiToiThieu() != null &&
+                salaryDetail.getNumberWorking() != null &&
+                salaryDetail.getNumberWorkInMonth() != null &&
+                salaryDetail.getHtc() != null
+            ) {
+                chiPhiGiamTru =
+                    salaryDetail
+                        .getNumberWorking()
+                        .divide(salaryDetail.getNumberWorkInMonth(), 5, RoundingMode.HALF_UP)
+                        .multiply(salaryDetail.getMucChiToiThieu())
+                        .multiply(BigDecimal.ONE.subtract(new BigDecimal(salaryDetail.getHtc())));
+            }
+            salaryDetail.setChiPhiGiamTru(chiPhiGiamTru);
+            salaryDetail.setChiPhiThueDichVu(salaryDetail.getDonGiaDichVuThucNhan().subtract(salaryDetail.getChiPhiGiamTru()));
+            salaryDetailRepository.save(salaryDetail);
+        }
     }
 }

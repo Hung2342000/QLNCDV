@@ -156,6 +156,7 @@ export class AttendanceUpdateComponent implements OnInit {
         data => {
           this.content = 'Lưu thành công';
           this.toast.showToast(this.content);
+          this.reLoad();
           setTimeout(() => {
             this.isEdit = false;
           }, 500);
@@ -172,6 +173,16 @@ export class AttendanceUpdateComponent implements OnInit {
   }
   closeModal(): void {
     this.modalService.dismissAll();
+  }
+  reLoad(): void {
+    this.attendanceService.queryAll(this.attendance.id).subscribe({
+      next: (res: HttpResponse<IAttendanceDetail[]>) => {
+        this.attendanceDetails = res.body;
+        this.form = this.fb.group({
+          details: this.fb.array(this.attendanceDetails.map((item: IAttendanceDetail) => this.createRowForm(item))),
+        });
+      },
+    });
   }
   closeModalDetail(): void {
     this.modalService.dismissAll();
