@@ -166,6 +166,5 @@ public class SalaryDetailResource {
     @PostMapping("/salary-detail/all")
     public void createAttendanceDetailAll(@Valid @RequestBody List<SalaryDetail> salaryDetailList) throws URISyntaxException {
         salaryDetailService.createSalaryDetailAll(salaryDetailList);
-        //AttendanceDetail result = attendanceDetailService.createAttendanceDetail(attendanceDetail);
     }
 }

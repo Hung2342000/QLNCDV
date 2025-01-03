@@ -98,6 +98,9 @@ public class EmployeeService {
             if (serviceType.getRegion() != null) {
                 employee.setRegion(serviceType.getRegion());
             }
+            if (serviceType.getNhom() != null) {
+                employee.setNhom(serviceType.getNhom());
+            }
         }
         employeeRepository.save(employee);
         return employee;

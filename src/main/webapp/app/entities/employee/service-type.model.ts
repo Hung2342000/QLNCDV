@@ -5,6 +5,7 @@ export interface IServiceType {
   rank?: string | null;
   basicSalary?: number | null;
   mucChiTraToiThieu?: number | null;
+  nhom?: string | null;
 }
 export class ServiceType implements IServiceType {
   constructor(
@@ -13,7 +14,8 @@ export class ServiceType implements IServiceType {
     public region?: string | null,
     public rank?: string | null,
     public basicSalary?: number | null,
-    public mucChiTraToiThieu?: number | null
+    public mucChiTraToiThieu?: number | null,
+    public nhom?: string | null
   ) {}
 }
 export function getServiceType(serviceType: IServiceType): number | undefined {

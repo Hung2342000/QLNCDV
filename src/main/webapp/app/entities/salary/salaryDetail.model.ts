@@ -15,6 +15,15 @@ export interface ISalaryDetail {
   chiPhiGiamTru?: number | null;
   chiPhiThueDichVu?: number | null;
   note?: string | null;
+  kpis?: string | null;
+  diaBan?: string | null;
+  luongCoDinhThucTe?: number | null;
+  phiCoDinhDaThucHien?: number | null;
+  phiCoDinhThanhToanThucTe?: number | null;
+  chiPhiDichVuKhoanVaKK?: number | null;
+  chiPhiKKKhac?: number | null;
+  tongChiPhiKVKK?: number | null;
+  nhom?: string | null;
 }
 
 export class SalaryDetail implements ISalaryDetail {
@@ -34,7 +43,16 @@ export class SalaryDetail implements ISalaryDetail {
     public htc?: string | null,
     public chiPhiGiamTru?: number | null,
     public chiPhiThueDichVu?: number | null,
-    public note?: string | null
+    public note?: string | null,
+    public kpis?: string | null,
+    public diaBan?: string | null,
+    public luongCoDinhThucTe?: number | null,
+    public phiCoDinhDaThucHien?: number | null,
+    public phiCoDinhThanhToanThucTe?: number | null,
+    public chiPhiDichVuKhoanVaKK?: number | null,
+    public chiPhiKKKhac?: number | null,
+    public tongChiPhiKVKK?: number | null,
+    public nhom?: string | null
   ) {}
 }
 

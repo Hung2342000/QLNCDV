@@ -18,6 +18,7 @@ export interface IEmployee {
   region?: string | null;
   isTeller?: boolean | null;
   rank?: string | null;
+  nhom?: string | null;
 }
 
 export class Employee implements IEmployee {
@@ -38,7 +39,8 @@ export class Employee implements IEmployee {
     public serviceType?: number | null,
     public region?: string | null,
     public isTeller?: boolean | null,
-    public rank?: string | null
+    public rank?: string | null,
+    public nhom?: string | null
   ) {}
 }
 

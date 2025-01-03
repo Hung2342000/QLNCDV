@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
@@ -54,22 +55,32 @@ public class SalaryService {
         if (salary.getAttendanceId() != null && salary.getIsAttendance()) {
             attendance = this.attendanceRepository.findById(salary.getAttendanceId()).get();
         }
+        List<Employee> employeeList = new ArrayList<>();
+        employeeList =
+            employeeRepository.findAllById(salary.getEmployees().stream().map(employee -> employee.getId()).collect(Collectors.toList()));
+        List<Employee> employeeListAm = new ArrayList<>();
+        List<Employee> employeeListHTVP = new ArrayList<>();
+        List<Employee> employeeListGDV = new ArrayList<>();
+        if (employeeList.size() > 0) {
+            employeeListAm = employeeList.stream().filter(employee -> employee.getNhom().equals("AM")).collect(Collectors.toList());
+            employeeListHTVP = employeeList.stream().filter(employee -> employee.getNhom().equals("HTVP")).collect(Collectors.toList());
+            employeeListGDV = employeeList.stream().filter(employee -> employee.getNhom().equals("HTKD")).collect(Collectors.toList());
+        }
 
-        for (Employee employee : salary.getEmployees()) {
-            Employee employeeSelect = employeeRepository.findById(employee.getId()).get();
+        for (Employee employee : employeeListHTVP) {
             SalaryDetail salaryDetail = new SalaryDetail();
-            salaryDetail.setEmployeeId(employeeSelect.getId());
+            salaryDetail.setEmployeeId(employee.getId());
             salaryDetail.setSalaryId(salaryCreate.getId());
             AttendanceDetail attendanceDetail = new AttendanceDetail();
             if (salary.getAttendanceId() != null) {
                 salaryCreate.setMonth(attendance.getMonth());
                 salaryCreate.setYear(attendance.getYear());
-                attendanceDetail = this.attendanceDetailRepository.selectAllByAttIdAndEm(salary.getAttendanceId(), employeeSelect.getId());
+                attendanceDetail = this.attendanceDetailRepository.selectAllByAttIdAndEm(salary.getAttendanceId(), employee.getId());
                 if (attendanceDetail.getId() != null) {
                     if (
                         attendanceDetail.getNumberWork() != null &&
                         attendanceDetail.getPaidWorking() != null &&
-                        employeeSelect.getBasicSalary() != null
+                        employee.getBasicSalary() != null
                     ) {
                         salaryDetail.setNumberWorkInMonth(attendanceDetail.getNumberWork());
                         salaryDetail.setNumberWorking(attendanceDetail.getPaidWorking());
@@ -86,21 +97,74 @@ public class SalaryService {
             BigDecimal salaryAmount = BigDecimal.ZERO;
 
             if (
-                salaryDetail.getNumberWorking() != null &&
-                salaryDetail.getNumberWorkInMonth() != null &&
-                employeeSelect.getBasicSalary() != null
+                salaryDetail.getNumberWorking() != null && salaryDetail.getNumberWorkInMonth() != null && employee.getBasicSalary() != null
             ) {
                 salaryAmount =
                     salaryDetail
                         .getNumberWorking()
                         .divide(salaryDetail.getNumberWorkInMonth(), 5, RoundingMode.HALF_UP)
-                        .multiply(employeeSelect.getBasicSalary());
+                        .multiply(employee.getBasicSalary());
             }
             salaryDetail.setDonGiaDichVuThucNhan(salaryAmount);
-            salaryDetail.setVung(employeeSelect.getRegion());
-            salaryDetail.setMucChiToiThieu(employeeSelect.getMucChiTraToiThieu());
-            salaryDetail.setChucDanh(serviceTypeName(employeeSelect.getServiceType()));
-            salaryDetail.setDonGiaDichVu(employeeSelect.getBasicSalary());
+            salaryDetail.setVung(employee.getRegion());
+            salaryDetail.setMucChiToiThieu(employee.getMucChiTraToiThieu());
+            salaryDetail.setChucDanh(serviceTypeName(employee.getServiceType()));
+            salaryDetail.setDonGiaDichVu(employee.getBasicSalary());
+            salaryDetail.setNhom(employee.getNhom());
+            salaryDetailRepository.save(salaryDetail);
+        }
+
+        for (Employee employee : employeeListAm) {
+            SalaryDetail salaryDetail = new SalaryDetail();
+            salaryDetail.setEmployeeId(employee.getId());
+            salaryDetail.setSalaryId(salaryCreate.getId());
+            AttendanceDetail attendanceDetail = new AttendanceDetail();
+            if (salary.getAttendanceId() != null) {
+                salaryCreate.setMonth(attendance.getMonth());
+                salaryCreate.setYear(attendance.getYear());
+                attendanceDetail = this.attendanceDetailRepository.selectAllByAttIdAndEm(salary.getAttendanceId(), employee.getId());
+                if (attendanceDetail.getId() != null) {
+                    if (
+                        attendanceDetail.getNumberWork() != null &&
+                        attendanceDetail.getPaidWorking() != null &&
+                        employee.getBasicSalary() != null
+                    ) {
+                        salaryDetail.setNumberWorkInMonth(attendanceDetail.getNumberWork());
+                        salaryDetail.setNumberWorking(attendanceDetail.getPaidWorking());
+                        salaryCreate.setNumberWork(attendanceDetail.getNumberWork());
+                    }
+                }
+            } else {
+                if (salary.getYear() != null && salary.getMonth() != null) {
+                    int numberWorking = countWorkingInMonth(salary.getYear().intValue(), salary.getMonth().intValue());
+                    salaryDetail.setNumberWorking(BigDecimal.valueOf(numberWorking));
+                    salaryDetail.setNumberWorkInMonth(BigDecimal.valueOf(numberWorking));
+                }
+            }
+            BigDecimal salaryAmount = BigDecimal.ZERO;
+            BigDecimal luongCoDinhThucTe = BigDecimal.ZERO;
+
+            if (
+                salaryDetail.getNumberWorking() != null && salaryDetail.getNumberWorkInMonth() != null && employee.getBasicSalary() != null
+            ) {
+                salaryAmount =
+                    salaryDetail
+                        .getNumberWorking()
+                        .divide(salaryDetail.getNumberWorkInMonth(), 5, RoundingMode.HALF_UP)
+                        .multiply(employee.getBasicSalary());
+                luongCoDinhThucTe =
+                    salaryDetail
+                        .getNumberWorking()
+                        .divide(salaryDetail.getNumberWorkInMonth(), 5, RoundingMode.HALF_UP)
+                        .multiply(employee.getMucChiTraToiThieu());
+            }
+            salaryDetail.setPhiCoDinhDaThucHien(salaryAmount);
+            salaryDetail.setVung(employee.getRegion());
+            salaryDetail.setMucChiToiThieu(employee.getMucChiTraToiThieu());
+            salaryDetail.setLuongCoDinhThucTe(luongCoDinhThucTe);
+            salaryDetail.setChucDanh(serviceTypeName(employee.getServiceType()));
+            salaryDetail.setDonGiaDichVu(employee.getBasicSalary());
+            salaryDetail.setNhom(employee.getNhom());
             salaryDetailRepository.save(salaryDetail);
         }
         salaryRepository.save(salaryCreate);

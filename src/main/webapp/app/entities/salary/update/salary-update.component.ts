@@ -22,6 +22,8 @@ export class SalaryUpdateComponent implements OnInit {
   @ViewChild('toastSalary') toastSalary!: ToastComponent;
   salary?: ISalary | any;
   salaryDetails?: ISalaryDetail[] | any;
+  salaryDetailsAm?: ISalaryDetail[] | any;
+  salaryDetailsHTVP?: ISalaryDetail[] | any;
   isLoading = false;
   totalItems = 0;
   itemsPerPage = ITEMS_PER_PAGE;
@@ -32,6 +34,7 @@ export class SalaryUpdateComponent implements OnInit {
   isSaving = false;
   employeeList?: IEmployee[] | any;
   isEdit = true;
+  isEditAm = true;
   content?: string = '';
 
   editForm = this.fb.group({
@@ -43,10 +46,16 @@ export class SalaryUpdateComponent implements OnInit {
   });
 
   form = new FormGroup({
-    details: new FormArray([new FormControl('')]),
+    details: new FormArray([new FormControl()]),
+  });
+
+  formAm = new FormGroup({
+    detailsAm: new FormArray([new FormControl()]),
   });
 
   private updatedData: any;
+  private updatedDataAm: any;
+  private mergedData: any;
 
   constructor(
     protected modalService: NgbModal,
@@ -88,15 +97,40 @@ export class SalaryUpdateComponent implements OnInit {
       chucDanh: [item.chucDanh],
       vung: [item.vung],
       donGiaDichVu: [item.donGiaDichVu],
-      numberWorking: [item.numberWorking],
       numberWorkInMonth: [item.numberWorkInMonth],
+      numberWorking: [item.numberWorking],
       donGiaDichVuThucNhan: [item.donGiaDichVuThucNhan],
       mucChiToiThieu: [item.mucChiToiThieu],
       xepLoai: [item.xepLoai],
       htc: [item.htc],
       chiPhiGiamTru: [item.chiPhiGiamTru],
       chiPhiThueDichVu: [item.chiPhiThueDichVu],
+      nhom: [item.nhom],
       note: [item.note],
+    });
+  }
+  createRowFormAm(itemAm: any): FormGroup {
+    return this.fb.group({
+      id: [itemAm.id],
+      salaryId: [itemAm.salaryId],
+      employeeId: [itemAm.employeeId],
+      diaBan: [itemAm.diaBan],
+      vung: [itemAm.vung],
+      mucChiToiThieu: [itemAm.mucChiToiThieu],
+      kpis: [itemAm.kpis],
+      luongCoDinhThucTe: [itemAm.luongCoDinhThucTe],
+      donGiaDichVu: [itemAm.donGiaDichVu],
+      numberWorking: [itemAm.numberWorking],
+      numberWorkInMonth: [itemAm.numberWorkInMonth],
+      chiPhiGiamTru: [itemAm.chiPhiGiamTru],
+      phiCoDinhDaThucHien: [itemAm.phiCoDinhDaThucHien],
+      phiCoDinhThanhToanThucTe: [itemAm.phiCoDinhThanhToanThucTe],
+      chiPhiDichVuKhoanVaKK: [itemAm.chiPhiDichVuKhoanVaKK],
+      chiPhiKKKhac: [itemAm.chiPhiKKKhac],
+      tongChiPhiKVKK: [itemAm.tongChiPhiKVKK],
+      chiPhiThueDichVu: [itemAm.chiPhiThueDichVu],
+      nhom: [itemAm.nhom],
+      note: [itemAm.note],
     });
   }
   ngOnInit(): void {
@@ -107,8 +141,13 @@ export class SalaryUpdateComponent implements OnInit {
     this.salaryService.queryAll(this.salary.id).subscribe({
       next: (res: HttpResponse<ISalaryDetail[]>) => {
         this.salaryDetails = res.body;
+        this.salaryDetailsHTVP = this.salaryDetails.filter((item: ISalaryDetail) => item.nhom === 'HTVP');
+        this.salaryDetailsAm = this.salaryDetails.filter((item: ISalaryDetail) => item.nhom === 'AM');
         this.form = this.fb.group({
-          details: this.fb.array(this.salaryDetails.map((item: ISalaryDetail) => this.createRowForm(item))),
+          details: this.fb.array(this.salaryDetailsHTVP.map((item: ISalaryDetail) => this.createRowForm(item))),
+        });
+        this.formAm = this.fb.group({
+          detailsAm: this.fb.array(this.salaryDetailsAm.map((item: ISalaryDetail) => this.createRowFormAm(item))),
         });
       },
     });
@@ -121,9 +160,11 @@ export class SalaryUpdateComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.updatedData = this.form.value.details; // Lấy toàn bộ dữ liệu từ FormArray
+    this.updatedData = this.form.value.details;
+    this.updatedDataAm = this.formAm.value.detailsAm;
+    this.mergedData = this.updatedData.concat(this.updatedDataAm);
     if (this.updatedData.length > 0) {
-      this.salaryService.createAllDetail(this.updatedData).subscribe(
+      this.salaryService.createAllDetail(this.mergedData).subscribe(
         data => {
           this.content = 'Lưu thành công';
           this.toastSalary.showToast(this.content);
@@ -154,8 +195,13 @@ export class SalaryUpdateComponent implements OnInit {
     this.salaryService.queryAll(this.salary.id).subscribe({
       next: (res: HttpResponse<ISalaryDetail[]>) => {
         this.salaryDetails = res.body;
+        this.salaryDetailsHTVP = this.salaryDetails.filter((item: ISalaryDetail) => item.nhom === 'HTVP');
+        this.salaryDetailsAm = this.salaryDetails.filter((item: ISalaryDetail) => item.nhom === 'AM');
         this.form = this.fb.group({
-          details: this.fb.array(this.salaryDetails.map((item: ISalaryDetail) => this.createRowForm(item))),
+          details: this.fb.array(this.salaryDetailsHTVP.map((item: ISalaryDetail) => this.createRowForm(item))),
+        });
+        this.formAm = this.fb.group({
+          detailsAm: this.fb.array(this.salaryDetailsAm.map((item: ISalaryDetail) => this.createRowFormAm(item))),
         });
       },
     });
@@ -187,6 +233,10 @@ export class SalaryUpdateComponent implements OnInit {
     return name;
   }
   trackId(_index: number, item: ISalaryDetail): number {
+    return item.id!;
+  }
+
+  trackIdAm(_index: number, item: ISalaryDetail): number {
     return item.id!;
   }
   save(): void {
@@ -221,6 +271,9 @@ export class SalaryUpdateComponent implements OnInit {
 
   get details(): FormArray {
     return this.form.get('details') as FormArray;
+  }
+  get detailsAm(): FormArray {
+    return this.formAm.get('detailsAm') as FormArray;
   }
   protected subscribeToSaveResponse(result: Observable<HttpResponse<ISalary>>): void {
     result.pipe(finalize(() => this.onSaveFinalize())).subscribe({
@@ -290,18 +343,6 @@ export class SalaryUpdateComponent implements OnInit {
     };
   }
 
-  // protected createFromDetail(): ISalaryDetail {
-  //   return {
-  //     ...new SalaryDetail(),
-  //     id: this.editFormDetail.get(['id'])!.value,
-  //     employeeId: this.editFormDetail.get(['employeeId'])!.value,
-  //     basicSalary: this.editFormDetail.get(['basicSalary'])!.value,
-  //     numberWorking: this.editFormDetail.get(['numberWorking'])!.value,
-  //     allowance: this.editFormDetail.get(['allowance'])!.value,
-  //     incentiveSalary: this.editFormDetail.get(['incentiveSalary'])!.value,
-  //   };
-  // }
-
   protected updateForm(salary: ISalary): void {
     this.editForm.patchValue({
       id: salary.id,
@@ -311,15 +352,4 @@ export class SalaryUpdateComponent implements OnInit {
       numberWork: salary.numberWork,
     });
   }
-
-  // protected updateFormDetail(salaryDetail: ISalaryDetail): void {
-  //   this.editFormDetail.patchValue({
-  //     id: salaryDetail.id,
-  //     employeeId: salaryDetail.employeeId,
-  //     basicSalary: salaryDetail.basicSalary,
-  //     numberWorking: salaryDetail.numberWorking,
-  //     allowance: salaryDetail.allowance,
-  //     incentiveSalary: salaryDetail.incentiveSalary,
-  //   });
-  // }
 }

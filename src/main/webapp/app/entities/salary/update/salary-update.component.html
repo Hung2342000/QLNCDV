@@ -71,265 +71,550 @@
 <!--    <span>Export</span>-->
 <!--  </button>-->
 <!--</div>-->
-<div *ngIf="isEdit === false" class="d-flex justify-content-end">
-  <!--  <button style="margin-top: 10px; margin-bottom: 20px; margin-right: 5px" (click)="exportToExcel()" class="btn btn-danger btn-sm">-->
-  <!--    <span>Export</span>-->
-  <!--  </button>-->
-  <button style="margin-top: 10px; margin-bottom: 20px; margin-right: 5px" (click)="edit()" class="btn btn-secondary btn-sm">
-    <span>Sửa</span>
-  </button>
 
-  <button style="margin-top: 10px; margin-bottom: 20px" (click)="close()" class="btn btn-dark btn-sm">
-    <span>Đóng</span>
-  </button>
+<div>
+  <div class="d-flex justify-content-between" *ngIf="isEdit === false">
+    <span style="margin-top: 20px; font-weight: bold; font-size: 17px">Dịch vụ chi trả theo thời gian</span>
+    <div>
+      <button style="margin-top: 10px; margin-bottom: 20px; margin-right: 5px" (click)="edit()" class="btn btn-secondary btn-sm">
+        <span>Sửa</span>
+      </button>
+      <button style="margin-top: 10px; margin-bottom: 20px" (click)="close()" class="btn btn-dark btn-sm">
+        <span>Đóng</span>
+      </button>
+    </div>
+  </div>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="d-flex justify-content-between" *ngIf="isEdit === true">
+      <span style="margin-top: 20px; font-weight: bold; font-size: 17px">Dịch vụ chi trả theo thời gian</span>
+      <div>
+        <button style="margin-top: 10px; margin-right: 5px; margin-bottom: 20px" type="submit" class="btn btn-primary btn-sm">
+          <span>Lưu</span>
+        </button>
+        <button style="margin-top: 10px; margin-bottom: 20px" (click)="close()" class="btn btn-dark btn-sm">
+          <span>Đóng</span>
+        </button>
+      </div>
+    </div>
+    <div style="max-height: 650px; width: 100%; overflow-x: auto; overflow-y: auto; white-space: nowrap">
+      <table class="table lh-table-column--bytes table-bordered">
+        <thead style="background-color: #3b3e66; color: white">
+          <tr>
+            <th style="width: 50px; position: sticky; left: 0; z-index: 2; background: #3b3e66"><span>STT</span></th>
+            <th style="min-width: 240px !important; position: sticky; left: 45px; z-index: 2; background: #3b3e66">
+              <span>Nhân viên</span>
+            </th>
+            <th style="min-width: 90px !important">Điểm cung cấp dịch vụ</th>
+            <th style="min-width: 300px !important">Chức danh</th>
+            <th style="min-width: 90px !important">Vùng</th>
+            <th style="min-width: 90px !important">Đơn giá dịch vụ</th>
+            <th style="min-width: 90px !important">Số ngày thực hiện tiêu chuẩn</th>
+            <th style="min-width: 90px !important">Số ngày thực hiện thực tế</th>
+            <th style="min-width: 90px !important">Đơn giá dịch vụ thực tế</th>
+            <th style="min-width: 90px !important">Mức chi trả tối thiểu</th>
+            <th style="min-width: 90px !important">Xếp loại CLDV</th>
+            <th style="min-width: 90px !important">Hệ số hoàn thành</th>
+            <th style="min-width: 90px !important">Chi phí giảm trừ</th>
+            <th style="min-width: 90px !important">Chi phí thuê dịch vụ</th>
+            <th style="min-width: 90px !important">Ghi chú</th>
+          </tr>
+        </thead>
+        <tbody formArrayName="details">
+          <tr *ngFor="let detail of details.value; let i = index; trackBy: trackId" [formGroupName]="i">
+            <td style="position: sticky; left: 0; z-index: 2; background: white">{{ i + 1 }}</td>
+            <td style="position: sticky; left: 45px; z-index: 2; background: white">
+              <select
+                style="border: none; font-weight: 600"
+                class="form-select"
+                id="field_employeeId"
+                formControlName="employeeId"
+                data-cy="employeeId"
+                name="employeeId"
+              >
+                <option *ngFor="let employee of employeeList" [value]="employee.id">{{ employee.name }}</option>
+              </select>
+            </td>
+
+            <td>
+              <div class="input-group">
+                <input
+                  [readOnly]="!isEdit"
+                  style="border: none; outline: none; background: white"
+                  type="text"
+                  class="form-control"
+                  name="diemCungCapDV"
+                  id="field_diemCungCapDV"
+                  data-cy="diemCungCapDV"
+                  formControlName="diemCungCapDV"
+                />
+              </div>
+            </td>
+
+            <td>
+              <div class="input-group">
+                <input
+                  [readOnly]="!isEdit"
+                  style="border: none; outline: none; background: white"
+                  type="text"
+                  class="form-control"
+                  name="chucDanh"
+                  id="field_chucDanh"
+                  data-cy="chucDanh"
+                  formControlName="chucDanh"
+                />
+              </div>
+            </td>
+
+            <td>
+              <div class="input-group">
+                <input
+                  [readOnly]="!isEdit"
+                  style="border: none; outline: none; background: white"
+                  type="text"
+                  class="form-control"
+                  name="vung"
+                  id="field_vung"
+                  data-cy="vung"
+                  formControlName="vung"
+                />
+              </div>
+            </td>
+
+            <td>
+              <div class="input-group">
+                <input
+                  [readOnly]="!isEdit"
+                  style="border: none; outline: none; background: white"
+                  type="text"
+                  class="form-control"
+                  name="donGiaDichVu"
+                  id="field_donGiaDichVu"
+                  data-cy="donGiaDichVu"
+                  formControlName="donGiaDichVu"
+                />
+              </div>
+            </td>
+            <td>
+              <div class="input-group">
+                <input
+                  [readOnly]="!isEdit"
+                  style="border: none; outline: none; background: white"
+                  type="text"
+                  class="form-control"
+                  name="numberWorkInMonth"
+                  id="numberWorkInMonth"
+                  data-cy="numberWorkInMonth"
+                  formControlName="numberWorkInMonth"
+                />
+              </div>
+            </td>
+
+            <td>
+              <div class="input-group">
+                <input
+                  [readOnly]="!isEdit"
+                  style="border: none; outline: none; background: white"
+                  type="text"
+                  class="form-control"
+                  name="numberWorking"
+                  id="field_numberWorking"
+                  data-cy="numberWorking"
+                  formControlName="numberWorking"
+                />
+              </div>
+            </td>
+
+            <td>
+              <div class="input-group">
+                <input
+                  [readOnly]="!isEdit"
+                  style="border: none; outline: none; background: white"
+                  type="text"
+                  class="form-control"
+                  name="donGiaDichVuThucNhan"
+                  id="donGiaDichVuThucNhan"
+                  data-cy="donGiaDichVuThucNhan"
+                  formControlName="donGiaDichVuThucNhan"
+                />
+              </div>
+            </td>
+
+            <td>
+              <div class="input-group">
+                <input
+                  [readOnly]="!isEdit"
+                  style="border: none; outline: none; background: white"
+                  type="text"
+                  class="form-control"
+                  name="mucChiToiThieu"
+                  data-cy="mucChiToiThieu"
+                  formControlName="mucChiToiThieu"
+                />
+              </div>
+            </td>
+
+            <td>
+              <div class="input-group">
+                <input
+                  [readOnly]="!isEdit"
+                  style="border: none; outline: none; background: white"
+                  type="text"
+                  class="form-control"
+                  name="xepLoai"
+                  id="xepLoai"
+                  data-cy="xepLoai"
+                  formControlName="xepLoai"
+                />
+              </div>
+            </td>
+
+            <td>
+              <div class="input-group">
+                <input
+                  [readOnly]="!isEdit"
+                  style="border: none; outline: none; background: white"
+                  type="text"
+                  class="form-control"
+                  name="htc"
+                  id="htc"
+                  data-cy="htc"
+                  formControlName="htc"
+                />
+              </div>
+            </td>
+
+            <td>
+              <div class="input-group">
+                <input
+                  [readOnly]="!isEdit"
+                  style="border: none; outline: none; background: white"
+                  type="text"
+                  class="form-control"
+                  name="chiPhiGiamTru"
+                  id="chiPhiGiamTru"
+                  data-cy="chiPhiGiamTru"
+                  formControlName="chiPhiGiamTru"
+                />
+              </div>
+            </td>
+
+            <td>
+              <div class="input-group">
+                <input
+                  [readOnly]="!isEdit"
+                  style="border: none; outline: none; background: white"
+                  type="text"
+                  class="form-control"
+                  name="chiPhiThueDichVu"
+                  id="chiPhiThueDichVu"
+                  data-cy="chiPhiThueDichVu"
+                  formControlName="chiPhiThueDichVu"
+                />
+              </div>
+            </td>
+
+            <!--          <td>-->
+            <!--            <div class="input-group">-->
+            <!--              <input-->
+            <!--                [readOnly]="!isEdit"-->
+            <!--                style="border: none; outline: none; background: white"-->
+            <!--                type="text"-->
+            <!--                class="form-control"-->
+            <!--                name="note"-->
+            <!--                id="note"-->
+            <!--                data-cy="note"-->
+            <!--                formControlName="note"-->
+            <!--              />-->
+            <!--            </div>-->
+            <!--          </td>-->
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </form>
 </div>
 
-<form [formGroup]="form" (ngSubmit)="onSubmit()">
-  <div class="d-flex justify-content-end" *ngIf="isEdit === true">
-    <button style="margin-top: 10px; margin-right: 5px; margin-bottom: 20px" type="submit" class="btn btn-primary btn-sm">
-      <span>Lưu</span>
-    </button>
+<div>
+  <form [formGroup]="formAm">
+    <div class="d-flex justify-content-between">
+      <span style="margin-top: 20px; margin-bottom: 20px; font-weight: bold; font-size: 17px">Dịch vụ HTKD khách hàng doanh nghiệp</span>
+    </div>
+    <div style="max-height: 650px; width: 100%; overflow-x: auto; overflow-y: auto; white-space: nowrap">
+      <table class="table lh-table-column--bytes table-bordered">
+        <thead style="background-color: #3b3e66; color: white">
+          <tr>
+            <th style="width: 50px; position: sticky; left: 0; z-index: 2; background: #3b3e66"><span>STT</span></th>
+            <th style="min-width: 240px !important; position: sticky; left: 45px; z-index: 2; background: #3b3e66">
+              <span>Nhân viên</span>
+            </th>
+            <th style="min-width: 90px !important">Địa bàn</th>
+            <th style="min-width: 90px !important">Vùng</th>
+            <th style="min-width: 90px !important">Mức lương cố định</th>
+            <th style="min-width: 90px !important">Kpis</th>
+            <th style="min-width: 90px !important">Lương có định thực thế</th>
+            <th style="min-width: 90px !important">Đơn giá thuê dịch vụ</th>
+            <th style="min-width: 90px !important">Số ngày thực hiện tiêu chuẩn</th>
+            <th style="min-width: 90px !important">Số ngày thực hiện thực tế</th>
+            <th style="min-width: 90px !important">Phí cố định đã thực hiện</th>
+            <th style="min-width: 90px !important">Chi phí giảm trừ</th>
+            <th style="min-width: 90px !important">Phí cố định thanh toán thực tế</th>
+            <th style="min-width: 90px !important">Chi phí dịch vụ khoán và khuyến khích</th>
+            <th style="min-width: 90px !important">Chi phí khuyến khích khác</th>
+            <th style="min-width: 90px !important">Tổng chi phí khoán và khuyến khích</th>
+            <th style="min-width: 90px !important">Phí dịch vụ thực tế</th>
+            <th style="min-width: 90px !important">Ghi chú</th>
+          </tr>
+        </thead>
+        <tbody formArrayName="detailsAm">
+          <tr *ngFor="let detail of detailsAm.value; let j = index; trackBy: trackIdAm" [formGroupName]="j">
+            <td style="position: sticky; left: 0; z-index: 2; background: white">{{ j + 1 }}</td>
+            <td style="position: sticky; left: 45px; z-index: 2; background: white">
+              <select
+                style="border: none; font-weight: 600"
+                class="form-select"
+                formControlName="employeeId"
+                data-cy="employeeId"
+                name="employeeId"
+              >
+                <option *ngFor="let employee of employeeList" [value]="employee.id">{{ employee.name }}</option>
+              </select>
+            </td>
 
-    <button style="margin-top: 10px; margin-bottom: 20px" (click)="close()" class="btn btn-dark btn-sm">
-      <span>Đóng</span>
-    </button>
-  </div>
+            <td>
+              <div class="input-group">
+                <input
+                  [readOnly]="!isEdit"
+                  style="border: none; outline: none; background: white"
+                  type="text"
+                  class="form-control"
+                  name="diaBan"
+                  id="field_diaBan"
+                  data-cy="diaBan"
+                  formControlName="diaBan"
+                />
+              </div>
+            </td>
 
-  <div style="max-height: 650px; width: 100%; overflow-x: auto; overflow-y: auto; white-space: nowrap">
-    <table class="table lh-table-column--bytes table-bordered">
-      <thead style="background-color: #3b3e66; color: white">
-        <tr>
-          <th style="width: 50px; position: sticky; left: 0; z-index: 2; background: #3b3e66"><span>STT</span></th>
-          <th style="min-width: 240px !important; position: sticky; left: 45px; z-index: 2; background: #3b3e66"><span>Nhân viên</span></th>
-          <th style="min-width: 90px !important">Điểm cung cấp dịch vụ</th>
-          <th style="min-width: 300px !important">Chức danh</th>
-          <th style="min-width: 90px !important">Vùng</th>
-          <th style="min-width: 90px !important">Đơn giá dịch vụ</th>
-          <th style="min-width: 90px !important">Số ngày thực hiện tiêu chuẩn</th>
-          <th style="min-width: 90px !important">Số ngày thực hiện thực tế</th>
-          <th style="min-width: 90px !important">Đơn giá dịch vụ thực tế</th>
-          <th style="min-width: 90px !important">Mức chi trả tối thiểu</th>
-          <th style="min-width: 90px !important">Xếp loại CLDV</th>
-          <th style="min-width: 90px !important">Hệ số hoàn thành</th>
-          <th style="min-width: 90px !important">Chi phí giảm trừ</th>
-          <th style="min-width: 90px !important">Chi phí thuê dịch vụ</th>
-          <th style="min-width: 90px !important">Ghi chú</th>
-        </tr>
-      </thead>
-      <tbody formArrayName="details">
-        <tr *ngFor="let detail of details.value; let i = index; trackBy: trackId" [formGroupName]="i">
-          <td style="position: sticky; left: 0; z-index: 2; background: white">{{ i + 1 }}</td>
-          <td style="position: sticky; left: 45px; z-index: 2; background: white">
-            <select
-              style="border: none; font-weight: 600"
-              class="form-select"
-              id="field_employeeId"
-              formControlName="employeeId"
-              data-cy="employeeId"
-              name="employeeId"
-            >
-              <option *ngFor="let employee of employeeList" [value]="employee.id">{{ employee.name }}</option>
-            </select>
-          </td>
+            <td>
+              <div class="input-group">
+                <input
+                  [readOnly]="!isEdit"
+                  style="border: none; outline: none; background: white"
+                  type="text"
+                  class="form-control"
+                  name="vungAm"
+                  id="vungAm"
+                  data-cy="vungAm"
+                  formControlName="vungAm"
+                />
+              </div>
+            </td>
 
-          <td>
-            <div class="input-group">
-              <input
-                [readOnly]="!isEdit"
-                style="border: none; outline: none; background: white"
-                type="text"
-                class="form-control"
-                name="diemCungCapDV"
-                id="field_diemCungCapDV"
-                data-cy="diemCungCapDV"
-                formControlName="diemCungCapDV"
-              />
-            </div>
-          </td>
+            <td>
+              <div class="input-group">
+                <input
+                  [readOnly]="!isEdit"
+                  style="border: none; outline: none; background: white"
+                  type="text"
+                  class="form-control"
+                  name="mucChiToiThieu"
+                  id="mucChiToiThieu"
+                  data-cy="mucChiToiThieu"
+                  formControlName="mucChiToiThieu"
+                />
+              </div>
+            </td>
 
-          <td>
-            <div class="input-group">
-              <input
-                [readOnly]="!isEdit"
-                style="border: none; outline: none; background: white"
-                type="text"
-                class="form-control"
-                name="chucDanh"
-                id="field_chucDanh"
-                data-cy="chucDanh"
-                formControlName="chucDanh"
-              />
-            </div>
-          </td>
+            <td>
+              <div class="input-group">
+                <input
+                  [readOnly]="!isEdit"
+                  style="border: none; outline: none; background: white"
+                  type="text"
+                  class="form-control"
+                  name="kpis"
+                  id="field_kpis"
+                  data-cy="kpis"
+                  formControlName="kpis"
+                />
+              </div>
+            </td>
 
-          <td>
-            <div class="input-group">
-              <input
-                [readOnly]="!isEdit"
-                style="border: none; outline: none; background: white"
-                type="text"
-                class="form-control"
-                name="vung"
-                id="field_vung"
-                data-cy="vung"
-                formControlName="vung"
-              />
-            </div>
-          </td>
+            <td>
+              <div class="input-group">
+                <input
+                  [readOnly]="!isEdit"
+                  style="border: none; outline: none; background: white"
+                  type="text"
+                  class="form-control"
+                  name="luongCoDinhThucTe"
+                  id="luongCoDinhThucTe"
+                  data-cy="luongCoDinhThucTe"
+                  formControlName="luongCoDinhThucTe"
+                />
+              </div>
+            </td>
 
-          <td>
-            <div class="input-group">
-              <input
-                [readOnly]="!isEdit"
-                style="border: none; outline: none; background: white"
-                type="text"
-                class="form-control"
-                name="donGiaDichVu"
-                id="field_donGiaDichVu"
-                data-cy="donGiaDichVu"
-                formControlName="donGiaDichVu"
-              />
-            </div>
-          </td>
+            <td>
+              <div class="input-group">
+                <input
+                  [readOnly]="!isEdit"
+                  style="border: none; outline: none; background: white"
+                  type="text"
+                  class="form-control"
+                  name="donGiaDichVu"
+                  id="donGiaDichVu"
+                  data-cy="donGiaDichVu"
+                  formControlName="donGiaDichVu"
+                />
+              </div>
+            </td>
+            <td>
+              <div class="input-group">
+                <input
+                  [readOnly]="!isEdit"
+                  style="border: none; outline: none; background: white"
+                  type="text"
+                  class="form-control"
+                  name="numberWorkInMonth"
+                  data-cy="numberWorkInMonth"
+                  formControlName="numberWorkInMonth"
+                />
+              </div>
+            </td>
+            <td>
+              <div class="input-group">
+                <input
+                  [readOnly]="!isEdit"
+                  style="border: none; outline: none; background: white"
+                  type="text"
+                  class="form-control"
+                  name="numberWorking"
+                  id="numberWorking"
+                  data-cy="numberWorking"
+                  formControlName="numberWorking"
+                />
+              </div>
+            </td>
 
-          <td>
-            <div class="input-group">
-              <input
-                [readOnly]="!isEdit"
-                style="border: none; outline: none; background: white"
-                type="text"
-                class="form-control"
-                name="numberWorking"
-                id="field_numberWorking"
-                data-cy="numberWorking"
-                formControlName="numberWorking"
-              />
-            </div>
-          </td>
+            <td>
+              <div class="input-group">
+                <input
+                  [readOnly]="!isEdit"
+                  style="border: none; outline: none; background: white"
+                  type="text"
+                  class="form-control"
+                  name="phiCoDinhDaThucHien"
+                  id="phiCoDinhDaThucHien"
+                  data-cy="phiCoDinhDaThucHien"
+                  formControlName="phiCoDinhDaThucHien"
+                />
+              </div>
+            </td>
 
-          <td>
-            <div class="input-group">
-              <input
-                [readOnly]="!isEdit"
-                style="border: none; outline: none; background: white"
-                type="text"
-                class="form-control"
-                name="numberWorkInMonth"
-                id="numberWorkInMonth"
-                data-cy="numberWorkInMonth"
-                formControlName="numberWorkInMonth"
-              />
-            </div>
-          </td>
+            <td>
+              <div class="input-group">
+                <input
+                  [readOnly]="!isEdit"
+                  style="border: none; outline: none; background: white"
+                  type="text"
+                  class="form-control"
+                  name="chiPhiGiamTru"
+                  data-cy="chiPhiGiamTru"
+                  formControlName="chiPhiGiamTru"
+                />
+              </div>
+            </td>
+            <td>
+              <div class="input-group">
+                <input
+                  [readOnly]="!isEdit"
+                  style="border: none; outline: none; background: white"
+                  type="text"
+                  class="form-control"
+                  name="phiCoDinhThanhToanThucTe"
+                  id="phiCoDinhThanhToanThucTe"
+                  data-cy="phiCoDinhThanhToanThucTe"
+                  formControlName="phiCoDinhThanhToanThucTe"
+                />
+              </div>
+            </td>
 
-          <td>
-            <div class="input-group">
-              <input
-                [readOnly]="!isEdit"
-                style="border: none; outline: none; background: white"
-                type="text"
-                class="form-control"
-                name="donGiaDichVuThucNhan"
-                id="donGiaDichVuThucNhan"
-                data-cy="donGiaDichVuThucNhan"
-                formControlName="donGiaDichVuThucNhan"
-              />
-            </div>
-          </td>
+            <td>
+              <div class="input-group">
+                <input
+                  [readOnly]="!isEdit"
+                  style="border: none; outline: none; background: white"
+                  type="text"
+                  class="form-control"
+                  name="chiPhiDichVuKhoanVaKK"
+                  id="chiPhiDichVuKhoanVaKK"
+                  data-cy="chiPhiDichVuKhoanVaKK"
+                  formControlName="chiPhiDichVuKhoanVaKK"
+                />
+              </div>
+            </td>
 
-          <td>
-            <div class="input-group">
-              <input
-                [readOnly]="!isEdit"
-                style="border: none; outline: none; background: white"
-                type="text"
-                class="form-control"
-                name="mucChiToiThieu"
-                id="mucChiToiThieu"
-                data-cy="mucChiToiThieu"
-                formControlName="mucChiToiThieu"
-              />
-            </div>
-          </td>
+            <td>
+              <div class="input-group">
+                <input
+                  [readOnly]="!isEdit"
+                  style="border: none; outline: none; background: white"
+                  type="text"
+                  class="form-control"
+                  name="chiPhiKKKhac"
+                  id="chiPhiKKKhac"
+                  data-cy="chiPhiKKKhac"
+                  formControlName="chiPhiKKKhac"
+                />
+              </div>
+            </td>
+            <td>
+              <div class="input-group">
+                <input
+                  [readOnly]="!isEdit"
+                  style="border: none; outline: none; background: white"
+                  type="text"
+                  class="form-control"
+                  name="tongChiPhiKVKK"
+                  id="tongChiPhiKVKK"
+                  data-cy="tongChiPhiKVKK"
+                  formControlName="tongChiPhiKVKK"
+                />
+              </div>
+            </td>
+            <td>
+              <div class="input-group">
+                <input
+                  [readOnly]="!isEdit"
+                  style="border: none; outline: none; background: white"
+                  type="text"
+                  class="form-control"
+                  name="chiPhiThueDichVu"
+                  data-cy="chiPhiThueDichVu"
+                  formControlName="chiPhiThueDichVu"
+                />
+              </div>
+            </td>
 
-          <td>
-            <div class="input-group">
-              <input
-                [readOnly]="!isEdit"
-                style="border: none; outline: none; background: white"
-                type="text"
-                class="form-control"
-                name="xepLoai"
-                id="xepLoai"
-                data-cy="xepLoai"
-                formControlName="xepLoai"
-              />
-            </div>
-          </td>
-
-          <td>
-            <div class="input-group">
-              <input
-                [readOnly]="!isEdit"
-                style="border: none; outline: none; background: white"
-                type="text"
-                class="form-control"
-                name="htc"
-                id="htc"
-                data-cy="htc"
-                formControlName="htc"
-              />
-            </div>
-          </td>
-
-          <td>
-            <div class="input-group">
-              <input
-                [readOnly]="!isEdit"
-                style="border: none; outline: none; background: white"
-                type="text"
-                class="form-control"
-                name="chiPhiGiamTru"
-                id="chiPhiGiamTru"
-                data-cy="chiPhiGiamTru"
-                formControlName="chiPhiGiamTru"
-              />
-            </div>
-          </td>
-
-          <td>
-            <div class="input-group">
-              <input
-                [readOnly]="!isEdit"
-                style="border: none; outline: none; background: white"
-                type="text"
-                class="form-control"
-                name="chiPhiThueDichVu"
-                id="chiPhiThueDichVu"
-                data-cy="chiPhiThueDichVu"
-                formControlName="chiPhiThueDichVu"
-              />
-            </div>
-          </td>
-
-          <td>
-            <div class="input-group">
-              <input
-                [readOnly]="!isEdit"
-                style="border: none; outline: none; background: white"
-                type="text"
-                class="form-control"
-                name="note"
-                id="note"
-                data-cy="note"
-                formControlName="note"
-              />
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</form>
-
+            <td>
+              <div class="input-group">
+                <input
+                  [readOnly]="!isEdit"
+                  style="border: none; outline: none; background: white"
+                  type="text"
+                  class="form-control"
+                  name="note"
+                  id="note"
+                  data-cy="note"
+                  formControlName="note"
+                />
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </form>
+</div>
 <jhi-toast #toastSalary></jhi-toast>

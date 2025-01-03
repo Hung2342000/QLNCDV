@@ -64,6 +64,33 @@ public class SalaryDetail implements Serializable {
     @Column(name = "note")
     private String note;
 
+    @Column(name = "kpis")
+    private String kpis;
+
+    @Column(name = "diaBan")
+    private String diaBan;
+
+    @Column(name = "luongCoDinhThucTe")
+    private BigDecimal luongCoDinhThucTe;
+
+    @Column(name = "phiCoDinhDaThucHien")
+    private BigDecimal phiCoDinhDaThucHien;
+
+    @Column(name = "phiCoDinhThanhToanThucTe")
+    private BigDecimal phiCoDinhThanhToanThucTe;
+
+    @Column(name = "chiPhiDichVuKhoanVaKK")
+    private BigDecimal chiPhiDichVuKhoanVaKK;
+
+    @Column(name = "chiPhiKKKhac")
+    private BigDecimal chiPhiKKKhac;
+
+    @Column(name = "tongChiPhiKVKK")
+    private BigDecimal tongChiPhiKVKK;
+
+    @Column(name = "nhom")
+    private String nhom;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -194,7 +221,79 @@ public class SalaryDetail implements Serializable {
         this.note = note;
     }
 
+    public String getKpis() {
+        return kpis;
+    }
+
+    public void setKpis(String kpis) {
+        this.kpis = kpis;
+    }
+
+    public String getDiaBan() {
+        return diaBan;
+    }
+
+    public void setDiaBan(String diaBan) {
+        this.diaBan = diaBan;
+    }
+
+    public BigDecimal getPhiCoDinhDaThucHien() {
+        return phiCoDinhDaThucHien;
+    }
+
+    public void setPhiCoDinhDaThucHien(BigDecimal phiCoDinhDaThucHien) {
+        this.phiCoDinhDaThucHien = phiCoDinhDaThucHien;
+    }
+
+    public BigDecimal getPhiCoDinhThanhToanThucTe() {
+        return phiCoDinhThanhToanThucTe;
+    }
+
+    public void setPhiCoDinhThanhToanThucTe(BigDecimal phiCoDinhThanhToanThucTe) {
+        this.phiCoDinhThanhToanThucTe = phiCoDinhThanhToanThucTe;
+    }
+
+    public BigDecimal getChiPhiDichVuKhoanVaKK() {
+        return chiPhiDichVuKhoanVaKK;
+    }
+
+    public void setChiPhiDichVuKhoanVaKK(BigDecimal chiPhiDichVuKhoanVaKK) {
+        this.chiPhiDichVuKhoanVaKK = chiPhiDichVuKhoanVaKK;
+    }
+
+    public BigDecimal getChiPhiKKKhac() {
+        return chiPhiKKKhac;
+    }
+
+    public void setChiPhiKKKhac(BigDecimal chiPhiKKKhac) {
+        this.chiPhiKKKhac = chiPhiKKKhac;
+    }
+
+    public BigDecimal getTongChiPhiKVKK() {
+        return tongChiPhiKVKK;
+    }
+
+    public void setTongChiPhiKVKK(BigDecimal tongChiPhiKVKK) {
+        this.tongChiPhiKVKK = tongChiPhiKVKK;
+    }
+
+    public String getNhom() {
+        return nhom;
+    }
+
+    public void setNhom(String nhom) {
+        this.nhom = nhom;
+    }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
+
+    public BigDecimal getLuongCoDinhThucTe() {
+        return luongCoDinhThucTe;
+    }
+
+    public void setLuongCoDinhThucTe(BigDecimal luongCoDinhThucTe) {
+        this.luongCoDinhThucTe = luongCoDinhThucTe;
+    }
 
     @Override
     public boolean equals(Object o) {
