@@ -7,7 +7,7 @@ import { finalize } from 'rxjs/operators';
 import { ISalary, Salary } from '../salary.model';
 import { SalaryService } from '../service/salary.service';
 import { ASC, DESC, ITEMS_PER_PAGE, SORT } from '../../../config/pagination.constants';
-import { ISalaryDetail, SalaryDetail } from '../salaryDetail.model';
+import { ISalaryDetail } from '../salaryDetail.model';
 import { IEmployee } from '../../employee/employee.model';
 import { EmployeeService } from '../../employee/service/employee.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -23,6 +23,7 @@ export class SalaryUpdateComponent implements OnInit {
   salary?: ISalary | any;
   salaryDetails?: ISalaryDetail[] | any;
   salaryDetailsAm?: ISalaryDetail[] | any;
+  salaryDetailsGDV?: ISalaryDetail[] | any;
   salaryDetailsHTVP?: ISalaryDetail[] | any;
   isLoading = false;
   totalItems = 0;
@@ -45,16 +46,21 @@ export class SalaryUpdateComponent implements OnInit {
     numberWork: [],
   });
 
-  form = new FormGroup({
+  form: FormGroup = new FormGroup({
     details: new FormArray([new FormControl()]),
   });
 
-  formAm = new FormGroup({
+  formAm: FormGroup = new FormGroup({
     detailsAm: new FormArray([new FormControl()]),
+  });
+
+  formGDV: FormGroup = new FormGroup({
+    detailsGDV: new FormArray([new FormControl()]),
   });
 
   private updatedData: any;
   private updatedDataAm: any;
+  private updatedDataGDV: any;
   private mergedData: any;
 
   constructor(
@@ -133,6 +139,34 @@ export class SalaryUpdateComponent implements OnInit {
       note: [itemAm.note],
     });
   }
+
+  createRowFormGDV(itemGDV: any): FormGroup {
+    return this.fb.group({
+      id: [itemGDV.id],
+      salaryId: [itemGDV.salaryId],
+      employeeId: [itemGDV.employeeId],
+      diaBan: [itemGDV.diaBan],
+      vung: [itemGDV.vung],
+      cap: [itemGDV.cap],
+      donGiaDichVu: [itemGDV.donGiaDichVu],
+      mucChiToiThieu: [itemGDV.mucChiToiThieu],
+      kpis: [itemGDV.kpis],
+      htc: [itemGDV.htc],
+      numberWorking: [itemGDV.numberWorking],
+      numberWorkInMonth: [itemGDV.numberWorkInMonth],
+      phiCoDinhDaThucHien: [itemGDV.phiCoDinhDaThucHien],
+      luongCoDinhThucTe: [itemGDV.luongCoDinhThucTe],
+      chiPhiGiamTru: [itemGDV.chiPhiGiamTru],
+      mucBSLuongToiThieuVung: [itemGDV.mucBSLuongToiThieuVung],
+      phiCoDinhThanhToanThucTe: [itemGDV.phiCoDinhThanhToanThucTe],
+      chiPhiDichVuKhoanVaKK: [itemGDV.chiPhiDichVuKhoanVaKK],
+      chiPhiKKKhac: [itemGDV.chiPhiKKKhac],
+      tongChiPhiKVKK: [itemGDV.tongChiPhiKVKK],
+      chiPhiThueDichVu: [itemGDV.chiPhiThueDichVu],
+      nhom: [itemGDV.nhom],
+      note: [itemGDV.note],
+    });
+  }
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ salary }) => {
       this.updateForm(salary);
@@ -143,11 +177,15 @@ export class SalaryUpdateComponent implements OnInit {
         this.salaryDetails = res.body;
         this.salaryDetailsHTVP = this.salaryDetails.filter((item: ISalaryDetail) => item.nhom === 'HTVP');
         this.salaryDetailsAm = this.salaryDetails.filter((item: ISalaryDetail) => item.nhom === 'AM');
+        this.salaryDetailsGDV = this.salaryDetails.filter((item: ISalaryDetail) => item.nhom === 'GDV');
         this.form = this.fb.group({
           details: this.fb.array(this.salaryDetailsHTVP.map((item: ISalaryDetail) => this.createRowForm(item))),
         });
         this.formAm = this.fb.group({
           detailsAm: this.fb.array(this.salaryDetailsAm.map((item: ISalaryDetail) => this.createRowFormAm(item))),
+        });
+        this.formGDV = this.fb.group({
+          detailsGDV: this.fb.array(this.salaryDetailsGDV.map((item: ISalaryDetail) => this.createRowFormGDV(item))),
         });
       },
     });
@@ -162,7 +200,9 @@ export class SalaryUpdateComponent implements OnInit {
   onSubmit(): void {
     this.updatedData = this.form.value.details;
     this.updatedDataAm = this.formAm.value.detailsAm;
+    this.updatedDataGDV = this.formGDV.value.detailsGDV;
     this.mergedData = this.updatedData.concat(this.updatedDataAm);
+    this.mergedData = this.mergedData.concat(this.updatedDataGDV);
     if (this.updatedData.length > 0) {
       this.salaryService.createAllDetail(this.mergedData).subscribe(
         data => {
@@ -203,6 +243,9 @@ export class SalaryUpdateComponent implements OnInit {
         this.formAm = this.fb.group({
           detailsAm: this.fb.array(this.salaryDetailsAm.map((item: ISalaryDetail) => this.createRowFormAm(item))),
         });
+        this.formGDV = this.fb.group({
+          detailsGDV: this.fb.array(this.salaryDetailsGDV.map((item: ISalaryDetail) => this.createRowFormGDV(item))),
+        });
       },
     });
   }
@@ -239,6 +282,9 @@ export class SalaryUpdateComponent implements OnInit {
   trackIdAm(_index: number, item: ISalaryDetail): number {
     return item.id!;
   }
+  trackIdGDV(_index: number, item: ISalaryDetail): number {
+    return item.id!;
+  }
   save(): void {
     this.isSaving = true;
     const salary = this.createFrom();
@@ -268,13 +314,16 @@ export class SalaryUpdateComponent implements OnInit {
     this.loadPage();
     this.modalService.dismissAll();
   }
-
+  get detailsGDV(): FormArray {
+    return this.formGDV.get('detailsGDV') as FormArray;
+  }
   get details(): FormArray {
     return this.form.get('details') as FormArray;
   }
   get detailsAm(): FormArray {
     return this.formAm.get('detailsAm') as FormArray;
   }
+
   protected subscribeToSaveResponse(result: Observable<HttpResponse<ISalary>>): void {
     result.pipe(finalize(() => this.onSaveFinalize())).subscribe({
       next: () => this.onSaveSuccess(),

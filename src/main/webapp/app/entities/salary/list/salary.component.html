@@ -100,34 +100,7 @@
               />
             </div>
           </div>
-
-          <div>
-            <label class="form-label" for="field_nameSalary">Tên bảng lương</label>
-            <input
-              type="text"
-              class="form-control"
-              name="nameSalary"
-              id="field_nameSalary"
-              data-cy="nameSalary"
-              formControlName="nameSalary"
-            />
-          </div>
-          <div>
-            <label class="form-label" for="field_employees">Nhân viên</label>
-            <ng-multiselect-dropdown
-              style="margin-left: -10px"
-              id="field_employees"
-              data-cy="employees"
-              formControlName="employees"
-              [placeholder]="'Nhân viên'"
-              [data]="employeesList"
-              [settings]="dropdownSettings"
-            >
-            </ng-multiselect-dropdown>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="row mb-3">
+          <div *ngIf="!editForm.get('isAttendance')?.value" class="row mb-3">
             <div class="col-md-6">
               <label class="form-label" for="field_month">Tháng</label>
               <select class="form-select" id="field_month" formControlName="month" data-cy="month" name="month">
@@ -151,7 +124,7 @@
             </div>
           </div>
 
-          <div>
+          <div *ngIf="!editForm.get('isAttendance')?.value">
             <label class="form-label" for="field_numberWork">Số ngày công trong tháng</label>
             <div class="input-group">
               <input
@@ -164,6 +137,36 @@
               />
             </div>
           </div>
+        </div>
+        <div class="col-md-6">
+          <div class="row mb-3">
+            <div>
+              <label class="form-label" for="field_nameSalary">Tên bảng lương</label>
+              <input
+                type="text"
+                class="form-control"
+                name="nameSalary"
+                id="field_nameSalary"
+                data-cy="nameSalary"
+                formControlName="nameSalary"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label class="form-label" for="field_employees">Nhân viên</label>
+            <ng-multiselect-dropdown
+              style="margin-left: -10px"
+              id="field_employees"
+              data-cy="employees"
+              formControlName="employees"
+              [placeholder]="'Nhân viên'"
+              [data]="employeesList"
+              [settings]="dropdownSettings"
+            >
+            </ng-multiselect-dropdown>
+          </div>
+
           <div style="margin-top: 10px">
             <input
               type="checkbox"

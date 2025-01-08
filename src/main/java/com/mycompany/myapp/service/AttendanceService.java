@@ -159,7 +159,7 @@ public class AttendanceService {
 
     public static boolean isWeekend(LocalDate date) {
         DayOfWeek dayOfWeek = date.getDayOfWeek();
-        return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY;
+        return dayOfWeek == DayOfWeek.SUNDAY;
     }
 
     public Page<Attendance> getAllByDepartment(Pageable pageable) {
@@ -174,14 +174,13 @@ public class AttendanceService {
         if (
             authentication != null &&
             !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(USER).contains(authority)) &&
-            getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority)) &&
-            !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(SUPERUSER).contains(authority))
+            getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority))
         ) {
             page = this.attendanceRepository.findAll(pageable);
         } else if (
             authentication != null && !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority))
         ) {
-            page = this.attendanceRepository.getAttendanceByDepartment(user.getDepartment(), pageable);
+            page = this.attendanceRepository.findAll(pageable);
         }
         return page;
     }
@@ -200,7 +199,7 @@ public class AttendanceService {
         } else if (
             authentication != null && !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority))
         ) {
-            list = this.attendanceRepository.getAttendanceByDepartment(user.getDepartment());
+            list = this.attendanceRepository.findAll();
         }
         return list;
     }

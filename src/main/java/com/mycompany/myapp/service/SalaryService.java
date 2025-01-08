@@ -52,19 +52,23 @@ public class SalaryService {
     public Salary createSalary(Salary salary) {
         Salary salaryCreate = this.salaryRepository.save(salary);
         Attendance attendance = new Attendance();
+        List<Employee> employeeList = new ArrayList<>();
         if (salary.getAttendanceId() != null && salary.getIsAttendance()) {
             attendance = this.attendanceRepository.findById(salary.getAttendanceId()).get();
+            employeeList = attendance.getEmployees();
+        } else {
+            employeeList =
+                employeeRepository.findAllById(
+                    salary.getEmployees().stream().map(employee -> employee.getId()).collect(Collectors.toList())
+                );
         }
-        List<Employee> employeeList = new ArrayList<>();
-        employeeList =
-            employeeRepository.findAllById(salary.getEmployees().stream().map(employee -> employee.getId()).collect(Collectors.toList()));
         List<Employee> employeeListAm = new ArrayList<>();
         List<Employee> employeeListHTVP = new ArrayList<>();
         List<Employee> employeeListGDV = new ArrayList<>();
         if (employeeList.size() > 0) {
             employeeListAm = employeeList.stream().filter(employee -> employee.getNhom().equals("AM")).collect(Collectors.toList());
             employeeListHTVP = employeeList.stream().filter(employee -> employee.getNhom().equals("HTVP")).collect(Collectors.toList());
-            employeeListGDV = employeeList.stream().filter(employee -> employee.getNhom().equals("HTKD")).collect(Collectors.toList());
+            employeeListGDV = employeeList.stream().filter(employee -> employee.getNhom().equals("GDV")).collect(Collectors.toList());
         }
 
         for (Employee employee : employeeListHTVP) {
@@ -92,6 +96,7 @@ public class SalaryService {
                     int numberWorking = countWorkingInMonth(salary.getYear().intValue(), salary.getMonth().intValue());
                     salaryDetail.setNumberWorking(BigDecimal.valueOf(numberWorking));
                     salaryDetail.setNumberWorkInMonth(BigDecimal.valueOf(numberWorking));
+                    salaryCreate.setNumberWork(BigDecimal.valueOf(numberWorking));
                 }
             }
             BigDecimal salaryAmount = BigDecimal.ZERO;
@@ -167,6 +172,62 @@ public class SalaryService {
             salaryDetail.setNhom(employee.getNhom());
             salaryDetailRepository.save(salaryDetail);
         }
+
+        for (Employee employee : employeeListGDV) {
+            SalaryDetail salaryDetail = new SalaryDetail();
+            salaryDetail.setEmployeeId(employee.getId());
+            salaryDetail.setSalaryId(salaryCreate.getId());
+            AttendanceDetail attendanceDetail = new AttendanceDetail();
+            if (salary.getAttendanceId() != null) {
+                salaryCreate.setMonth(attendance.getMonth());
+                salaryCreate.setYear(attendance.getYear());
+                attendanceDetail = this.attendanceDetailRepository.selectAllByAttIdAndEm(salary.getAttendanceId(), employee.getId());
+                if (attendanceDetail.getId() != null) {
+                    if (
+                        attendanceDetail.getNumberWork() != null &&
+                        attendanceDetail.getPaidWorking() != null &&
+                        employee.getBasicSalary() != null
+                    ) {
+                        salaryDetail.setNumberWorkInMonth(attendanceDetail.getNumberWork());
+                        salaryDetail.setNumberWorking(attendanceDetail.getPaidWorking());
+                        salaryCreate.setNumberWork(attendanceDetail.getNumberWork());
+                    }
+                }
+            } else {
+                if (salary.getYear() != null && salary.getMonth() != null) {
+                    int numberWorking = countWorkingInMonth(salary.getYear().intValue(), salary.getMonth().intValue());
+                    salaryDetail.setNumberWorking(BigDecimal.valueOf(numberWorking));
+                    salaryDetail.setNumberWorkInMonth(BigDecimal.valueOf(numberWorking));
+                }
+            }
+            BigDecimal salaryAmount = BigDecimal.ZERO;
+            BigDecimal luongCoDinhThucTe = BigDecimal.ZERO;
+
+            if (
+                salaryDetail.getNumberWorking() != null && salaryDetail.getNumberWorkInMonth() != null && employee.getBasicSalary() != null
+            ) {
+                salaryAmount =
+                    salaryDetail
+                        .getNumberWorking()
+                        .divide(salaryDetail.getNumberWorkInMonth(), 5, RoundingMode.HALF_UP)
+                        .multiply(employee.getBasicSalary());
+                luongCoDinhThucTe =
+                    salaryDetail
+                        .getNumberWorking()
+                        .divide(salaryDetail.getNumberWorkInMonth(), 5, RoundingMode.HALF_UP)
+                        .multiply(employee.getMucChiTraToiThieu());
+            }
+            salaryDetail.setPhiCoDinhDaThucHien(salaryAmount);
+            salaryDetail.setVung(employee.getRegion());
+            salaryDetail.setCap(employee.getRank());
+            salaryDetail.setMucChiToiThieu(employee.getMucChiTraToiThieu());
+            salaryDetail.setLuongCoDinhThucTe(luongCoDinhThucTe);
+            salaryDetail.setChucDanh(serviceTypeName(employee.getServiceType()));
+            salaryDetail.setDonGiaDichVu(employee.getBasicSalary());
+            salaryDetail.setNhom(employee.getNhom());
+            salaryDetail.setDiaBan(employee.getDepartment());
+            salaryDetailRepository.save(salaryDetail);
+        }
         salaryRepository.save(salaryCreate);
         return salary;
     }
@@ -178,7 +239,7 @@ public class SalaryService {
         // Duyệt qua từng ngày trong tháng
         for (int day = 1; day <= yearMonth.lengthOfMonth(); day++) {
             LocalDate date = LocalDate.of(year, month, day);
-            if (date.getDayOfWeek().getValue() == 7 || date.getDayOfWeek().getValue() == 6) {
+            if (date.getDayOfWeek().getValue() == 7) {
                 totalSundays++;
             }
         }

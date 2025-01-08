@@ -34,6 +34,9 @@ public class SalaryDetail implements Serializable {
     @Column(name = "vung")
     private String vung;
 
+    @Column(name = "cap")
+    private String cap;
+
     @Column(name = "donGiaDichVu")
     private BigDecimal donGiaDichVu;
 
@@ -75,6 +78,9 @@ public class SalaryDetail implements Serializable {
 
     @Column(name = "phiCoDinhDaThucHien")
     private BigDecimal phiCoDinhDaThucHien;
+
+    @Column(name = "mucBSLuongToiThieuVung")
+    private BigDecimal mucBSLuongToiThieuVung;
 
     @Column(name = "phiCoDinhThanhToanThucTe")
     private BigDecimal phiCoDinhThanhToanThucTe;
@@ -293,6 +299,22 @@ public class SalaryDetail implements Serializable {
 
     public void setLuongCoDinhThucTe(BigDecimal luongCoDinhThucTe) {
         this.luongCoDinhThucTe = luongCoDinhThucTe;
+    }
+
+    public String getCap() {
+        return cap;
+    }
+
+    public void setCap(String cap) {
+        this.cap = cap;
+    }
+
+    public BigDecimal getMucBSLuongToiThieuVung() {
+        return mucBSLuongToiThieuVung;
+    }
+
+    public void setMucBSLuongToiThieuVung(BigDecimal mucBSLuongToiThieuVung) {
+        this.mucBSLuongToiThieuVung = mucBSLuongToiThieuVung;
     }
 
     @Override

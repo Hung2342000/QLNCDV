@@ -50,7 +50,13 @@ public class EmployeeService {
         this.serviceTypeRepository = serviceTypeRepository;
     }
 
-    public Page<Employee> getAllEmployees(Pageable pageable, String searchCode, String searchName, String searchDepartment) {
+    public Page<Employee> getAllEmployees(
+        Pageable pageable,
+        String searchCode,
+        String searchName,
+        String searchDepartment,
+        String searchNhom
+    ) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username;
         User user = new User();
@@ -65,7 +71,14 @@ public class EmployeeService {
             getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority)) &&
             !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(SUPERUSER).contains(authority))
         ) {
-            page = employeeRepository.listAllEmployees(searchCode.toLowerCase(), searchName.toLowerCase(), searchDepartment, pageable);
+            page =
+                employeeRepository.listAllEmployees(
+                    searchCode.toLowerCase(),
+                    searchName.toLowerCase(),
+                    searchDepartment,
+                    searchNhom,
+                    pageable
+                );
         } else if (
             authentication != null && !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority))
         ) {
@@ -74,6 +87,7 @@ public class EmployeeService {
                     searchCode.toLowerCase(),
                     searchName.toLowerCase(),
                     user.getDepartment(),
+                    searchNhom,
                     pageable
                 );
         }

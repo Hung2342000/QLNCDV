@@ -5,6 +5,7 @@ export interface ISalaryDetail {
   diemCungCapDV?: string | null;
   chucDanh?: string | null;
   vung?: string | null;
+  cap?: string | null;
   donGiaDichVu?: number | null;
   numberWorking?: number | null;
   numberWorkInMonth?: number | null;
@@ -18,6 +19,7 @@ export interface ISalaryDetail {
   kpis?: string | null;
   diaBan?: string | null;
   luongCoDinhThucTe?: number | null;
+  mucBSLuongToiThieuVung?: number | null;
   phiCoDinhDaThucHien?: number | null;
   phiCoDinhThanhToanThucTe?: number | null;
   chiPhiDichVuKhoanVaKK?: number | null;
@@ -34,6 +36,7 @@ export class SalaryDetail implements ISalaryDetail {
     public diemCungCapDV?: string | null,
     public chucDanh?: string | null,
     public vung?: string | null,
+    public cap?: string | null,
     public donGiaDichVu?: number | null,
     public numberWorking?: number | null,
     public numberWorkInMonth?: number | null,
@@ -47,6 +50,7 @@ export class SalaryDetail implements ISalaryDetail {
     public kpis?: string | null,
     public diaBan?: string | null,
     public luongCoDinhThucTe?: number | null,
+    public mucBSLuongToiThieuVung?: number | null,
     public phiCoDinhDaThucHien?: number | null,
     public phiCoDinhThanhToanThucTe?: number | null,
     public chiPhiDichVuKhoanVaKK?: number | null,

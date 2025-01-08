@@ -197,10 +197,11 @@ public class EmployeeResource {
         @org.springdoc.api.annotations.ParameterObject Pageable pageable,
         String searchCode,
         String searchName,
-        String searchDepartment
+        String searchDepartment,
+        String searchNhom
     ) {
         log.debug("REST request to get a page of Employees");
-        Page<Employee> page = employeeService.getAllEmployees(pageable, searchCode, searchName, searchDepartment);
+        Page<Employee> page = employeeService.getAllEmployees(pageable, searchCode, searchName, searchDepartment, searchNhom);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }

@@ -105,22 +105,9 @@
             </div>
           </div>
 
-          <div>
+          <div style="margin-top: 15px">
             <label class="form-label" for="field_name">Tên bảng chấm công</label>
             <input type="text" class="form-control" name="name" id="field_name" data-cy="name" formControlName="name" />
-          </div>
-          <div>
-            <label class="form-label" for="field_employees">Nhân viên</label>
-            <ng-multiselect-dropdown
-              style="margin-left: -10px"
-              id="field_employees"
-              data-cy="employees"
-              formControlName="employees"
-              [placeholder]="'Nhân viên'"
-              [data]="employeesList"
-              [settings]="dropdownSettings"
-            >
-            </ng-multiselect-dropdown>
           </div>
         </div>
         <div class="col-md-6">
@@ -146,6 +133,19 @@
               <label class="form-label" for="field_year">Năm</label>
               <input type="number" class="form-control" name="year" id="field_year" data-cy="year" formControlName="year" />
             </div>
+          </div>
+          <div>
+            <label class="form-label" for="field_employees">Nhân viên</label>
+            <ng-multiselect-dropdown
+              style="margin-left: -10px"
+              id="field_employees"
+              data-cy="employees"
+              formControlName="employees"
+              [placeholder]="'Nhân viên'"
+              [data]="employeesList"
+              [settings]="dropdownSettings"
+            >
+            </ng-multiselect-dropdown>
           </div>
         </div>
       </div>

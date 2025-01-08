@@ -6,6 +6,9 @@
       <button id="jh-create-entity" data-cy="entityCreateButton" class="btn btn-primary btn-sm" [routerLink]="['/employee/new']">
         <span jhiTranslate="qldvApp.employee.home.createLabel"> Thêm </span>
       </button>
+      <!--      <button  data-cy="entityConfirmDeleteButton"  class="btn btn-danger btn-sm" (click)="importExcel()">-->
+      <!--        <span>Import</span>-->
+      <!--      </button>-->
     </div>
   </h4>
 
@@ -20,7 +23,7 @@
           <!--          <th scope="col" jhiSortBy="otherId">-->
           <!--            <span jhiTranslate="qldvApp.employee.otherId">Other Id</span> <fa-icon icon="sort"></fa-icon>-->
           <!--          </th>-->
-          <th style="width: 12%" scope="col" jhiSortBy="mobilePhone"><span>Số điện thoại cá nhân</span> <fa-icon icon="sort"></fa-icon></th>
+          <th style="width: 7%" scope="col" jhiSortBy="mobilePhone"><span>SĐT cá nhân</span> <fa-icon icon="sort"></fa-icon></th>
           <!--          <th scope="col" jhiSortBy="address"><span>Địa chỉ</span> <fa-icon icon="sort"></fa-icon></th>-->
           <!--          <th scope="col" jhiSortBy="privateEmail">-->
           <!--            <span jhiTranslate="qldvApp.employee.privateEmail">Private Email</span> <fa-icon icon="sort"></fa-icon>-->
@@ -34,6 +37,9 @@
           <th style="width: 10%" scope="col" jhiSortBy="department"><span>Phòng ban</span> <fa-icon icon="sort"></fa-icon></th>
           <th style="max-width: 100px" scope="col" jhiSortBy="department">
             <span>Loại hình dịch vụ</span> <fa-icon icon="sort"></fa-icon>
+          </th>
+          <th style="max-width: 100px" scope="col" jhiSortBy="department">
+            <span>Nhóm loại hình dịch vụ</span> <fa-icon icon="sort"></fa-icon>
           </th>
           <th scope="col" jhiSortBy="startDate"><span>Ngày vào làm việc</span> <fa-icon icon="sort"></fa-icon></th>
           <th style="width: 6%" class="text-center" scope="col">Thao tác</th>
@@ -71,6 +77,17 @@
               <option *ngFor="let department of departments" [value]="department.code">{{ department.name }}</option>
             </select>
           </th>
+          <th scope="col"></th>
+          <th scope="col">
+            <select style="height: 30px; width: 100%" [(ngModel)]="searchNhom" (change)="loadPageSearch()">
+              <option [value]=""></option>
+              <option [value]="'GDV'">GDV</option>
+              <option [value]="'AM'">AM</option>
+              <option [value]="'KAM'">KAM</option>
+              <option [value]="'HTVP'">HTVP</option>
+              <option [value]="'NVBH'">NVBH</option>
+            </select>
+          </th>
         </tr>
       </thead>
       <tbody style="border-top: 1px solid">
@@ -88,6 +105,9 @@
           <td>{{ departmentName(employee.department) }}</td>
           <td style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">
             {{ serviceTypeName(employee.serviceType) }}
+          </td>
+          <td style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">
+            {{ employee.nhom }}
           </td>
           <td>{{ employee.startDate | formatDateVnPipe }}</td>
           <td class="text-end">
@@ -121,6 +141,7 @@
           <td class="text-right empty-row"></td>
           <td class="text-right empty-row"></td>
           <td class="text-right empty-row"></td>
+          <td class="text-right empty-row"></td>
         </tr>
       </tbody>
     </table>
@@ -149,3 +170,28 @@
     </div>
   </div>
 </div>
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" data-cy="toolDeleteDialogHeading">Import Excel</h4>
+    <button type="button" class="btn-close" data-dismiss="modal" aria-hidden="true" (click)="closeModal()"></button>
+  </div>
+  <div class="modal-body">
+    <div style="margin-bottom: 10px">
+      <span style="margin-bottom: 10px; display: inline-block">
+        <b>File báo cáo FA07 trên ERP</b>
+      </span>
+    </div>
+    <div>
+      <input type="file" accept=".xlsx, .xls" (change)="onFileChange($event)" />
+    </div>
+    <div style="margin-left: 4px; color: red" *ngIf="!checkUpload && importClicked">Chưa có file upload</div>
+  </div>
+  <div class="modal-footer">
+    <button id="jhi-confirm-delete-tool" data-cy="entityConfirmDeleteButton" type="submit" class="btn btn-danger" (click)="importExcel()">
+      <span>Import</span>
+    </button>
+    <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="closeModal()">
+      <span>Đóng</span>
+    </button>
+  </div>
+</ng-template>
