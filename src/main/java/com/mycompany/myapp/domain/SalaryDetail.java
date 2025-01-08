@@ -73,6 +73,9 @@ public class SalaryDetail implements Serializable {
     @Column(name = "diaBan")
     private String diaBan;
 
+    @Column(name = "donVi")
+    private String donVi;
+
     @Column(name = "luongCoDinhThucTe")
     private BigDecimal luongCoDinhThucTe;
 
@@ -315,6 +318,14 @@ public class SalaryDetail implements Serializable {
 
     public void setMucBSLuongToiThieuVung(BigDecimal mucBSLuongToiThieuVung) {
         this.mucBSLuongToiThieuVung = mucBSLuongToiThieuVung;
+    }
+
+    public String getDonVi() {
+        return donVi;
+    }
+
+    public void setDonVi(String donVi) {
+        this.donVi = donVi;
     }
 
     @Override

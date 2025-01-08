@@ -74,6 +74,9 @@
 <div class="d-flex justify-content-between" *ngIf="isEdit === false">
   <span style="margin-top: 20px; font-weight: bold; font-size: 17px">Dịch vụ chi trả theo thời gian</span>
   <div>
+    <button style="margin-top: 10px; margin-bottom: 20px; margin-right: 5px" (click)="exportToExcel()" class="btn btn-danger btn-sm">
+      <span>Export</span>
+    </button>
     <button style="margin-top: 10px; margin-bottom: 20px; margin-right: 5px" (click)="edit()" class="btn btn-secondary btn-sm">
       <span>Sửa</span>
     </button>
@@ -85,7 +88,12 @@
 <div class="d-flex justify-content-between" *ngIf="isEdit === true">
   <span style="margin-top: 20px; font-weight: bold; font-size: 17px">Dịch vụ chi trả theo thời gian</span>
   <div>
-    <button style="margin-top: 10px; margin-right: 5px; margin-bottom: 20px" type="submit" class="btn btn-primary btn-sm">
+    <button
+      style="margin-top: 10px; margin-right: 5px; margin-bottom: 20px"
+      type="submit"
+      class="btn btn-primary btn-sm"
+      (click)="onSubmit()"
+    >
       <span>Lưu</span>
     </button>
     <button style="margin-top: 10px; margin-bottom: 20px" (click)="close()" class="btn btn-dark btn-sm">
@@ -94,7 +102,7 @@
   </div>
 </div>
 <div *ngIf="salaryDetailsHTVP && salaryDetailsHTVP.length > 0">
-  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <form [formGroup]="form">
     <div style="max-height: 650px; width: 100%; overflow-x: auto; overflow-y: auto; white-space: nowrap">
       <table class="table lh-table-column--bytes table-bordered">
         <thead style="background-color: #3b3e66; color: white">
