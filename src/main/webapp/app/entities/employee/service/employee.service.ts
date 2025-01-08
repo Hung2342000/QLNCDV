@@ -54,7 +54,10 @@ export class EmployeeService {
   queryServiceType(): Observable<EntityArrayResponseServiceType> {
     return this.http.get<IDepartment[]>(this.resourceUrlServiceType, { observe: 'response' });
   }
-
+  createAll(employees: IEmployee[]): Observable<any> {
+    const employeesCopy = this.convertDateArrayFromServeExcel(employees);
+    return this.http.post<any>(this.resourceUrl + '/all', employeesCopy);
+  }
   queryServiceTypeCustom(): Observable<EntityArrayResponseServiceType> {
     return this.http.get<IDepartment[]>(this.resourceUrlServiceType + '/custom', { observe: 'response' });
   }
@@ -131,6 +134,14 @@ export class EmployeeService {
         employee.startDate = employee.startDate ? dayjs(employee.startDate) : undefined;
       });
     }
+    return res;
+  }
+
+  protected convertDateArrayFromServeExcel(res: IEmployee[]): IEmployee[] {
+    res.forEach((employee: IEmployee) => {
+      employee.birthday = employee.birthday ? dayjs(employee.birthday, 'DD/MM/YYYY').add(1, 'day') : undefined;
+      employee.startDate = employee.startDate ? dayjs(employee.startDate, 'DD/MM/YYYY').add(1, 'day') : undefined;
+    });
     return res;
   }
 }

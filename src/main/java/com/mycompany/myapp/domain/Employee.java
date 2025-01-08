@@ -67,7 +67,7 @@ public class Employee implements Serializable {
     @Column(name = "rank")
     private String rank;
 
-    @Column(name = "mucChiTraToiThieu")
+    @Column(name = "muc_chi_tra_toi_thieu")
     private BigDecimal mucChiTraToiThieu;
 
     @Column(name = "nhom")

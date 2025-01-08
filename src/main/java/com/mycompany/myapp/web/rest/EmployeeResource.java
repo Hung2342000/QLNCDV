@@ -248,4 +248,11 @@ public class EmployeeResource {
         List<CountEmployee> employeeList = employeeService.getAllCountEmployee();
         return ResponseEntity.ok().body(employeeList);
     }
+
+    @PostMapping("/employees/all")
+    public ResponseEntity<List<Employee>> createTool(@Valid @RequestBody List<Employee> employeeList) throws URISyntaxException {
+        log.debug("REST request to save Tool : {}", employeeList);
+        List<Employee> employees = employeeService.importEmployee(employeeList);
+        return ResponseEntity.ok().body(employees);
+    }
 }

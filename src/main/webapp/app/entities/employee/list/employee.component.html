@@ -3,12 +3,18 @@
     <span style="color: rgba(0, 81, 255, 0.85)">Nhân viên</span>
 
     <div class="d-flex justify-content-end">
-      <button id="jh-create-entity" data-cy="entityCreateButton" class="btn btn-primary btn-sm" [routerLink]="['/employee/new']">
+      <button
+        style="margin-right: 10px"
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary btn-sm"
+        [routerLink]="['/employee/new']"
+      >
         <span jhiTranslate="qldvApp.employee.home.createLabel"> Thêm </span>
       </button>
-      <!--      <button  data-cy="entityConfirmDeleteButton"  class="btn btn-danger btn-sm" (click)="importExcel()">-->
-      <!--        <span>Import</span>-->
-      <!--      </button>-->
+      <button data-cy="entityConfirmDeleteButton" class="btn btn-danger btn-sm" (click)="importExcel()">
+        <span>Import</span>
+      </button>
     </div>
   </h4>
 
@@ -178,8 +184,11 @@
   <div class="modal-body">
     <div style="margin-bottom: 10px">
       <span style="margin-bottom: 10px; display: inline-block">
-        <b>File báo cáo FA07 trên ERP</b>
+        <b>File import phải đúng định dạng như file mẫu</b>
       </span>
+      <div>
+        <a href="./../../content/file/ImportEmployee.xlsx" download>Tải file mẫu</a>
+      </div>
     </div>
     <div>
       <input type="file" accept=".xlsx, .xls" (change)="onFileChange($event)" />
@@ -187,11 +196,12 @@
     <div style="margin-left: 4px; color: red" *ngIf="!checkUpload && importClicked">Chưa có file upload</div>
   </div>
   <div class="modal-footer">
-    <button id="jhi-confirm-delete-tool" data-cy="entityConfirmDeleteButton" type="submit" class="btn btn-danger" (click)="importExcel()">
+    <button id="jhi-confirm-delete-tool" data-cy="entityConfirmDeleteButton" type="submit" class="btn btn-danger btn-sm" (click)="import()">
       <span>Import</span>
     </button>
-    <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="closeModal()">
+    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal" (click)="closeModal()">
       <span>Đóng</span>
     </button>
   </div>
 </ng-template>
+<jhi-toast #toast></jhi-toast>

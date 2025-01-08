@@ -13,6 +13,8 @@ import { IDepartment } from '../department.model';
 import { EmployeeDetailComponent } from '../detail/employee-detail.component';
 import { IServiceType } from '../service-type.model';
 import * as XLSX from 'xlsx';
+import { numbers } from '@material/tooltip';
+import { ToastComponent } from '../../../layouts/toast/toast.component';
 
 @Component({
   selector: 'jhi-employee',
@@ -20,8 +22,10 @@ import * as XLSX from 'xlsx';
 })
 export class EmployeeComponent implements OnInit {
   @ViewChild('content') content: TemplateRef<any> | undefined;
+  @ViewChild('toast') toast!: ToastComponent;
   employees?: IEmployee[] | any;
   employeesImport?: IEmployee[] | any;
+  employeesImportCheck?: IEmployee[] | any;
   isLoading = false;
   totalItems = 0;
   itemsPerPage = ITEMS_PER_PAGE;
@@ -130,7 +134,7 @@ export class EmployeeComponent implements OnInit {
       const ws: XLSX.WorkSheet = wb.Sheets[wsname];
 
       /* save data */
-      this.employeesImport = XLSX.utils.sheet_to_json(ws, { header: 1 });
+      this.employeesImportCheck = XLSX.utils.sheet_to_json(ws, { header: 1 });
     };
     reader.readAsBinaryString(target.files[0]);
   }
@@ -155,7 +159,56 @@ export class EmployeeComponent implements OnInit {
   }
 
   importExcel(): void {
+    this.modalService.open(this.content, { size: 'md', backdrop: 'static' });
+  }
+  closeModalDetail(): void {
+    this.modalService.dismissAll();
+  }
+  import(): void {
     this.importClicked = true;
+    if (this.checkUpload) {
+      this.employeesImport = [];
+      if (this.employeesImportCheck.length > 0) {
+        for (let i = 0; i < this.employeesImportCheck.length; i++) {
+          const resultObject: IEmployee = {};
+          if (this.employeesImportCheck[i][0] !== 'Mã nhân viên') {
+            resultObject.codeEmployee = this.employeesImportCheck[i][0];
+            resultObject.name = this.employeesImportCheck[i][1];
+            resultObject.birthday = this.employeesImportCheck[i][2];
+            resultObject.otherId = this.employeesImportCheck[i][3];
+            resultObject.mobilePhone = this.employeesImportCheck[i][4];
+            resultObject.workPhone = this.employeesImportCheck[i][5];
+            resultObject.workEmail = this.employeesImportCheck[i][6];
+            resultObject.privateEmail = this.employeesImportCheck[i][7];
+            resultObject.department = this.employeesImportCheck[i][8];
+            resultObject.startDate = this.employeesImportCheck[i][9];
+            resultObject.address = this.employeesImportCheck[i][10];
+            resultObject.serviceType = this.serviceTypeId(
+              this.employeesImportCheck[i][11],
+              this.employeesImportCheck[i][13],
+              this.employeesImportCheck[i][12]
+            );
+            resultObject.region = this.employeesImportCheck[i][12];
+            resultObject.rank = this.employeesImportCheck[i][13];
+            this.employeesImport.push(resultObject);
+          }
+        }
+      }
+    }
+    if (this.employeesImport.length > 0) {
+      this.employeeService.createAll(this.employeesImport).subscribe(
+        data => {
+          this.toast.showToast('Thành công');
+          this.closeModal();
+          this.loadPage();
+        },
+        error => {
+          alert('có lỗi sảy ra');
+        }
+      );
+    } else {
+      alert('Dữ liệu không hợp lệ');
+    }
   }
   closeModal(): void {
     this.modalService.dismissAll();
@@ -169,6 +222,26 @@ export class EmployeeComponent implements OnInit {
       }
     }
     return name;
+  }
+
+  serviceTypeId(name: string | null | undefined, cap: string | null | undefined, vung: string | null | undefined): number {
+    let id = 0;
+    for (let i = 0; i < this.serviceTypesCustom.length; i++) {
+      if (this.serviceTypesCustom[i].nhom === 'GDV') {
+        if (
+          name === this.serviceTypesCustom[i].serviceName &&
+          String(cap) === this.serviceTypesCustom[i].rank &&
+          String(vung) === this.serviceTypesCustom[i].region
+        ) {
+          id = this.serviceTypesCustom[i].id;
+        }
+      } else {
+        if (name === this.serviceTypesCustom[i].serviceName && vung === this.serviceTypesCustom[i].region) {
+          id = this.serviceTypesCustom[i].id;
+        }
+      }
+    }
+    return id;
   }
 
   newArr(lenght: number): any[] {

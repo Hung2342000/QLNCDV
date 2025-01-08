@@ -45,6 +45,7 @@ spring:
       hibernate.hbm2ddl.auto: validate
       hibernate.jdbc.time_zone: UTC
       hibernate.query.fail_on_pagination_over_collection_fetch: true
+
   liquibase:
     contexts: test
   mail:

@@ -173,4 +173,26 @@ public class EmployeeService {
         }
         return employeeList;
     }
+
+    public List<Employee> importEmployee(List<Employee> employeeList) {
+        List<Employee> employees = new ArrayList<>();
+        if (employeeList.size() > 0) {
+            for (Employee employee : employeeList) {
+                ServiceType serviceType = new ServiceType();
+                if (employee.getServiceType() != null) {
+                    serviceType = serviceTypeRepository.findById(employee.getServiceType()).get();
+                }
+                if (serviceType.getId() != null) {
+                    employee.setNhom(serviceType.getNhom());
+                    employee.setRegion(serviceType.getRegion());
+                    employee.setRank(serviceType.getRank());
+                    employee.setBasicSalary(serviceType.getBasicSalary());
+                    employee.setMucChiTraToiThieu(serviceType.getMucChiTraToiThieu());
+                }
+                employees.add(employee);
+            }
+        }
+        employeeRepository.saveAll(employees);
+        return employees;
+    }
 }
