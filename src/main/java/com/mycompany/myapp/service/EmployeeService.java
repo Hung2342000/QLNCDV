@@ -182,7 +182,7 @@ public class EmployeeService {
                 if (employee.getDepartment() != null) {
                     department = departmentRepository.findDepartmentByName(employee.getDepartment().toLowerCase());
                 }
-                if (department.getId() != null) {
+                if (department != null && department.getId() != null) {
                     employee.setDepartment(department.getCode());
                 } else {
                     employee.setDepartment(" ");
@@ -206,7 +206,7 @@ public class EmployeeService {
                             employee.getRegion()
                         );
                 }
-                if (serviceType.getId() != null) {
+                if (serviceType != null && serviceType.getId() != null) {
                     employee.setNhom(serviceType.getNhom());
                     employee.setRegion(serviceType.getRegion());
                     employee.setRank(serviceType.getRank());
