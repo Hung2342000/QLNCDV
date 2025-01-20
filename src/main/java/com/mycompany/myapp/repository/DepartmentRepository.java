@@ -16,6 +16,9 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
     @Query("select a from Department a where a.code like  %:code% ")
     Department findDepartmentByCode(@Param("code") String code);
 
+    @Query("select a from Department a where lower( a.name) like  %:name% ")
+    Department findDepartmentByName(@Param("name") String name);
+
     @Query("select a from Department a where a.id IN :id ")
     List<Department> findDepartmentByListID(@Param("id") List<Long> id);
 }

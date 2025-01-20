@@ -183,11 +183,7 @@ export class EmployeeComponent implements OnInit {
             resultObject.department = this.employeesImportCheck[i][8];
             resultObject.startDate = this.employeesImportCheck[i][9];
             resultObject.address = this.employeesImportCheck[i][10];
-            resultObject.serviceType = this.serviceTypeId(
-              this.employeesImportCheck[i][11],
-              this.employeesImportCheck[i][13],
-              this.employeesImportCheck[i][12]
-            );
+            resultObject.serviceTypeName = this.employeesImportCheck[i][11];
             resultObject.region = this.employeesImportCheck[i][12];
             resultObject.rank = this.employeesImportCheck[i][13];
             this.employeesImport.push(resultObject);
@@ -224,25 +220,25 @@ export class EmployeeComponent implements OnInit {
     return name;
   }
 
-  serviceTypeId(name: string | null | undefined, cap: string | null | undefined, vung: string | null | undefined): number {
-    let id = 0;
-    for (let i = 0; i < this.serviceTypesCustom.length; i++) {
-      if (this.serviceTypesCustom[i].nhom === 'GDV') {
-        if (
-          name === this.serviceTypesCustom[i].serviceName &&
-          String(cap) === this.serviceTypesCustom[i].rank &&
-          String(vung) === this.serviceTypesCustom[i].region
-        ) {
-          id = this.serviceTypesCustom[i].id;
-        }
-      } else {
-        if (name === this.serviceTypesCustom[i].serviceName && vung === this.serviceTypesCustom[i].region) {
-          id = this.serviceTypesCustom[i].id;
-        }
-      }
-    }
-    return id;
-  }
+  // serviceTypeId(name: string | null | undefined, cap: string | null | undefined, vung: string | null | undefined): number {
+  //   let id = 0;
+  //   for (let i = 0; i < this.serviceTypesCustom.length; i++) {
+  //     if (this.serviceTypesCustom[i].nhom === 'GDV') {
+  //       if (
+  //         name === this.serviceTypesCustom[i].serviceName &&
+  //         String(cap) === this.serviceTypesCustom[i].rank &&
+  //         String(vung) === this.serviceTypesCustom[i].region
+  //       ) {
+  //         id = this.serviceTypesCustom[i].id;
+  //       }
+  //     } else {
+  //       if (name === this.serviceTypesCustom[i].serviceName && String(vung) === this.serviceTypesCustom[i].region) {
+  //         id = this.serviceTypesCustom[i].id;
+  //       }
+  //     }
+  //   }
+  //   return id;
+  // }
 
   newArr(lenght: number): any[] {
     if (lenght > 0) {

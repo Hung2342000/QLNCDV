@@ -68,8 +68,7 @@ public class EmployeeService {
         if (
             authentication != null &&
             !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(USER).contains(authority)) &&
-            getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority)) &&
-            !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(SUPERUSER).contains(authority))
+            getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority))
         ) {
             page =
                 employeeRepository.listAllEmployees(
@@ -179,8 +178,33 @@ public class EmployeeService {
         if (employeeList.size() > 0) {
             for (Employee employee : employeeList) {
                 ServiceType serviceType = new ServiceType();
-                if (employee.getServiceType() != null) {
-                    serviceType = serviceTypeRepository.findById(employee.getServiceType()).get();
+                Department department = new Department();
+                if (employee.getDepartment() != null) {
+                    department = departmentRepository.findDepartmentByName(employee.getDepartment().toLowerCase());
+                }
+                if (department.getId() != null) {
+                    employee.setDepartment(department.getCode());
+                } else {
+                    employee.setDepartment(" ");
+                }
+                if (
+                    employee.getRank() != null &&
+                    employee.getRank() != "" &&
+                    employee.getServiceTypeName() != null &&
+                    employee.getRegion() != null
+                ) {
+                    serviceType =
+                        serviceTypeRepository.findServiceTypeByServiceNameAndRegionRank(
+                            employee.getServiceTypeName().toLowerCase(),
+                            employee.getRegion(),
+                            employee.getRank()
+                        );
+                } else if (employee.getServiceTypeName() != null && employee.getRegion() != null) {
+                    serviceType =
+                        serviceTypeRepository.findServiceTypeByServiceNameAndRegion(
+                            employee.getServiceTypeName().toLowerCase(),
+                            employee.getRegion()
+                        );
                 }
                 if (serviceType.getId() != null) {
                     employee.setNhom(serviceType.getNhom());
@@ -188,8 +212,15 @@ public class EmployeeService {
                     employee.setRank(serviceType.getRank());
                     employee.setBasicSalary(serviceType.getBasicSalary());
                     employee.setMucChiTraToiThieu(serviceType.getMucChiTraToiThieu());
+                } else {
+                    // check null khi tim kiem
+                    employee.setNhom(" ");
                 }
-                employees.add(employee);
+                Employee employeeCheck = new Employee();
+                employeeCheck = employeeRepository.getByCode(employee.getCodeEmployee());
+                if (employeeCheck == null) {
+                    employees.add(employee);
+                }
             }
         }
         employeeRepository.saveAll(employees);

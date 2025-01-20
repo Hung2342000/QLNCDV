@@ -41,6 +41,9 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     @Query("select a from Employee a where a.department = :department")
     List<Employee> listAllEmployeesDepartmentNoPage(@Param("department") String department);
 
+    @Query("select a from Employee a where a.codeEmployee = :codeEmployee")
+    Employee getByCode(@Param("codeEmployee") String codeEmployee);
+
     @Query("SELECT new CountEmployee( d.code, count(d.code)) FROM Employee e JOIN Department d on e.department = d.code group by d.code")
     List<CountEmployee> listAllEmployeesDepartmentNoPage();
 }
