@@ -20,6 +20,7 @@ export interface IEmployee {
   isTeller?: boolean | null;
   rank?: string | null;
   nhom?: string | null;
+  selected?: boolean | null;
 }
 
 export class Employee implements IEmployee {
@@ -42,7 +43,8 @@ export class Employee implements IEmployee {
     public region?: string | null,
     public isTeller?: boolean | null,
     public rank?: string | null,
-    public nhom?: string | null
+    public nhom?: string | null,
+    public selected?: boolean | null
   ) {}
 }
 

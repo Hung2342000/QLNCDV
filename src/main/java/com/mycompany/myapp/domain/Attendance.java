@@ -46,6 +46,18 @@ public class Attendance implements Serializable {
     @Column(name = "departmentCode")
     private String departmentCode;
 
+    @Column(name = "numberWork")
+    private BigDecimal numberWork;
+
+    @Column(name = "search_name")
+    private String searchName;
+
+    @Column(name = "search_nhom")
+    private String searchNhom;
+
+    @Column(name = "search_department")
+    private String searchDepartment;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -110,6 +122,38 @@ public class Attendance implements Serializable {
 
     public void setDepartmentCode(String departmentCode) {
         this.departmentCode = departmentCode;
+    }
+
+    public String getSearchName() {
+        return searchName;
+    }
+
+    public void setSearchName(String searchName) {
+        this.searchName = searchName;
+    }
+
+    public String getSearchNhom() {
+        return searchNhom;
+    }
+
+    public void setSearchNhom(String searchNhom) {
+        this.searchNhom = searchNhom;
+    }
+
+    public String getSearchDepartment() {
+        return searchDepartment;
+    }
+
+    public void setSearchDepartment(String searchDepartment) {
+        this.searchDepartment = searchDepartment;
+    }
+
+    public BigDecimal getNumberWork() {
+        return numberWork;
+    }
+
+    public void setNumberWork(BigDecimal numberWork) {
+        this.numberWork = numberWork;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

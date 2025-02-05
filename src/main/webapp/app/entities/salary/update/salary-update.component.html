@@ -71,38 +71,30 @@
 <!--    <span>Export</span>-->
 <!--  </button>-->
 <!--</div>-->
-<div class="d-flex justify-content-between" *ngIf="isEdit === false">
-  <span style="margin-top: 20px; font-weight: bold; font-size: 17px">Dịch vụ chi trả theo thời gian</span>
-  <div>
-    <button style="margin-top: 10px; margin-bottom: 20px; margin-right: 5px" (click)="exportToExcel()" class="btn btn-danger btn-sm">
-      <span>Export</span>
-    </button>
-    <button style="margin-top: 10px; margin-bottom: 20px; margin-right: 5px" (click)="edit()" class="btn btn-secondary btn-sm">
-      <span>Sửa</span>
-    </button>
-    <button style="margin-top: 10px; margin-bottom: 20px" (click)="close()" class="btn btn-dark btn-sm">
-      <span>Đóng</span>
-    </button>
-  </div>
+<div class="d-flex justify-content-end" *ngIf="isEdit === false">
+  <button style="margin-right: 5px" (click)="exportToExcel()" class="btn btn-danger btn-sm">
+    <span>Export</span>
+  </button>
+  <button style="margin-right: 5px" (click)="edit()" class="btn btn-secondary btn-sm">
+    <span>Sửa</span>
+  </button>
+  <button (click)="close()" class="btn btn-dark btn-sm">
+    <span>Đóng</span>
+  </button>
 </div>
-<div class="d-flex justify-content-between" *ngIf="isEdit === true">
-  <span style="margin-top: 20px; font-weight: bold; font-size: 17px">Dịch vụ chi trả theo thời gian</span>
-  <div>
-    <button
-      style="margin-top: 10px; margin-right: 5px; margin-bottom: 20px"
-      type="submit"
-      class="btn btn-primary btn-sm"
-      (click)="onSubmit()"
-    >
-      <span>Lưu</span>
-    </button>
-    <button style="margin-top: 10px; margin-bottom: 20px" (click)="close()" class="btn btn-dark btn-sm">
-      <span>Đóng</span>
-    </button>
-  </div>
+<div class="d-flex justify-content-end" *ngIf="isEdit === true">
+  <button style="margin-right: 5px" type="submit" class="btn btn-primary btn-sm" (click)="onSubmit()">
+    <span>Lưu</span>
+  </button>
+  <button style="" (click)="close()" class="btn btn-dark btn-sm">
+    <span>Đóng</span>
+  </button>
 </div>
 <div *ngIf="salaryDetailsHTVP && salaryDetailsHTVP.length > 0">
   <form [formGroup]="form">
+    <div class="d-flex justify-content-between">
+      <span style="margin-top: 20px; margin-bottom: 20px; font-weight: bold; font-size: 17px">Dịch vụ chi trả theo thời gian</span>
+    </div>
     <div style="max-height: 650px; width: 100%; overflow-x: auto; overflow-y: auto; white-space: nowrap">
       <table class="table lh-table-column--bytes table-bordered">
         <thead style="background-color: #3b3e66; color: white">
@@ -262,23 +254,35 @@
 
             <td>
               <div class="input-group">
-                <input
-                  [readOnly]="!isEdit"
-                  style="border: none; outline: none; background: white"
-                  type="text"
-                  class="form-control"
-                  name="xepLoai"
-                  id="xepLoai"
-                  data-cy="xepLoai"
+                <select
+                  [ngStyle]="{ 'pointer-events': !isEdit ? 'none' : '' }"
+                  class="form-select"
+                  id="field_xepLoai"
                   formControlName="xepLoai"
-                />
+                  data-cy="xepLoai"
+                  name="xepLoai"
+                >
+                  <option [value]="'A'">A</option>
+                  <option [value]="'B'">B</option>
+                  <option [value]="'C'">C</option>
+                </select>
+                <!--                <input-->
+                <!--                  [readOnly]="!isEdit"-->
+                <!--                  style="border: none; outline: none; background: white"-->
+                <!--                  type="text"-->
+                <!--                  class="form-control"-->
+                <!--                  name="xepLoai"-->
+                <!--                  id="xepLoai"-->
+                <!--                  data-cy="xepLoai"-->
+                <!--                  formControlName="xepLoai"-->
+                <!--                />-->
               </div>
             </td>
 
             <td>
               <div class="input-group">
                 <input
-                  [readOnly]="!isEdit"
+                  [readOnly]="true"
                   style="border: none; outline: none; background: white"
                   type="text"
                   class="form-control"

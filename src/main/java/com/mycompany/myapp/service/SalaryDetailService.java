@@ -83,43 +83,7 @@ public class SalaryDetailService {
             salaryDetailListAM =
                 salaryDetailList.stream().filter(salaryDetail -> salaryDetail.getNhom().equals("AM")).collect(Collectors.toList());
         }
-
-        Salary salary = this.salaryRepository.findById(salaryId).get();
         XSSFWorkbook workbook = new XSSFWorkbook();
-        Sheet sheetHtvp = workbook.createSheet("Service");
-
-        Font font = workbook.createFont();
-        font.setBold(true);
-        font.setFontName("Times New Roman");
-
-        Font fontDetail = workbook.createFont();
-        fontDetail.setFontName("Times New Roman");
-
-        CellStyle boldStyle = workbook.createCellStyle();
-        boldStyle.setFont(font);
-
-        CellStyle detailStyle = workbook.createCellStyle();
-        detailStyle.setFont(fontDetail);
-        detailStyle.setBorderRight(BorderStyle.THIN);
-        detailStyle.setBorderLeft(BorderStyle.THIN);
-
-        CellStyle tableName = workbook.createCellStyle();
-        tableName.setFont(font);
-        tableName.setAlignment(HorizontalAlignment.CENTER);
-        tableName.setVerticalAlignment(VerticalAlignment.CENTER);
-
-        // Tạo một CellStyle mới và thiết lập Font chữ đậm và căn giữa cho nó
-        CellStyle centeredBoldStyle = workbook.createCellStyle();
-        centeredBoldStyle.setFont(font);
-        centeredBoldStyle.setWrapText(true);
-        centeredBoldStyle.setAlignment(HorizontalAlignment.CENTER);
-        centeredBoldStyle.setVerticalAlignment(VerticalAlignment.CENTER);
-        centeredBoldStyle.setBorderBottom(BorderStyle.THIN);
-        centeredBoldStyle.setBorderTop(BorderStyle.THIN);
-        centeredBoldStyle.setBorderRight(BorderStyle.THIN);
-        centeredBoldStyle.setBorderLeft(BorderStyle.THIN);
-
-        // Sample data (replace with your own data)
         String[] headersHTVP = {
             "STT",
             "Họ và tên nhân công dịch vụ",
@@ -179,104 +143,141 @@ public class SalaryDetailService {
             "Phí dịch vụ thực tế",
         };
 
-        Row rowTieuDe = sheetHtvp.createRow(0);
-        Cell cellTieuDe = rowTieuDe.createCell(0);
-        cellTieuDe.setCellValue("TỔNG CÔNG TY VIÊN THÔNG MOBIFONE");
-        cellTieuDe.setCellStyle(boldStyle);
-        sheetHtvp.addMergedRegion(new CellRangeAddress(0, 0, 0, 3));
+        Font font = workbook.createFont();
+        font.setBold(true);
+        font.setFontName("Times New Roman");
 
-        Row rowDonVi = sheetHtvp.createRow(1);
-        Cell cellDonVi = rowDonVi.createCell(0);
-        cellDonVi.setCellValue("ĐƠN VỊ: MOBIFONE KHU VỰC 4");
-        cellDonVi.setCellStyle(boldStyle);
-        sheetHtvp.addMergedRegion(new CellRangeAddress(1, 1, 0, 3));
+        Font fontDetail = workbook.createFont();
+        fontDetail.setFontName("Times New Roman");
 
-        Row rowTableName = sheetHtvp.createRow(2);
-        Cell cellTableName = rowTableName.createCell(0);
-        cellTableName.setCellValue("Service");
-        cellTableName.setCellStyle(tableName);
-        sheetHtvp.addMergedRegion(new CellRangeAddress(2, 2, 0, 8));
+        CellStyle boldStyle = workbook.createCellStyle();
+        boldStyle.setFont(font);
 
-        Row rowDate = sheetHtvp.createRow(4);
-        Cell cellDate = rowDate.createCell(0);
-        cellDate.setCellValue("Bảng lương tháng " + salary.getMonth() + " năm " + salary.getYear());
-        cellDate.setCellStyle(boldStyle);
-        sheetHtvp.addMergedRegion(new CellRangeAddress(4, 4, 0, 8));
+        CellStyle detailStyle = workbook.createCellStyle();
+        detailStyle.setFont(fontDetail);
+        detailStyle.setBorderRight(BorderStyle.THIN);
+        detailStyle.setBorderLeft(BorderStyle.THIN);
 
-        int rowNum = 5;
-        Row headerRow = sheetHtvp.createRow(rowNum++);
-        for (int i = 0; i < headersHTVP.length; i++) {
-            if (i != 4 && i != 0 && i != 5) {
-                sheetHtvp.setColumnWidth(i, 5000);
+        CellStyle tableName = workbook.createCellStyle();
+        tableName.setFont(font);
+        tableName.setAlignment(HorizontalAlignment.CENTER);
+        tableName.setVerticalAlignment(VerticalAlignment.CENTER);
+
+        // Tạo một CellStyle mới và thiết lập Font chữ đậm và căn giữa cho nó
+        CellStyle centeredBoldStyle = workbook.createCellStyle();
+        centeredBoldStyle.setFont(font);
+        centeredBoldStyle.setWrapText(true);
+        centeredBoldStyle.setAlignment(HorizontalAlignment.CENTER);
+        centeredBoldStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        centeredBoldStyle.setBorderBottom(BorderStyle.THIN);
+        centeredBoldStyle.setBorderTop(BorderStyle.THIN);
+        centeredBoldStyle.setBorderRight(BorderStyle.THIN);
+        centeredBoldStyle.setBorderLeft(BorderStyle.THIN);
+        Salary salary = this.salaryRepository.findById(salaryId).get();
+        if (salaryDetailListHTVP != null && salaryDetailListHTVP.size() > 0) {
+            Sheet sheetHtvp = workbook.createSheet("Service");
+
+            // Sample data (replace with your own data)
+
+            Row rowTieuDe = sheetHtvp.createRow(0);
+            Cell cellTieuDe = rowTieuDe.createCell(0);
+            cellTieuDe.setCellValue("TỔNG CÔNG TY VIÊN THÔNG MOBIFONE");
+            cellTieuDe.setCellStyle(boldStyle);
+            sheetHtvp.addMergedRegion(new CellRangeAddress(0, 0, 0, 3));
+
+            Row rowDonVi = sheetHtvp.createRow(1);
+            Cell cellDonVi = rowDonVi.createCell(0);
+            cellDonVi.setCellValue("ĐƠN VỊ: MOBIFONE KHU VỰC 4");
+            cellDonVi.setCellStyle(boldStyle);
+            sheetHtvp.addMergedRegion(new CellRangeAddress(1, 1, 0, 3));
+
+            Row rowTableName = sheetHtvp.createRow(2);
+            Cell cellTableName = rowTableName.createCell(0);
+            cellTableName.setCellValue("Service");
+            cellTableName.setCellStyle(tableName);
+            sheetHtvp.addMergedRegion(new CellRangeAddress(2, 2, 0, 8));
+
+            Row rowDate = sheetHtvp.createRow(4);
+            Cell cellDate = rowDate.createCell(0);
+            cellDate.setCellValue("Bảng lương tháng " + salary.getMonth() + " năm " + salary.getYear());
+            cellDate.setCellStyle(boldStyle);
+            sheetHtvp.addMergedRegion(new CellRangeAddress(4, 4, 0, 8));
+
+            int rowNum = 5;
+            Row headerRow = sheetHtvp.createRow(rowNum++);
+            for (int i = 0; i < headersHTVP.length; i++) {
+                if (i != 4 && i != 0 && i != 5) {
+                    sheetHtvp.setColumnWidth(i, 5000);
+                }
+                headerRow.setHeight((short) 1000);
+                Cell cell = headerRow.createCell(i);
+                cell.setCellValue(headersHTVP[i]);
+                cell.setCellStyle(centeredBoldStyle);
             }
-            headerRow.setHeight((short) 1000);
-            Cell cell = headerRow.createCell(i);
-            cell.setCellValue(headersHTVP[i]);
-            cell.setCellStyle(centeredBoldStyle);
-        }
-        int stt = 1;
-        for (SalaryDetail rowData : salaryDetailListHTVP) {
-            Employee employee = new Employee();
-            employee = employeeRepository.findById(rowData.getEmployeeId()).get();
+            int stt = 1;
+            for (SalaryDetail rowData : salaryDetailListHTVP) {
+                Employee employee = new Employee();
+                employee = employeeRepository.findById(rowData.getEmployeeId()).get();
 
-            Row row = sheetHtvp.createRow(rowNum++);
-            Cell cell0 = row.createCell(0);
-            cell0.setCellValue(stt);
-            cell0.setCellStyle(detailStyle);
+                Row row = sheetHtvp.createRow(rowNum++);
+                Cell cell0 = row.createCell(0);
+                cell0.setCellValue(stt);
+                cell0.setCellStyle(detailStyle);
 
-            Cell cell1 = row.createCell(1);
-            cell1.setCellValue(employee.getName());
-            cell1.setCellStyle(detailStyle);
+                Cell cell1 = row.createCell(1);
+                cell1.setCellValue(employee.getName());
+                cell1.setCellStyle(detailStyle);
 
-            Cell cell2 = row.createCell(2);
-            cell2.setCellValue(rowData.getDiemCungCapDV());
-            cell2.setCellStyle(detailStyle);
+                Cell cell2 = row.createCell(2);
+                cell2.setCellValue(rowData.getDiemCungCapDV());
+                cell2.setCellStyle(detailStyle);
 
-            Cell cell3 = row.createCell(3);
-            cell3.setCellValue(rowData.getChucDanh());
-            cell3.setCellStyle(detailStyle);
+                Cell cell3 = row.createCell(3);
+                cell3.setCellValue(rowData.getChucDanh());
+                cell3.setCellStyle(detailStyle);
 
-            Cell cell4 = row.createCell(4);
-            cell4.setCellValue(rowData.getVung());
-            cell4.setCellStyle(detailStyle);
+                Cell cell4 = row.createCell(4);
+                cell4.setCellValue(rowData.getVung());
+                cell4.setCellStyle(detailStyle);
 
-            Cell cell5 = row.createCell(5);
-            cell5.setCellValue(rowData.getDonGiaDichVu() != null ? rowData.getDonGiaDichVu().toString() : "");
-            cell5.setCellStyle(detailStyle);
+                Cell cell5 = row.createCell(5);
+                cell5.setCellValue(rowData.getDonGiaDichVu() != null ? rowData.getDonGiaDichVu().toString() : "");
+                cell5.setCellStyle(detailStyle);
 
-            Cell cell6 = row.createCell(6);
-            cell6.setCellValue(rowData.getNumberWorkInMonth() != null ? rowData.getNumberWorkInMonth().toString() : "");
-            cell6.setCellStyle(detailStyle);
+                Cell cell6 = row.createCell(6);
+                cell6.setCellValue(rowData.getNumberWorkInMonth() != null ? rowData.getNumberWorkInMonth().toString() : "");
+                cell6.setCellStyle(detailStyle);
 
-            Cell cell7 = row.createCell(7);
-            cell7.setCellValue(rowData.getNumberWorking() != null ? rowData.getNumberWorking().toString() : "");
-            cell7.setCellStyle(detailStyle);
+                Cell cell7 = row.createCell(7);
+                cell7.setCellValue(rowData.getNumberWorking() != null ? rowData.getNumberWorking().toString() : "");
+                cell7.setCellStyle(detailStyle);
 
-            Cell cell8 = row.createCell(8);
-            cell8.setCellValue(rowData.getDonGiaDichVuThucNhan() != null ? rowData.getDonGiaDichVuThucNhan().toString() : "");
-            cell8.setCellStyle(detailStyle);
+                Cell cell8 = row.createCell(8);
+                cell8.setCellValue(rowData.getDonGiaDichVuThucNhan() != null ? rowData.getDonGiaDichVuThucNhan().toString() : "");
+                cell8.setCellStyle(detailStyle);
 
-            Cell cell9 = row.createCell(9);
-            cell9.setCellValue(rowData.getMucChiToiThieu() != null ? rowData.getMucChiToiThieu().toString() : "");
-            cell9.setCellStyle(detailStyle);
+                Cell cell9 = row.createCell(9);
+                cell9.setCellValue(rowData.getMucChiToiThieu() != null ? rowData.getMucChiToiThieu().toString() : "");
+                cell9.setCellStyle(detailStyle);
 
-            Cell cell10 = row.createCell(10);
-            cell10.setCellValue(rowData.getXepLoai() != null ? rowData.getXepLoai().toString() : "");
-            cell10.setCellStyle(detailStyle);
+                Cell cell10 = row.createCell(10);
+                cell10.setCellValue(rowData.getXepLoai() != null ? rowData.getXepLoai().toString() : "");
+                cell10.setCellStyle(detailStyle);
 
-            Cell cell11 = row.createCell(11);
-            cell11.setCellValue(rowData.getHtc() != null ? rowData.getHtc().toString() : "");
-            cell11.setCellStyle(detailStyle);
+                Cell cell11 = row.createCell(11);
+                cell11.setCellValue(rowData.getHtc() != null ? rowData.getHtc().toString() : "");
+                cell11.setCellStyle(detailStyle);
 
-            Cell cell12 = row.createCell(12);
-            cell12.setCellValue(rowData.getChiPhiGiamTru() != null ? rowData.getChiPhiGiamTru().toString() : "");
-            cell12.setCellStyle(detailStyle);
+                Cell cell12 = row.createCell(12);
+                cell12.setCellValue(rowData.getChiPhiGiamTru() != null ? rowData.getChiPhiGiamTru().toString() : "");
+                cell12.setCellStyle(detailStyle);
 
-            Cell cell13 = row.createCell(13);
-            cell13.setCellValue(rowData.getChiPhiThueDichVu() != null ? rowData.getChiPhiThueDichVu().toString() : "");
-            cell13.setCellStyle(detailStyle);
+                Cell cell13 = row.createCell(13);
+                cell13.setCellValue(rowData.getChiPhiThueDichVu() != null ? rowData.getChiPhiThueDichVu().toString() : "");
+                cell13.setCellStyle(detailStyle);
 
-            stt++;
+                stt++;
+            }
         }
 
         if (salaryDetailListGDV.size() > 0) {
@@ -517,10 +518,6 @@ public class SalaryDetailService {
         List<SalaryDetail> salaryDetailsAm = new ArrayList<>();
         List<SalaryDetail> salaryDetailsHTVP = new ArrayList<>();
         List<SalaryDetail> salaryDetailsGDV = new ArrayList<>();
-        //        Salary salary = new Salary();
-        //        if(salaryDetailList.size() > 0 && salaryDetailList.get(0).getSalaryId() != null){
-        //            salary = salaryRepository.findById(salaryDetailList.get(0).getSalaryId()).get();
-        //        }
         if (salaryDetailList.size() > 0) {
             salaryDetailsHTVP =
                 salaryDetailList.stream().filter(salaryDetail -> salaryDetail.getNhom().equals("HTVP")).collect(Collectors.toList());

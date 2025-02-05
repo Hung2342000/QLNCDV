@@ -35,6 +35,7 @@ export class SalaryComponent implements OnInit {
   ngbPaginationPage = 1;
   isSaving = false;
   dropdownSettings: any;
+  employeeCheck: any;
   employeesList: IEmployee[] | any;
   attendanceList: IAttendance[] | any;
 
@@ -102,7 +103,9 @@ export class SalaryComponent implements OnInit {
     });
     this.handleNavigation();
   }
-
+  receiveMessage($event: any): void {
+    this.employeeCheck = $event;
+  }
   loadPageSearch(page?: number, dontNavigate?: boolean): void {
     this.isLoading = true;
 
@@ -162,6 +165,9 @@ export class SalaryComponent implements OnInit {
   saveSalary(): void {
     this.isSaving = true;
     const salary = this.createFrom();
+    salary.searchName = this.employeeCheck.searchName;
+    salary.searchNhom = this.employeeCheck.searchNhom;
+    salary.searchDepartment = this.employeeCheck.searchDepartment;
     if (salary.id && typeof salary.id === 'number') {
       this.subscribeToSaveResponse(this.salaryService.update(salary));
     } else {

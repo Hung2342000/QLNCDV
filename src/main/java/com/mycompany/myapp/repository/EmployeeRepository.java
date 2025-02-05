@@ -28,6 +28,15 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     );
 
     @Query(
+        "select a from Employee a where LOWER(a.name) LIKE %:searchName% and a.department LIKE %:searchDepartment% and a.nhom LIKE %:searchNhom%"
+    )
+    List<Employee> listAllEmployees(
+        @Param("searchName") String searchName,
+        @Param("searchDepartment") String searchDepartment,
+        @Param("searchNhom") String searchNhom
+    );
+
+    @Query(
         "select a from Employee a where LOWER(a.codeEmployee) LIKE %:searchCode% AND LOWER(a.name) LIKE %:searchName% and a.department = :department and a.nhom LIKE %:searchNhom%"
     )
     Page<Employee> listAllEmployeesDepartment(

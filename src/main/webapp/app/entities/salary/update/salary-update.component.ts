@@ -203,7 +203,7 @@ export class SalaryUpdateComponent implements OnInit {
     this.updatedDataGDV = this.formGDV.value.detailsGDV;
     this.mergedData = this.updatedData.concat(this.updatedDataAm);
     this.mergedData = this.mergedData.concat(this.updatedDataGDV);
-    if (this.updatedData.length > 0) {
+    if (this.mergedData.length > 0) {
       this.salaryService.createAllDetail(this.mergedData).subscribe(
         data => {
           this.content = 'Lưu thành công';

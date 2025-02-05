@@ -14,6 +14,7 @@ import { SortDirective } from './sort/sort.directive';
 import { ItemCountComponent } from './pagination/item-count.component';
 import { FormatDateVnPipe } from './date/format-date-vn.pipe';
 import { ToastComponent } from '../layouts/toast/toast.component';
+import { EmployeeBoxComponent } from '../entities/box/employee-box/employee-box.component';
 @NgModule({
   imports: [SharedLibsModule],
   declarations: [
@@ -21,6 +22,7 @@ import { ToastComponent } from '../layouts/toast/toast.component';
     TranslateDirective,
     AlertComponent,
     AlertErrorComponent,
+    EmployeeBoxComponent,
     ToastComponent,
     HasAnyAuthorityDirective,
     DurationPipe,
@@ -46,6 +48,7 @@ import { ToastComponent } from '../layouts/toast/toast.component';
     SortDirective,
     ItemCountComponent,
     FormatDateVnPipe,
+    EmployeeBoxComponent,
   ],
 })
 export class SharedModule {}

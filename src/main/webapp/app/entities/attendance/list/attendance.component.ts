@@ -15,6 +15,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
 import { IAttendanceDetail } from '../attendanceDetail.model';
 import { ToastComponent } from '../../../layouts/toast/toast.component';
+import { IDepartment } from '../../employee/department.model';
 
 @Component({
   selector: 'jhi-attendance',
@@ -34,14 +35,15 @@ export class AttendanceComponent implements OnInit {
   ngbPaginationPage = 1;
   employeeList?: IEmployee[] | any;
   isSaving = false;
-  employeesList: IEmployee[] | any;
+  employeesList: any;
   dropdownSettings: any;
-
+  departments?: IDepartment[] | any;
   editForm = this.fb.group({
     id: [null, [Validators.required]],
     createDate: [],
     name: [],
     employees: [],
+    numberWork: [],
     month: [],
     year: [],
     note: [],
@@ -83,7 +85,9 @@ export class AttendanceComponent implements OnInit {
       },
     });
   }
-
+  receiveMessage($event: any): void {
+    this.employeesList = $event;
+  }
   addAtt(attendance: IAttendance): void {
     this.updateForm(attendance);
     this.modalService.open(this.add, { size: 'lg', backdrop: 'static' });
@@ -109,6 +113,9 @@ export class AttendanceComponent implements OnInit {
   save(): void {
     this.isSaving = true;
     const attendance = this.createFrom();
+    attendance.searchName = this.employeesList.searchName;
+    attendance.searchNhom = this.employeesList.searchNhom;
+    attendance.searchDepartment = this.employeesList.searchDepartment;
     if (attendance.id && typeof attendance.id === 'number') {
       this.subscribeToSaveResponse(this.attendanceService.update(attendance));
     } else {
@@ -127,6 +134,11 @@ export class AttendanceComponent implements OnInit {
     this.employeeService.queryAll().subscribe({
       next: (res: HttpResponse<IEmployee[]>) => {
         this.employeesList = res.body;
+      },
+    });
+    this.employeeService.queryDepartment().subscribe({
+      next: (res: HttpResponse<IDepartment[]>) => {
+        this.departments = res.body;
       },
     });
     this.handleNavigation();
@@ -210,6 +222,7 @@ export class AttendanceComponent implements OnInit {
       createDate: attendance.createDate,
       name: attendance.name,
       employees: attendance.employees,
+      numberWork: attendance.numberWork,
       month: attendance.month,
       year: attendance.year,
       note: attendance.note,
@@ -260,6 +273,7 @@ export class AttendanceComponent implements OnInit {
       createDate: this.editForm.get(['createDate'])!.value,
       name: this.editForm.get(['name'])!.value,
       employees: this.editForm.get(['employees'])!.value,
+      numberWork: this.editForm.get(['numberWork'])!.value,
       month: this.editForm.get(['month'])!.value,
       year: this.editForm.get(['year'])!.value,
       note: this.editForm.get(['note'])!.value,

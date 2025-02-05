@@ -10,6 +10,10 @@ export interface IAttendance {
   year?: number | null;
   count?: number | null;
   note?: string | null;
+  numberWork?: number | null;
+  searchName?: string | null;
+  searchDepartment?: string | null;
+  searchNhom?: string | null;
 }
 
 export class Attendance implements IAttendance {
@@ -21,7 +25,11 @@ export class Attendance implements IAttendance {
     public month?: number | null,
     public year?: number | null,
     public count?: number | null,
-    public note?: string | null
+    public note?: string | null,
+    public numberWork?: number | null,
+    public searchName?: string | null,
+    public searchDepartment?: string | null,
+    public searchNhom?: string | null
   ) {}
 }
 

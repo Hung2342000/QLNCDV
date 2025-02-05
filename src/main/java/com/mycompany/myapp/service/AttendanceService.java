@@ -62,9 +62,16 @@ public class AttendanceService {
     }
 
     public Attendance createAttendance(Attendance attendance) {
+        List<Employee> listEmployee =
+            this.employeeRepository.listAllEmployees(
+                    attendance.getSearchName(),
+                    attendance.getSearchDepartment(),
+                    attendance.getSearchNhom()
+                );
+        if (listEmployee != null && listEmployee.size() > 0) {
+            attendance.setEmployees(listEmployee);
+        }
         Attendance attendanceCreate = this.attendanceRepository.save(attendance);
-
-        List<Employee> listEmployee = attendance.getEmployees();
         for (Employee employee : listEmployee) {
             AttendanceDetail attendanceDetail = new AttendanceDetail();
             attendanceDetail.setAttendanceId(attendance.getId());
@@ -151,7 +158,11 @@ public class AttendanceService {
                 }
             }
             attendanceDetail.setPaidWorking(countDay);
-            attendanceDetail.setNumberWork(countDay);
+            if (attendance.getNumberWork() != null) {
+                attendanceDetail.setNumberWork(attendance.getNumberWork());
+            } else {
+                attendanceDetail.setNumberWork(countDay);
+            }
             attendanceDetailRepository.save(attendanceDetail);
         }
         return attendanceCreate;

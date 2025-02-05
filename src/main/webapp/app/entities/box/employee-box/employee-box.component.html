@@ -1,0 +1,73 @@
+<table class="table table-hover" aria-describedby="page-heading">
+  <thead>
+    <tr>
+      <th style="width: 45%" scope="col"><span>Họ và tên</span></th>
+      <th style="width: 30%" scope="col"><span>Phòng ban</span></th>
+      <th style="width: 25%" scope="col"><span>Nhóm loại hình dịch vụ</span></th>
+    </tr>
+    <tr>
+      <th style="width: 45%" scope="col">
+        <input
+          (keyup.enter)="loadPageSearch()"
+          [(ngModel)]="searchName"
+          class="form-control border border-dark"
+          style="height: 30px"
+          type="search"
+          placeholder="Họ và tên"
+          aria-label="Tìm kiếm"
+        />
+      </th>
+      <th style="width: 30%" scope="col">
+        <select style="height: 30px; width: 100%" [(ngModel)]="searchDepartment" (change)="loadPageSearch()">
+          <option [value]=""></option>
+          <option *ngFor="let department of departments" [value]="department.code">{{ department.name }}</option>
+        </select>
+      </th>
+      <th style="width: 25%" scope="col">
+        <select style="height: 30px; width: 100%" [(ngModel)]="searchNhom" (change)="loadPageSearch()">
+          <option [value]=""></option>
+          <option [value]="'GDV'">GDV</option>
+          <option [value]="'AM'">AM</option>
+          <option [value]="'KAM'">KAM</option>
+          <option [value]="'HTVP'">HTVP</option>
+          <option [value]="'NVBH'">NVBH</option>
+        </select>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let employee of employees; trackBy: trackId; let i = index" data-cy="entityTable">
+      <td>{{ employee.name }}</td>
+      <td>{{ departmentName(employee.department) }}</td>
+      <td>{{ employee.nhom }}</td>
+    </tr>
+    <tr *ngFor="let l of newArr(itemsPerPage - employees.length)">
+      <td class="text-center empty-row">&nbsp;</td>
+      <td class="text-center empty-row">&nbsp;</td>
+      <td class="text-center empty-row">&nbsp;</td>
+      <td class="text-center empty-row"></td>
+    </tr>
+  </tbody>
+</table>
+<div *ngIf="employees && employees.length > 0" class="d-flex justify-content-end">
+  <div class="p-3 d-flex" style="justify-content: space-between">
+    <select style="border-radius: 7%; height: 35px" [(ngModel)]="itemsPerPage" (change)="loadPage()">
+      <option value="10">10</option>
+      <option value="20">20</option>
+      <option value="30">30</option>
+    </select>
+    <div style="font-size: 20px; margin-right: 15px">
+      <span style="width: 170px; padding-left: 20px; font-size: 15px">Tổng số: {{ this.totalItems }} </span>
+    </div>
+    <ngb-pagination
+      [collectionSize]="totalItems"
+      [(page)]="ngbPaginationPage"
+      [pageSize]="itemsPerPage"
+      [maxSize]="5"
+      [rotate]="true"
+      [boundaryLinks]="true"
+      (pageChange)="loadPage($event)"
+      class=""
+    ></ngb-pagination>
+  </div>
+</div>

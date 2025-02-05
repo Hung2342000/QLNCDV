@@ -11,6 +11,9 @@ export interface ISalary {
   attendanceId?: number | null;
   employees?: IEmployee[] | null;
   isAttendance?: boolean | null;
+  searchName?: string | null;
+  searchDepartment?: string | null;
+  searchNhom?: string | null;
 }
 
 export class Salary implements ISalary {
@@ -23,7 +26,10 @@ export class Salary implements ISalary {
     public numberWork?: number | null,
     public attendanceId?: number | null,
     public employees?: IEmployee[] | null,
-    public isAttendance?: boolean | null
+    public isAttendance?: boolean | null,
+    public searchName?: string | null,
+    public searchDepartment?: string | null,
+    public searchNhom?: string | null
   ) {}
 }
 

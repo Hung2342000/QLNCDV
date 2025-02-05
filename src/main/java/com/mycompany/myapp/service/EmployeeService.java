@@ -209,6 +209,7 @@ public class EmployeeService {
                 if (serviceType != null && serviceType.getId() != null) {
                     employee.setNhom(serviceType.getNhom());
                     employee.setRegion(serviceType.getRegion());
+                    employee.setServiceType(serviceType.getId());
                     employee.setRank(serviceType.getRank());
                     employee.setBasicSalary(serviceType.getBasicSalary());
                     employee.setMucChiTraToiThieu(serviceType.getMucChiTraToiThieu());

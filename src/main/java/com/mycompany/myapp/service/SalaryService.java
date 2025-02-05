@@ -58,9 +58,7 @@ public class SalaryService {
             employeeList = attendance.getEmployees();
         } else {
             employeeList =
-                employeeRepository.findAllById(
-                    salary.getEmployees().stream().map(employee -> employee.getId()).collect(Collectors.toList())
-                );
+                employeeRepository.listAllEmployees(salary.getSearchName(), salary.getSearchDepartment(), salary.getSearchNhom());
         }
         List<Employee> employeeListAm = new ArrayList<>();
         List<Employee> employeeListHTVP = new ArrayList<>();
@@ -140,7 +138,10 @@ public class SalaryService {
                     }
                 }
             } else {
-                if (salary.getYear() != null && salary.getMonth() != null) {
+                if (salary.getNumberWork() != null) {
+                    salaryDetail.setNumberWorking(salary.getNumberWork());
+                    salaryDetail.setNumberWorkInMonth(salary.getNumberWork());
+                } else if (salary.getYear() != null && salary.getMonth() != null) {
                     int numberWorking = countWorkingInMonth(salary.getYear().intValue(), salary.getMonth().intValue());
                     salaryDetail.setNumberWorking(BigDecimal.valueOf(numberWorking));
                     salaryDetail.setNumberWorkInMonth(BigDecimal.valueOf(numberWorking));
@@ -164,6 +165,11 @@ public class SalaryService {
                         .multiply(employee.getMucChiTraToiThieu());
             }
             salaryDetail.setPhiCoDinhDaThucHien(salaryAmount);
+            salaryDetail.setChiPhiThueDichVu(salaryAmount);
+            salaryDetail.setKpis("1");
+            salaryDetail.setChiPhiDichVuKhoanVaKK(BigDecimal.ZERO);
+            salaryDetail.setChiPhiKKKhac(BigDecimal.ZERO);
+            salaryDetail.setTongChiPhiKVKK(BigDecimal.ZERO);
             salaryDetail.setVung(employee.getRegion());
             salaryDetail.setMucChiToiThieu(employee.getMucChiTraToiThieu());
             salaryDetail.setLuongCoDinhThucTe(luongCoDinhThucTe);
