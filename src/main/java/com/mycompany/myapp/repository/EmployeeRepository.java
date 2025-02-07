@@ -17,7 +17,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     @Query(
-        "select a from Employee a where LOWER(a.codeEmployee) LIKE %:searchCode% AND LOWER(a.name) LIKE %:searchName% and a.department LIKE %:searchDepartment% and a.nhom LIKE %:searchNhom%"
+        "select a from Employee a where LOWER(a.codeEmployee) LIKE %:searchCode% AND LOWER(a.name) LIKE %:searchName% and a.department LIKE %:searchDepartment% and a.nhom = :searchNhom"
     )
     Page<Employee> listAllEmployees(
         @Param("searchCode") String searchCode,
@@ -28,13 +28,26 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     );
 
     @Query(
-        "select a from Employee a where LOWER(a.name) LIKE %:searchName% and a.department LIKE %:searchDepartment% and a.nhom LIKE %:searchNhom%"
+        "select a from Employee a where LOWER(a.codeEmployee) LIKE %:searchCode% AND LOWER(a.name) LIKE %:searchName% and a.department LIKE %:searchDepartment%"
+    )
+    Page<Employee> listAllEmployeesNoNhom(
+        @Param("searchCode") String searchCode,
+        @Param("searchName") String searchName,
+        @Param("searchDepartment") String searchDepartment,
+        Pageable pageable
+    );
+
+    @Query(
+        "select a from Employee a where LOWER(a.name) LIKE %:searchName% and a.department LIKE %:searchDepartment% and a.nhom = :searchNhom"
     )
     List<Employee> listAllEmployees(
         @Param("searchName") String searchName,
         @Param("searchDepartment") String searchDepartment,
         @Param("searchNhom") String searchNhom
     );
+
+    @Query("select a from Employee a where LOWER(a.name) LIKE %:searchName% and a.department LIKE %:searchDepartment%")
+    List<Employee> listAllEmployeesNoNhom(@Param("searchName") String searchName, @Param("searchDepartment") String searchDepartment);
 
     @Query(
         "select a from Employee a where LOWER(a.codeEmployee) LIKE %:searchCode% AND LOWER(a.name) LIKE %:searchName% and a.department = :department and a.nhom LIKE %:searchNhom%"

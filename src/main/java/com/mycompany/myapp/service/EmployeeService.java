@@ -70,7 +70,15 @@ public class EmployeeService {
             !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(USER).contains(authority)) &&
             getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority))
         ) {
-            page =
+            if (searchNhom.equals("") || searchNhom == null) {
+                page =
+                    employeeRepository.listAllEmployeesNoNhom(
+                        searchCode.toLowerCase(),
+                        searchName.toLowerCase(),
+                        searchDepartment,
+                        pageable
+                    );
+            } else page =
                 employeeRepository.listAllEmployees(
                     searchCode.toLowerCase(),
                     searchName.toLowerCase(),
@@ -196,8 +204,8 @@ public class EmployeeService {
                     serviceType =
                         serviceTypeRepository.findServiceTypeByServiceNameAndRegionRank(
                             employee.getServiceTypeName().toLowerCase(),
-                            employee.getRegion(),
-                            employee.getRank()
+                            employee.getRegion().toLowerCase(),
+                            employee.getRank().toLowerCase()
                         );
                 } else if (employee.getServiceTypeName() != null && employee.getRegion() != null) {
                     serviceType =

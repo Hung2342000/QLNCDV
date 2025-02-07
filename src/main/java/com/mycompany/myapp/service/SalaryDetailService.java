@@ -538,8 +538,9 @@ public class SalaryDetailService {
                     donGia =
                         salaryDetail
                             .getNumberWorking()
-                            .divide(salaryDetail.getNumberWorkInMonth(), 5, RoundingMode.HALF_UP)
-                            .multiply(salaryDetail.getDonGiaDichVu());
+                            .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
+                            .multiply(salaryDetail.getDonGiaDichVu())
+                            .setScale(0, RoundingMode.HALF_UP);
                 }
                 salaryDetail.setDonGiaDichVuThucNhan(donGia);
                 if (salaryDetail.getXepLoai() != null && salaryDetail.getXepLoai().equals("A")) {
@@ -559,9 +560,10 @@ public class SalaryDetailService {
                     chiPhiGiamTru =
                         salaryDetail
                             .getNumberWorking()
-                            .divide(salaryDetail.getNumberWorkInMonth(), 5, RoundingMode.HALF_UP)
+                            .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
                             .multiply(salaryDetail.getMucChiToiThieu())
-                            .multiply(BigDecimal.ONE.subtract(new BigDecimal(salaryDetail.getHtc())));
+                            .multiply(BigDecimal.ONE.subtract(new BigDecimal(salaryDetail.getHtc())))
+                            .setScale(0, RoundingMode.HALF_UP);
                 }
                 salaryDetail.setChiPhiGiamTru(chiPhiGiamTru);
                 salaryDetail.setChiPhiThueDichVu(salaryDetail.getDonGiaDichVuThucNhan().subtract(salaryDetail.getChiPhiGiamTru()));
@@ -581,13 +583,15 @@ public class SalaryDetailService {
                     phiCoDinhDaThucHien =
                         salaryDetail
                             .getNumberWorking()
-                            .divide(salaryDetail.getNumberWorkInMonth(), 5, RoundingMode.HALF_UP)
-                            .multiply(salaryDetail.getDonGiaDichVu());
+                            .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
+                            .multiply(salaryDetail.getDonGiaDichVu())
+                            .setScale(0, RoundingMode.HALF_UP);
                     luongCoDinhThucTe =
                         salaryDetail
                             .getNumberWorking()
-                            .divide(salaryDetail.getNumberWorkInMonth(), 5, RoundingMode.HALF_UP)
-                            .multiply(salaryDetail.getMucChiToiThieu());
+                            .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
+                            .multiply(salaryDetail.getMucChiToiThieu())
+                            .setScale(0, RoundingMode.HALF_UP);
                 }
 
                 salaryDetail.setLuongCoDinhThucTe(luongCoDinhThucTe);
@@ -605,9 +609,10 @@ public class SalaryDetailService {
                     chiPhiGiamTru =
                         salaryDetail
                             .getNumberWorking()
-                            .divide(salaryDetail.getNumberWorkInMonth(), 5, RoundingMode.HALF_UP)
+                            .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
                             .multiply(salaryDetail.getMucChiToiThieu())
-                            .multiply(BigDecimal.ONE.subtract(new BigDecimal(salaryDetail.getKpis())));
+                            .multiply(BigDecimal.ONE.subtract(new BigDecimal(salaryDetail.getKpis())))
+                            .setScale(0, RoundingMode.HALF_UP);
                 }
 
                 salaryDetail.setChiPhiGiamTru(chiPhiGiamTru);
@@ -652,19 +657,22 @@ public class SalaryDetailService {
                     phiCoDinhDaThucHien =
                         salaryDetail
                             .getNumberWorking()
-                            .divide(salaryDetail.getNumberWorkInMonth(), 5, RoundingMode.HALF_UP)
-                            .multiply(salaryDetail.getDonGiaDichVu());
+                            .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
+                            .multiply(salaryDetail.getDonGiaDichVu())
+                            .setScale(0, RoundingMode.HALF_UP);
                     luongCoDinhThucTe =
                         salaryDetail
                             .getNumberWorking()
-                            .divide(salaryDetail.getNumberWorkInMonth(), 5, RoundingMode.HALF_UP)
+                            .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
                             .multiply(new BigDecimal(salaryDetail.getHtc()))
-                            .multiply(salaryDetail.getMucChiToiThieu());
+                            .multiply(salaryDetail.getMucChiToiThieu())
+                            .setScale(0, RoundingMode.HALF_UP);
                     luongCoDinhThucTeCheckLuongbs =
                         salaryDetail
                             .getNumberWorking()
-                            .divide(salaryDetail.getNumberWorkInMonth(), 5, RoundingMode.HALF_UP)
-                            .multiply(salaryDetail.getMucChiToiThieu());
+                            .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
+                            .multiply(salaryDetail.getMucChiToiThieu())
+                            .setScale(0, RoundingMode.HALF_UP);
                 }
 
                 salaryDetail.setLuongCoDinhThucTe(luongCoDinhThucTe);
@@ -693,9 +701,10 @@ public class SalaryDetailService {
                     chiPhiGiamTru =
                         salaryDetail
                             .getNumberWorking()
-                            .divide(salaryDetail.getNumberWorkInMonth(), 5, RoundingMode.HALF_UP)
+                            .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
                             .multiply(salaryDetail.getMucChiToiThieu())
-                            .multiply(BigDecimal.ONE.subtract(new BigDecimal(salaryDetail.getHtc())));
+                            .multiply(BigDecimal.ONE.subtract(new BigDecimal(salaryDetail.getHtc())))
+                            .setScale(0, RoundingMode.HALF_UP);
                 }
 
                 salaryDetail.setChiPhiGiamTru(chiPhiGiamTru);

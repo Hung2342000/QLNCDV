@@ -105,8 +105,9 @@ public class SalaryService {
                 salaryAmount =
                     salaryDetail
                         .getNumberWorking()
-                        .divide(salaryDetail.getNumberWorkInMonth(), 5, RoundingMode.HALF_UP)
-                        .multiply(employee.getBasicSalary());
+                        .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
+                        .multiply(employee.getBasicSalary())
+                        .setScale(0, RoundingMode.HALF_UP);
             }
             salaryDetail.setDonGiaDichVuThucNhan(salaryAmount);
             salaryDetail.setVung(employee.getRegion());
@@ -156,13 +157,15 @@ public class SalaryService {
                 salaryAmount =
                     salaryDetail
                         .getNumberWorking()
-                        .divide(salaryDetail.getNumberWorkInMonth(), 5, RoundingMode.HALF_UP)
-                        .multiply(employee.getBasicSalary());
+                        .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
+                        .multiply(employee.getBasicSalary())
+                        .setScale(0, RoundingMode.HALF_UP);
                 luongCoDinhThucTe =
                     salaryDetail
                         .getNumberWorking()
-                        .divide(salaryDetail.getNumberWorkInMonth(), 5, RoundingMode.HALF_UP)
-                        .multiply(employee.getMucChiTraToiThieu());
+                        .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
+                        .multiply(employee.getMucChiTraToiThieu())
+                        .setScale(0, RoundingMode.HALF_UP);
             }
             salaryDetail.setPhiCoDinhDaThucHien(salaryAmount);
             salaryDetail.setChiPhiThueDichVu(salaryAmount);
@@ -215,13 +218,15 @@ public class SalaryService {
                 salaryAmount =
                     salaryDetail
                         .getNumberWorking()
-                        .divide(salaryDetail.getNumberWorkInMonth(), 5, RoundingMode.HALF_UP)
-                        .multiply(employee.getBasicSalary());
+                        .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
+                        .multiply(employee.getBasicSalary())
+                        .setScale(0, RoundingMode.HALF_UP);
                 luongCoDinhThucTe =
                     salaryDetail
                         .getNumberWorking()
-                        .divide(salaryDetail.getNumberWorkInMonth(), 5, RoundingMode.HALF_UP)
-                        .multiply(employee.getMucChiTraToiThieu());
+                        .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
+                        .multiply(employee.getMucChiTraToiThieu())
+                        .setScale(0, RoundingMode.HALF_UP);
             }
             salaryDetail.setPhiCoDinhDaThucHien(salaryAmount);
             salaryDetail.setVung(employee.getRegion());

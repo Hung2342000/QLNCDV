@@ -4,6 +4,9 @@ export interface IAttendanceDetail {
   id?: number;
   attendanceId?: number;
   employeeId?: number;
+  employeeCode?: number | null;
+  serviceTypeName?: string | null;
+  department?: string | null;
   day1?: string | null;
   day2?: string | null;
   day3?: string | null;
@@ -45,6 +48,9 @@ export class AttendanceDetail implements IAttendanceDetail {
     public id?: number,
     public attendanceId?: number,
     public employeeId?: number,
+    public employeeCode?: number,
+    public serviceTypeName?: string | null,
+    public department?: string | null,
     public day1?: string | null,
     public day2?: string | null,
     public day3?: string | null,

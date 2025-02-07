@@ -27,6 +27,15 @@ public class AttendanceDetail implements Serializable {
     @Column(name = "employee_id")
     private Long employeeId;
 
+    @Column(name = "employee_code")
+    private String employeeCode;
+
+    @Column(name = "service_type_name")
+    private String serviceTypeName;
+
+    @Column(name = "department")
+    private String department;
+
     @Column(name = "day1")
     private String day1;
 
@@ -425,6 +434,30 @@ public class AttendanceDetail implements Serializable {
 
     public void setNumberWork(BigDecimal numberWork) {
         this.numberWork = numberWork;
+    }
+
+    public String getEmployeeCode() {
+        return employeeCode;
+    }
+
+    public void setEmployeeCode(String employeeCode) {
+        this.employeeCode = employeeCode;
+    }
+
+    public String getServiceTypeName() {
+        return serviceTypeName;
+    }
+
+    public void setServiceTypeName(String serviceTypeName) {
+        this.serviceTypeName = serviceTypeName;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

@@ -29,7 +29,12 @@
       <thead style="background-color: #3b3e66; color: white">
         <tr>
           <th style="width: 50px; position: sticky; left: 0; z-index: 2; background: #3b3e66"><span>STT</span></th>
+          <th style="min-width: 140px !important; position: sticky; left: 45px; z-index: 2; background: #3b3e66">
+            <span>Mã nhân viên</span>
+          </th>
           <th style="min-width: 240px !important; position: sticky; left: 45px; z-index: 2; background: #3b3e66"><span>Nhân viên</span></th>
+          <th style="min-width: 140px !important; position: sticky; left: 45px; z-index: 2; background: #3b3e66"><span>Đơn vị</span></th>
+          <th style="min-width: 240px !important; position: sticky; left: 45px; z-index: 2; background: #3b3e66"><span>Loại hình</span></th>
           <th style="min-width: 90px !important">Ngày 1</th>
           <th style="min-width: 90px !important">Ngày 2</th>
           <th style="min-width: 90px !important">Ngày 3</th>
@@ -68,17 +73,28 @@
       <tbody formArrayName="details">
         <tr *ngFor="let detail of details.value; let i = index" [formGroupName]="i">
           <td style="position: sticky; left: 0; z-index: 2; background: white">{{ i + 1 }}</td>
+
+          <td style="position: sticky; left: 45px; z-index: 2; background: white">
+            <span>{{ detail.employeeCode }}</span>
+          </td>
+
           <td style="position: sticky; left: 45px; z-index: 2; background: white">
             <select
               style="border: none; font-weight: 600; pointer-events: none"
               class="form-select"
-              id="field_employeeId"
               formControlName="employeeId"
               data-cy="employeeId"
               name="employeeId"
             >
               <option *ngFor="let employee of employeeList" [value]="employee.id">{{ employee.name }}</option>
             </select>
+          </td>
+          <td style="position: sticky; left: 45px; z-index: 2; background: white">
+            <span>{{ detail.department }}</span>
+          </td>
+
+          <td style="position: sticky; left: 45px; z-index: 2; background: white">
+            <span>{{ detail.serviceTypeName }}</span>
           </td>
 
           <td [ngStyle]="{ 'background-color': detail.day1 === 'weekend' ? '#e84e3d' : '' }">

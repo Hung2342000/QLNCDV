@@ -4,15 +4,11 @@ import static com.mycompany.myapp.security.AuthoritiesConstants.*;
 import static com.mycompany.myapp.security.SecurityUtils.getAuthorities;
 
 import com.mycompany.myapp.domain.*;
-import com.mycompany.myapp.repository.AttendanceDetailRepository;
-import com.mycompany.myapp.repository.AttendanceRepository;
-import com.mycompany.myapp.repository.EmployeeRepository;
-import com.mycompany.myapp.repository.UserRepository;
+import com.mycompany.myapp.repository.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -48,25 +44,35 @@ public class AttendanceService {
     private EmployeeRepository employeeRepository;
     private AttendanceRepository attendanceRepository;
     private AttendanceDetailRepository attendanceDetailRepository;
+    private DepartmentRepository departmentRepository;
 
     public AttendanceService(
         UserRepository userRepository,
         EmployeeRepository employeeRepository,
         AttendanceRepository attendanceRepository,
-        AttendanceDetailRepository attendanceDetailRepository
+        AttendanceDetailRepository attendanceDetailRepository,
+        DepartmentRepository departmentRepository
     ) {
         this.userRepository = userRepository;
         this.employeeRepository = employeeRepository;
         this.attendanceRepository = attendanceRepository;
         this.attendanceDetailRepository = attendanceDetailRepository;
+        this.departmentRepository = departmentRepository;
     }
 
     public Attendance createAttendance(Attendance attendance) {
-        List<Employee> listEmployee =
+        List<Employee> listEmployee = new ArrayList<>();
+        if (attendance.getSearchNhom() == null || attendance.getSearchNhom().equals("")) {
+            listEmployee =
+                this.employeeRepository.listAllEmployeesNoNhom(
+                        attendance.getSearchName() != null ? attendance.getSearchName() : "",
+                        attendance.getSearchDepartment() != null ? attendance.getSearchDepartment() : ""
+                    );
+        } else listEmployee =
             this.employeeRepository.listAllEmployees(
-                    attendance.getSearchName(),
-                    attendance.getSearchDepartment(),
-                    attendance.getSearchNhom()
+                    attendance.getSearchName() != null ? attendance.getSearchName() : "",
+                    attendance.getSearchDepartment() != null ? attendance.getSearchDepartment() : "",
+                    attendance.getSearchNhom() != null ? attendance.getSearchNhom() : ""
                 );
         if (listEmployee != null && listEmployee.size() > 0) {
             attendance.setEmployees(listEmployee);
@@ -76,6 +82,13 @@ public class AttendanceService {
             AttendanceDetail attendanceDetail = new AttendanceDetail();
             attendanceDetail.setAttendanceId(attendance.getId());
             attendanceDetail.setEmployeeId(employee.getId());
+            attendanceDetail.setServiceTypeName(employee.getServiceTypeName());
+            attendanceDetail.setEmployeeCode(employee.getCodeEmployee());
+            Department department = departmentRepository.findDepartmentByCode(employee.getDepartment());
+            if (department != null) {
+                attendanceDetail.setDepartment(department.getName());
+            }
+
             Field[] fields = attendanceDetail.getClass().getDeclaredFields();
             int[] day31 = { 1, 3, 5, 7, 8, 10, 12 };
             BigDecimal countDay = BigDecimal.ZERO;
@@ -229,8 +242,6 @@ public class AttendanceService {
         attendanceDetails = this.attendanceDetailRepository.selectAllByAttId(att);
 
         Attendance attendance = this.attendanceRepository.findById(att).get();
-
-        Employee employee = new Employee();
 
         int[] day31 = { 1, 3, 5, 7, 8, 10, 12 };
         BigDecimal countDay = BigDecimal.ZERO;
@@ -482,8 +493,12 @@ public class AttendanceService {
             cell0.setCellValue(stt);
             cell0.setCellStyle(detailStyle);
 
+            Employee employeeCheck = employeeRepository.findById(rowData.getEmployeeId()).get();
+
             Cell cellEmployee = row.createCell(1);
-            cellEmployee.setCellValue(rowData.getEmployeeId() != null ? rowData.getEmployeeId() : (long) 0);
+            if (employeeCheck != null) {
+                cellEmployee.setCellValue(employeeCheck.getName() != null ? employeeCheck.getName() : "");
+            }
             cellEmployee.setCellStyle(detailStyle);
 
             Cell cellDay1 = row.createCell(2);
