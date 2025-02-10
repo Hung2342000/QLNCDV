@@ -30,6 +30,7 @@ public class SalaryService {
     private AttendanceRepository attendanceRepository;
     private AttendanceDetailRepository attendanceDetailRepository;
     private ServiceTypeRepository serviceTypeRepository;
+    private DepartmentRepository departmentRepository;
 
     public SalaryService(
         UserRepository userRepository,
@@ -38,7 +39,8 @@ public class SalaryService {
         SalaryDetailRepository salaryDetailRepository,
         AttendanceRepository attendanceRepository,
         AttendanceDetailRepository attendanceDetailRepository,
-        ServiceTypeRepository serviceTypeRepository
+        ServiceTypeRepository serviceTypeRepository,
+        DepartmentRepository departmentRepository
     ) {
         this.userRepository = userRepository;
         this.employeeRepository = employeeRepository;
@@ -47,6 +49,7 @@ public class SalaryService {
         this.attendanceRepository = attendanceRepository;
         this.attendanceDetailRepository = attendanceDetailRepository;
         this.serviceTypeRepository = serviceTypeRepository;
+        this.departmentRepository = departmentRepository;
     }
 
     public Salary createSalary(Salary salary) {
@@ -69,10 +72,16 @@ public class SalaryService {
             employeeListGDV = employeeList.stream().filter(employee -> employee.getNhom().equals("GDV")).collect(Collectors.toList());
         }
 
+        List<SalaryDetail> salaryDetailListHTVP = new ArrayList<>();
         for (Employee employee : employeeListHTVP) {
             SalaryDetail salaryDetail = new SalaryDetail();
             salaryDetail.setEmployeeId(employee.getId());
             salaryDetail.setSalaryId(salaryCreate.getId());
+            Department department = departmentRepository.findDepartmentByCode(employee.getDepartment());
+            if (department != null) {
+                salaryDetail.setTenDonVi(department.getName());
+            }
+            salaryDetail.setDichVu(employee.getServiceTypeName() + " Vùng " + employee.getRegion());
             AttendanceDetail attendanceDetail = new AttendanceDetail();
             if (salary.getAttendanceId() != null) {
                 salaryCreate.setMonth(attendance.getMonth());
@@ -115,13 +124,20 @@ public class SalaryService {
             salaryDetail.setChucDanh(serviceTypeName(employee.getServiceType()));
             salaryDetail.setDonGiaDichVu(employee.getBasicSalary());
             salaryDetail.setNhom(employee.getNhom());
-            salaryDetailRepository.save(salaryDetail);
+            salaryDetailListHTVP.add(salaryDetail);
+            //            salaryDetailRepository.save(salaryDetail);
         }
 
+        List<SalaryDetail> salaryDetailListAM = new ArrayList<>();
         for (Employee employee : employeeListAm) {
             SalaryDetail salaryDetail = new SalaryDetail();
             salaryDetail.setEmployeeId(employee.getId());
             salaryDetail.setSalaryId(salaryCreate.getId());
+            Department department = departmentRepository.findDepartmentByCode(employee.getDepartment());
+            if (department != null) {
+                salaryDetail.setTenDonVi(department.getName());
+            }
+            salaryDetail.setDichVu(employee.getServiceTypeName() + " Vùng " + employee.getRegion());
             AttendanceDetail attendanceDetail = new AttendanceDetail();
             if (salary.getAttendanceId() != null) {
                 salaryCreate.setMonth(attendance.getMonth());
@@ -179,13 +195,20 @@ public class SalaryService {
             salaryDetail.setChucDanh(serviceTypeName(employee.getServiceType()));
             salaryDetail.setDonGiaDichVu(employee.getBasicSalary());
             salaryDetail.setNhom(employee.getNhom());
-            salaryDetailRepository.save(salaryDetail);
+            salaryDetailListAM.add(salaryDetail);
+            //            salaryDetailRepository.save(salaryDetail);
         }
 
+        List<SalaryDetail> salaryDetailListGDV = new ArrayList<>();
         for (Employee employee : employeeListGDV) {
             SalaryDetail salaryDetail = new SalaryDetail();
             salaryDetail.setEmployeeId(employee.getId());
             salaryDetail.setSalaryId(salaryCreate.getId());
+            Department department = departmentRepository.findDepartmentByCode(employee.getDepartment());
+            if (department != null) {
+                salaryDetail.setTenDonVi(department.getName());
+            }
+            salaryDetail.setDichVu(employee.getServiceTypeName() + " cấp " + employee.getRank() + " - vùng " + employee.getRegion());
             AttendanceDetail attendanceDetail = new AttendanceDetail();
             if (salary.getAttendanceId() != null) {
                 salaryCreate.setMonth(attendance.getMonth());
@@ -237,7 +260,16 @@ public class SalaryService {
             salaryDetail.setDonGiaDichVu(employee.getBasicSalary());
             salaryDetail.setNhom(employee.getNhom());
             salaryDetail.setDiaBan(employee.getDepartment());
-            salaryDetailRepository.save(salaryDetail);
+            salaryDetailListGDV.add(salaryDetail);
+        }
+        if (salaryDetailListGDV.size() > 0) {
+            salaryDetailRepository.saveAll(salaryDetailListGDV);
+        }
+        if (salaryDetailListAM.size() > 0) {
+            salaryDetailRepository.saveAll(salaryDetailListAM);
+        }
+        if (salaryDetailListHTVP.size() > 0) {
+            salaryDetailRepository.saveAll(salaryDetailListHTVP);
         }
         salaryRepository.save(salaryCreate);
         return salary;

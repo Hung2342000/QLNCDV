@@ -76,9 +76,6 @@ public class Employee implements Serializable {
     @Column(name = "nhom")
     private String nhom;
 
-    @Column(name = "selected", nullable = false)
-    private boolean selected;
-
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -291,14 +288,6 @@ public class Employee implements Serializable {
 
     public void setServiceTypeName(String serviceTypeName) {
         this.serviceTypeName = serviceTypeName;
-    }
-
-    public boolean isSelected() {
-        return selected;
-    }
-
-    public void setSelected(boolean selected) {
-        this.selected = selected;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

@@ -113,6 +113,8 @@ export class SalaryUpdateComponent implements OnInit {
       chiPhiThueDichVu: [item.chiPhiThueDichVu],
       nhom: [item.nhom],
       note: [item.note],
+      tenDonVi: [item.tenDonVi],
+      dichVu: [item.dichVu],
     });
   }
   createRowFormAm(itemAm: any): FormGroup {
@@ -137,6 +139,8 @@ export class SalaryUpdateComponent implements OnInit {
       chiPhiThueDichVu: [itemAm.chiPhiThueDichVu],
       nhom: [itemAm.nhom],
       note: [itemAm.note],
+      tenDonVi: [itemAm.tenDonVi],
+      dichVu: [itemAm.dichVu],
     });
   }
 
@@ -165,6 +169,8 @@ export class SalaryUpdateComponent implements OnInit {
       chiPhiThueDichVu: [itemGDV.chiPhiThueDichVu],
       nhom: [itemGDV.nhom],
       note: [itemGDV.note],
+      tenDonVi: [itemGDV.tenDonVi],
+      dichVu: [itemGDV.dichVu],
     });
   }
   ngOnInit(): void {

@@ -22,4 +22,13 @@ public interface SalaryDetailRepository extends JpaRepository<SalaryDetail, Long
 
     void deleteAllBySalaryId(@Param("idSalary") Long idSalary);
     List<SalaryDetail> getSalaryDetailBySalaryId(@Param("idSalary") Long idSalary);
+
+    @Query("select a from SalaryDetail a where a.salaryId = :idSalary AND a.nhom = 'GDV' ORDER BY a.dichVu asc, a.tenDonVi asc")
+    List<SalaryDetail> getAllBySalaryIdGDV(@Param("idSalary") Long idSalary);
+
+    @Query("select a from SalaryDetail a where a.salaryId = :idSalary AND a.nhom = 'HTVP' ORDER BY a.dichVu asc, a.tenDonVi asc")
+    List<SalaryDetail> getAllBySalaryIdHtvp(@Param("idSalary") Long idSalary);
+
+    @Query("select a from SalaryDetail a where a.salaryId = :idSalary AND a.nhom = 'AM' ORDER BY a.dichVu asc, a.tenDonVi asc")
+    List<SalaryDetail> getAllBySalaryIdAM(@Param("idSalary") Long idSalary);
 }

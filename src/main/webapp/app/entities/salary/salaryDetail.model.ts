@@ -26,6 +26,8 @@ export interface ISalaryDetail {
   chiPhiKKKhac?: number | null;
   tongChiPhiKVKK?: number | null;
   nhom?: string | null;
+  tenDonVi?: string | null;
+  dichVu?: string | null;
 }
 
 export class SalaryDetail implements ISalaryDetail {
@@ -56,7 +58,9 @@ export class SalaryDetail implements ISalaryDetail {
     public chiPhiDichVuKhoanVaKK?: number | null,
     public chiPhiKKKhac?: number | null,
     public tongChiPhiKVKK?: number | null,
-    public nhom?: string | null
+    public nhom?: string | null,
+    public tenDonVi?: string | null,
+    public dichVu?: string | null
   ) {}
 }
 

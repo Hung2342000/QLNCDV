@@ -100,6 +100,12 @@ public class SalaryDetail implements Serializable {
     @Column(name = "nhom")
     private String nhom;
 
+    @Column(name = "dich_vu")
+    private String dichVu;
+
+    @Column(name = "ten_don_vi")
+    private String tenDonVi;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -326,6 +332,22 @@ public class SalaryDetail implements Serializable {
 
     public void setDonVi(String donVi) {
         this.donVi = donVi;
+    }
+
+    public String getDichVu() {
+        return dichVu;
+    }
+
+    public void setDichVu(String dichVu) {
+        this.dichVu = dichVu;
+    }
+
+    public String getTenDonVi() {
+        return tenDonVi;
+    }
+
+    public void setTenDonVi(String tenDonVi) {
+        this.tenDonVi = tenDonVi;
     }
 
     @Override
