@@ -72,7 +72,10 @@
 <!--  </button>-->
 <!--</div>-->
 <div class="d-flex justify-content-end" *ngIf="isEdit === false">
-  <button style="margin-right: 5px" (click)="exportToExcel()" class="btn btn-danger btn-sm">
+  <button style="margin-right: 5px" (click)="importExcel()" class="btn btn-danger btn-sm">
+    <span>Import</span>
+  </button>
+  <button style="margin-right: 5px" (click)="exportToExcel()" class="btn btn-primary btn-sm">
     <span>Export</span>
   </button>
   <button style="margin-right: 5px" (click)="edit()" class="btn btn-secondary btn-sm">
@@ -636,7 +639,7 @@
             <th style="min-width: 240px !important; position: sticky; left: 45px; z-index: 2; background: #3b3e66">
               <span>Nhân viên</span>
             </th>
-            <th style="min-width: 90px !important">Đơn vị</th>
+            <th style="min-width: 240px !important">Đơn vị</th>
             <th style="min-width: 90px !important">Vùng</th>
             <th style="min-width: 90px !important">Cấp</th>
             <th style="min-width: 90px !important">Đơn giá thuê dịch vụ</th>
@@ -679,10 +682,10 @@
                   style="border: none; outline: none; background: white"
                   type="text"
                   class="form-control"
-                  name="diaBan"
-                  id="field_diaBan"
-                  data-cy="diaBan"
-                  formControlName="diaBan"
+                  name="tenDonVi"
+                  id="field_tenDonVi"
+                  data-cy="tenDonVi"
+                  formControlName="tenDonVi"
                 />
               </div>
             </td>
@@ -944,3 +947,31 @@
   </form>
 </div>
 <jhi-toast #toastSalary></jhi-toast>
+<ng-template #importExcelModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" data-cy="toolDeleteDialogHeading">Import Excel</h4>
+    <button type="button" class="btn-close" data-dismiss="modal" aria-hidden="true" (click)="closeModal()"></button>
+  </div>
+  <div class="modal-body">
+    <div style="margin-bottom: 10px">
+      <span style="margin-bottom: 10px; display: inline-block">
+        <b>File import phải đúng định dạng như file export ra từ hệ thống</b>
+      </span>
+      <!--      <div>-->
+      <!--        <a href="./../../content/file/ImportEmployee.xlsx" download>Tải file mẫu</a>-->
+      <!--      </div>-->
+    </div>
+    <div>
+      <input type="file" accept=".xlsx, .xls" (change)="onFileChange($event)" />
+    </div>
+    <div style="margin-left: 4px; color: red" *ngIf="!checkUpload && importClicked">Chưa có file upload</div>
+  </div>
+  <div class="modal-footer">
+    <button id="jhi-confirm-delete-tool" data-cy="entityConfirmDeleteButton" type="submit" class="btn btn-danger btn-sm" (click)="import()">
+      <span>Import</span>
+    </button>
+    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal" (click)="closeModal()">
+      <span>Đóng</span>
+    </button>
+  </div>
+</ng-template>

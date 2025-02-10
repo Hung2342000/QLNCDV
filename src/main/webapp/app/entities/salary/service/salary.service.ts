@@ -61,7 +61,9 @@ export class SalaryService {
   createAllDetail(salaryDetails: ISalaryDetail[]): Observable<any> {
     return this.http.post<any>(this.resourceUrlDetail + '/all', salaryDetails);
   }
-
+  createAllDetailImport(salaryDetails: ISalaryDetail[]): Observable<any> {
+    return this.http.post<any>(this.resourceUrlDetail + '/all/import', salaryDetails);
+  }
   queryAll(id: number): Observable<EntityDetailArrayResponseType> {
     return this.http.get<ISalaryDetail[]>(`${this.resourceUrlDetail}/all/${id}`, { observe: 'response' });
   }

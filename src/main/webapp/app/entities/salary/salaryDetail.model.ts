@@ -2,6 +2,7 @@ export interface ISalaryDetail {
   id?: number;
   salaryId?: number | null;
   employeeId?: number | null;
+  employeeCode?: string | null;
   diemCungCapDV?: string | null;
   chucDanh?: string | null;
   vung?: string | null;
@@ -28,6 +29,7 @@ export interface ISalaryDetail {
   nhom?: string | null;
   tenDonVi?: string | null;
   dichVu?: string | null;
+  heSoChucVu?: string | null;
 }
 
 export class SalaryDetail implements ISalaryDetail {
@@ -35,6 +37,7 @@ export class SalaryDetail implements ISalaryDetail {
     public id?: number,
     public salaryId?: number | null,
     public employeeId?: number | null,
+    public employeeCode?: string | null,
     public diemCungCapDV?: string | null,
     public chucDanh?: string | null,
     public vung?: string | null,
@@ -60,7 +63,8 @@ export class SalaryDetail implements ISalaryDetail {
     public tongChiPhiKVKK?: number | null,
     public nhom?: string | null,
     public tenDonVi?: string | null,
-    public dichVu?: string | null
+    public dichVu?: string | null,
+    public heSoChucVu?: string | null
   ) {}
 }
 

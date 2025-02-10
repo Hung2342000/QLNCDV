@@ -12,6 +12,7 @@ import { IEmployee } from '../../employee/employee.model';
 import { EmployeeService } from '../../employee/service/employee.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastComponent } from '../../../layouts/toast/toast.component';
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'jhi-employee-update',
@@ -20,11 +21,15 @@ import { ToastComponent } from '../../../layouts/toast/toast.component';
 export class SalaryUpdateComponent implements OnInit {
   @ViewChild('addDetailSalary') addDetailSalary: TemplateRef<any> | undefined;
   @ViewChild('toastSalary') toastSalary!: ToastComponent;
+  @ViewChild('importExcelModal') importExcelModal: TemplateRef<any> | undefined;
+
   salary?: ISalary | any;
   salaryDetails?: ISalaryDetail[] | any;
   salaryDetailsAm?: ISalaryDetail[] | any;
   salaryDetailsGDV?: ISalaryDetail[] | any;
   salaryDetailsHTVP?: ISalaryDetail[] | any;
+  salaryDetailsImportCheckGDV?: ISalaryDetail[] | any;
+  salaryDetailsImport?: ISalaryDetail[] | any;
   isLoading = false;
   totalItems = 0;
   itemsPerPage = ITEMS_PER_PAGE;
@@ -37,6 +42,8 @@ export class SalaryUpdateComponent implements OnInit {
   isEdit = true;
   isEditAm = true;
   content?: string = '';
+  checkUpload = false;
+  importClicked = false;
 
   editForm = this.fb.group({
     id: [null, [Validators.required]],
@@ -237,12 +244,99 @@ export class SalaryUpdateComponent implements OnInit {
     this.isEdit = true;
   }
 
+  importExcel(): void {
+    this.modalService.open(this.importExcelModal, { size: 'md', backdrop: 'static' });
+  }
+
+  onFileChange(evt: any): void {
+    if (evt.target.files && evt.target.files.length > 0) {
+      this.checkUpload = true;
+    }
+    /* wire up file reader */
+    const target: DataTransfer = <DataTransfer>evt.target;
+    const reader: FileReader = new FileReader();
+    reader.onload = (e: any) => {
+      /* read workbook */
+      const bstr: string = e.target.result;
+      const wb: XLSX.WorkBook = XLSX.read(bstr, { type: 'binary' });
+
+      /* grab first sheet */
+      const wsname: string = wb.SheetNames[0];
+      const ws: XLSX.WorkSheet = wb.Sheets[wsname];
+
+      /* save data */
+      if (wsname === 'GDV') {
+        this.salaryDetailsImportCheckGDV = XLSX.utils.sheet_to_json(ws, { header: 1 });
+      }
+    };
+    reader.readAsBinaryString(target.files[0]);
+  }
+
+  import(): void {
+    this.importClicked = true;
+    if (this.checkUpload) {
+      this.salaryDetailsImport = [];
+      if (this.salaryDetailsImportCheckGDV.length > 0) {
+        for (let i = 0; i < this.salaryDetailsImportCheckGDV.length; i++) {
+          const resultObject: ISalaryDetail = {};
+          if (
+            this.salaryDetailsImportCheckGDV[i].length === 23 &&
+            this.salaryDetailsImportCheckGDV[i][0] !== 'STT' &&
+            this.salaryDetailsImportCheckGDV[i][0] !== '(1)' &&
+            this.salaryDetailsImportCheckGDV[i][0] !== -1 &&
+            this.salaryDetailsImportCheckGDV[i][0] !== 'Tổng cộng'
+          ) {
+            resultObject.employeeCode = this.salaryDetailsImportCheckGDV[i][1];
+            resultObject.salaryId = this.salary.id;
+            resultObject.tenDonVi = this.salaryDetailsImportCheckGDV[i][3];
+            resultObject.vung = this.salaryDetailsImportCheckGDV[i][4];
+            resultObject.cap = this.salaryDetailsImportCheckGDV[i][5];
+            resultObject.donGiaDichVu = Number(this.salaryDetailsImportCheckGDV[i][6]);
+            resultObject.mucChiToiThieu = Number(this.salaryDetailsImportCheckGDV[i][7]);
+            resultObject.heSoChucVu = '1';
+            resultObject.kpis = this.salaryDetailsImportCheckGDV[i][9];
+            resultObject.htc = this.salaryDetailsImportCheckGDV[i][10];
+            resultObject.numberWorkInMonth = Number(this.salaryDetailsImportCheckGDV[i][11]);
+            resultObject.numberWorking = Number(this.salaryDetailsImportCheckGDV[i][12]);
+            resultObject.phiCoDinhDaThucHien = Number(this.salaryDetailsImportCheckGDV[i][14]);
+            resultObject.luongCoDinhThucTe = Number(this.salaryDetailsImportCheckGDV[i][15]);
+            resultObject.chiPhiGiamTru = Number(this.salaryDetailsImportCheckGDV[i][16]);
+            resultObject.mucBSLuongToiThieuVung = Number(this.salaryDetailsImportCheckGDV[i][17]);
+            resultObject.phiCoDinhThanhToanThucTe = Number(this.salaryDetailsImportCheckGDV[i][18]);
+            resultObject.chiPhiDichVuKhoanVaKK = Number(this.salaryDetailsImportCheckGDV[i][19]);
+            resultObject.chiPhiKKKhac = Number(this.salaryDetailsImportCheckGDV[i][20]);
+            resultObject.tongChiPhiKVKK = Number(this.salaryDetailsImportCheckGDV[i][21]);
+            resultObject.chiPhiThueDichVu = Number(this.salaryDetailsImportCheckGDV[i][22]);
+            this.salaryDetailsImport.push(resultObject);
+          }
+        }
+      }
+    }
+    if (this.salaryDetailsImport.length > 0) {
+      this.salaryService.createAllDetailImport(this.salaryDetailsImport).subscribe(
+        data => {
+          this.toastSalary.showToast('Thành công');
+          this.closeModal();
+          this.reload();
+          setTimeout(() => {
+            this.isEdit = false;
+          }, 500);
+        },
+        error => {
+          alert('có lỗi sảy ra');
+        }
+      );
+    } else {
+      alert('Dữ liệu không hợp lệ');
+    }
+  }
   reload(): void {
     this.salaryService.queryAll(this.salary.id).subscribe({
       next: (res: HttpResponse<ISalaryDetail[]>) => {
         this.salaryDetails = res.body;
         this.salaryDetailsHTVP = this.salaryDetails.filter((item: ISalaryDetail) => item.nhom === 'HTVP');
         this.salaryDetailsAm = this.salaryDetails.filter((item: ISalaryDetail) => item.nhom === 'AM');
+        this.salaryDetailsGDV = this.salaryDetails.filter((item: ISalaryDetail) => item.nhom === 'GDV');
         this.form = this.fb.group({
           details: this.fb.array(this.salaryDetailsHTVP.map((item: ISalaryDetail) => this.createRowForm(item))),
         });
