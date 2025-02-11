@@ -228,7 +228,7 @@ public class SalaryDetailService {
         centeredBoldStyle.setBorderLeft(BorderStyle.THIN);
         Salary salary = this.salaryRepository.findById(salaryId).get();
         if (salaryDetailListHTVP != null && salaryDetailListHTVP.size() > 0) {
-            Sheet sheetHtvp = workbook.createSheet("Service");
+            Sheet sheetHtvp = workbook.createSheet("HTVP");
 
             // Sample data (replace with your own data)
 
@@ -313,30 +313,40 @@ public class SalaryDetailService {
                 cell4.setCellValue(rowData.getVung());
                 cell4.setCellStyle(detailStyle);
 
-                Cell cell5 = row.createCell(5);
-                cell5.setCellValue(rowData.getDonGiaDichVu() != null ? rowData.getDonGiaDichVu().toString() : "");
+                Cell cell5 = row.createCell(5, CellType.NUMERIC);
+                if (rowData.getDonGiaDichVu() != null && rowData.getDonGiaDichVu() != BigDecimal.ZERO) {
+                    cell5.setCellValue(rowData.getDonGiaDichVu() != null ? rowData.getDonGiaDichVu().doubleValue() : null);
+                } else cell5.setCellValue("");
                 cell5.setCellStyle(detailStyle);
 
-                Cell cell6 = row.createCell(6);
-                cell6.setCellValue(rowData.getNumberWorkInMonth() != null ? rowData.getNumberWorkInMonth().toString() : "");
+                Cell cell6 = row.createCell(6, CellType.NUMERIC);
+                if (rowData.getNumberWorkInMonth() != null && rowData.getNumberWorkInMonth() != BigDecimal.ZERO) {
+                    cell6.setCellValue(rowData.getNumberWorkInMonth() != null ? rowData.getNumberWorkInMonth().doubleValue() : null);
+                } else cell6.setCellValue("");
                 cell6.setCellStyle(detailStyle);
 
-                Cell cell7 = row.createCell(7);
-                cell7.setCellValue(rowData.getNumberWorking() != null ? rowData.getNumberWorking().toString() : "");
+                Cell cell7 = row.createCell(7, CellType.NUMERIC);
+                if (rowData.getNumberWorking() != null && rowData.getNumberWorking() != BigDecimal.ZERO) {
+                    cell7.setCellValue(rowData.getNumberWorking() != null ? rowData.getNumberWorking().doubleValue() : null);
+                } else cell7.setCellValue("");
                 cell7.setCellStyle(detailStyle);
 
                 if (rowData.getDonGiaDichVuThucNhan() != null) {
                     donGiaDichVuThucTeTongCong = donGiaDichVuThucTeTongCong.add(rowData.getDonGiaDichVuThucNhan());
                 }
                 Cell cell8 = row.createCell(8);
-                cell8.setCellValue(rowData.getDonGiaDichVuThucNhan() != null ? rowData.getDonGiaDichVuThucNhan().toString() : "");
+                if (rowData.getDonGiaDichVuThucNhan() != null && rowData.getDonGiaDichVuThucNhan() != BigDecimal.ZERO) {
+                    cell8.setCellValue(rowData.getDonGiaDichVuThucNhan() != null ? rowData.getDonGiaDichVuThucNhan().doubleValue() : null);
+                } else cell8.setCellValue("");
                 cell8.setCellStyle(detailStyle);
 
                 if (rowData.getMucChiToiThieu() != null) {
                     mucChiTraToiThieuTongCong = mucChiTraToiThieuTongCong.add(rowData.getMucChiToiThieu());
                 }
                 Cell cell9 = row.createCell(9);
-                cell9.setCellValue(rowData.getMucChiToiThieu() != null ? rowData.getMucChiToiThieu().toString() : "");
+                if (rowData.getMucChiToiThieu() != null && rowData.getMucChiToiThieu() != BigDecimal.ZERO) {
+                    cell9.setCellValue(rowData.getMucChiToiThieu().doubleValue());
+                } else cell9.setCellValue("");
                 cell9.setCellStyle(detailStyle);
 
                 Cell cell10 = row.createCell(10);
@@ -351,18 +361,22 @@ public class SalaryDetailService {
                     chiPhiGiamTruTongCong = chiPhiGiamTruTongCong.add(rowData.getChiPhiGiamTru());
                 }
                 Cell cell12 = row.createCell(12);
-                cell12.setCellValue(
-                    rowData.getChiPhiGiamTru() != null && rowData.getChiPhiGiamTru() != BigDecimal.ZERO
-                        ? rowData.getChiPhiGiamTru().toString()
-                        : ""
-                );
+                if (rowData.getChiPhiGiamTru() != null && rowData.getChiPhiGiamTru() != BigDecimal.ZERO) {
+                    cell12.setCellValue(rowData.getChiPhiGiamTru().doubleValue());
+                } else {
+                    cell12.setCellValue("");
+                }
                 cell12.setCellStyle(detailStyle);
 
                 if (rowData.getChiPhiThueDichVu() != null) {
                     phiDichVuThucTeTongCong = phiDichVuThucTeTongCong.add(rowData.getChiPhiThueDichVu());
                 }
                 Cell cell13 = row.createCell(13);
-                cell13.setCellValue(rowData.getChiPhiThueDichVu() != null ? rowData.getChiPhiThueDichVu().toString() : "");
+                if (rowData.getChiPhiThueDichVu() != null && rowData.getChiPhiThueDichVu() != BigDecimal.ZERO) {
+                    cell13.setCellValue(rowData.getChiPhiThueDichVu().doubleValue());
+                } else {
+                    cell13.setCellValue("");
+                }
                 cell13.setCellStyle(detailStyle);
                 stt++;
             }
@@ -376,19 +390,22 @@ public class SalaryDetailService {
                     sheetHtvp.addMergedRegion(new CellRangeAddress(rowNum, rowNum, 0, 4));
                 } else if (i == 8) {
                     Cell cell = tongCong.createCell(i);
-                    cell.setCellValue(
-                        donGiaDichVuThucTeTongCong != null && donGiaDichVuThucTeTongCong != BigDecimal.ZERO
-                            ? donGiaDichVuThucTeTongCong.toString()
-                            : ""
-                    );
+                    if (donGiaDichVuThucTeTongCong != null && donGiaDichVuThucTeTongCong != BigDecimal.ZERO) {
+                        cell.setCellValue(donGiaDichVuThucTeTongCong.doubleValue());
+                    } else cell.setCellValue("");
+
                     cell.setCellStyle(detailStyleTieuDe);
                 } else if (i == 12) {
                     Cell cell = tongCong.createCell(i);
-                    cell.setCellValue(chiPhiGiamTruTongCong != BigDecimal.ZERO ? chiPhiGiamTruTongCong.toString() : "");
+                    if (chiPhiGiamTruTongCong != null && chiPhiGiamTruTongCong != BigDecimal.ZERO) {
+                        cell.setCellValue(chiPhiGiamTruTongCong.doubleValue());
+                    } else cell.setCellValue("");
                     cell.setCellStyle(detailStyleTieuDe);
                 } else if (i == 13) {
                     Cell cell = tongCong.createCell(i);
-                    cell.setCellValue(phiDichVuThucTeTongCong != BigDecimal.ZERO ? phiDichVuThucTeTongCong.toString() : "");
+                    if (phiDichVuThucTeTongCong != null && phiDichVuThucTeTongCong != BigDecimal.ZERO) {
+                        cell.setCellValue(phiDichVuThucTeTongCong.doubleValue());
+                    } else cell.setCellValue("");
                     cell.setCellStyle(detailStyleTieuDe);
                 } else {
                     Cell cell = tongCong.createCell(i);
@@ -496,11 +513,16 @@ public class SalaryDetailService {
                 cell5.setCellStyle(detailStyle);
 
                 Cell cell6 = row.createCell(6);
-                cell6.setCellValue(rowData.getDonGiaDichVu() != null ? rowData.getDonGiaDichVu().toString() : "");
+                if (rowData.getDonGiaDichVu() != null && rowData.getDonGiaDichVu() != BigDecimal.ZERO) {
+                    cell6.setCellValue(rowData.getDonGiaDichVu().doubleValue());
+                } else cell6.setCellValue("");
+
                 cell6.setCellStyle(detailStyle);
 
                 Cell cell7 = row.createCell(7);
-                cell7.setCellValue(rowData.getMucChiToiThieu() != null ? rowData.getMucChiToiThieu().toString() : "");
+                if (rowData.getMucChiToiThieu() != null && rowData.getMucChiToiThieu() != BigDecimal.ZERO) {
+                    cell7.setCellValue(rowData.getMucChiToiThieu().doubleValue());
+                } else cell7.setCellValue("");
                 cell7.setCellStyle(detailStyle);
 
                 Cell cell8 = row.createCell(8);
@@ -516,19 +538,32 @@ public class SalaryDetailService {
                 cell10.setCellStyle(detailStyle);
 
                 Cell cell11 = row.createCell(11);
-                cell11.setCellValue(rowData.getNumberWorkInMonth() != null ? rowData.getNumberWorkInMonth().toString() : "");
+                if (rowData.getNumberWorkInMonth() != null && rowData.getNumberWorkInMonth() != BigDecimal.ZERO) {
+                    cell11.setCellValue(rowData.getNumberWorkInMonth().doubleValue());
+                } else cell11.setCellValue("");
+                //                cell11.setCellValue(rowData.getNumberWorkInMonth() != null ? rowData.getNumberWorkInMonth().toString() : "");
                 cell11.setCellStyle(detailStyle);
 
                 Cell cell12 = row.createCell(12);
-                cell12.setCellValue(rowData.getNumberWorking() != null ? rowData.getNumberWorking().toString() : "");
+                if (rowData.getNumberWorking() != null && rowData.getNumberWorking() != BigDecimal.ZERO) {
+                    cell12.setCellValue(rowData.getNumberWorking().doubleValue());
+                } else cell12.setCellValue("");
+                //                cell12.setCellValue(rowData.getNumberWorking() != null ? rowData.getNumberWorking().toString() : "");
                 cell12.setCellStyle(detailStyle);
 
                 Cell cell13 = row.createCell(13);
-                cell13.setCellValue(
-                    rowData.getNumberWorkInMonth().subtract(rowData.getNumberWorking()) != BigDecimal.ZERO
-                        ? rowData.getNumberWorkInMonth().subtract(rowData.getNumberWorking()).toString()
-                        : ""
-                );
+                if (
+                    rowData.getNumberWorking() != null &&
+                    rowData.getNumberWorking() != BigDecimal.ZERO &&
+                    rowData.getNumberWorking() != null
+                ) {
+                    cell13.setCellValue(rowData.getNumberWorkInMonth().subtract(rowData.getNumberWorking()).doubleValue());
+                } else cell13.setCellValue("");
+                //                cell13.setCellValue(
+                //                    rowData.getNumberWorkInMonth().subtract(rowData.getNumberWorking()) != BigDecimal.ZERO
+                //                        ? rowData.getNumberWorkInMonth().subtract(rowData.getNumberWorking()).toString()
+                //                        : ""
+                //                );
                 cell13.setCellStyle(detailStyle);
 
                 if (rowData.getPhiCoDinhDaThucHien() != null) {
@@ -536,78 +571,105 @@ public class SalaryDetailService {
                 }
 
                 Cell cell14 = row.createCell(14);
-                cell14.setCellValue(rowData.getPhiCoDinhDaThucHien() != null ? rowData.getPhiCoDinhDaThucHien().toString() : "");
+                if (rowData.getPhiCoDinhDaThucHien() != null && rowData.getPhiCoDinhDaThucHien() != BigDecimal.ZERO) {
+                    cell14.setCellValue(rowData.getPhiCoDinhDaThucHien().doubleValue());
+                } else cell14.setCellValue("");
+                //                cell14.setCellValue(rowData.getPhiCoDinhDaThucHien() != null ? rowData.getPhiCoDinhDaThucHien().toString() : "");
                 cell14.setCellStyle(detailStyle);
 
                 Cell cell15 = row.createCell(15);
-                cell15.setCellValue(
-                    rowData.getLuongCoDinhThucTe() != null && rowData.getLuongCoDinhThucTe() != BigDecimal.ZERO
-                        ? rowData.getLuongCoDinhThucTe().toString()
-                        : ""
-                );
+                if (rowData.getLuongCoDinhThucTe() != null && rowData.getLuongCoDinhThucTe() != BigDecimal.ZERO) {
+                    cell15.setCellValue(rowData.getLuongCoDinhThucTe().doubleValue());
+                } else cell15.setCellValue("");
+                //                cell15.setCellValue(
+                //                    rowData.getLuongCoDinhThucTe() != null && rowData.getLuongCoDinhThucTe() != BigDecimal.ZERO
+                //                        ? rowData.getLuongCoDinhThucTe().toString()
+                //                        : ""
+                //                );
                 cell15.setCellStyle(detailStyle);
 
                 Cell cell16 = row.createCell(16);
-                cell16.setCellValue(
-                    rowData.getChiPhiGiamTru() != null && rowData.getChiPhiGiamTru() != BigDecimal.ZERO
-                        ? rowData.getChiPhiGiamTru().toString()
-                        : ""
-                );
+                if (rowData.getChiPhiGiamTru() != null && rowData.getChiPhiGiamTru() != BigDecimal.ZERO) {
+                    cell16.setCellValue(rowData.getChiPhiGiamTru().doubleValue());
+                } else cell16.setCellValue("");
+                //                cell16.setCellValue(
+                //                    rowData.getChiPhiGiamTru() != null && rowData.getChiPhiGiamTru() != BigDecimal.ZERO
+                //                        ? rowData.getChiPhiGiamTru().toString()
+                //                        : ""
+                //                );
                 cell16.setCellStyle(detailStyle);
 
                 Cell cell17 = row.createCell(17);
-                cell17.setCellValue(rowData.getMucBSLuongToiThieuVung() != null ? rowData.getMucBSLuongToiThieuVung().toString() : "");
+                if (rowData.getMucBSLuongToiThieuVung() != null && rowData.getMucBSLuongToiThieuVung() != BigDecimal.ZERO) {
+                    cell17.setCellValue(rowData.getMucBSLuongToiThieuVung().doubleValue());
+                } else cell17.setCellValue("");
+                //                cell17.setCellValue(rowData.getMucBSLuongToiThieuVung() != null ? rowData.getMucBSLuongToiThieuVung().toString() : "");
                 cell17.setCellStyle(detailStyle);
 
                 if (rowData.getPhiCoDinhThanhToanThucTe() != null) {
                     phiCoDinhThanhToanThucTeTongCong = phiCoDinhThanhToanThucTeTongCong.add(rowData.getPhiCoDinhThanhToanThucTe());
                 }
                 Cell cell18 = row.createCell(18);
-                cell18.setCellValue(
-                    rowData.getPhiCoDinhThanhToanThucTe() != null && rowData.getPhiCoDinhThanhToanThucTe() != BigDecimal.ZERO
-                        ? rowData.getPhiCoDinhThanhToanThucTe().toString()
-                        : ""
-                );
+                if (rowData.getPhiCoDinhThanhToanThucTe() != null && rowData.getPhiCoDinhThanhToanThucTe() != BigDecimal.ZERO) {
+                    cell18.setCellValue(rowData.getPhiCoDinhThanhToanThucTe().doubleValue());
+                } else cell18.setCellValue("");
+                //                cell18.setCellValue(
+                //                    rowData.getPhiCoDinhThanhToanThucTe() != null && rowData.getPhiCoDinhThanhToanThucTe() != BigDecimal.ZERO
+                //                        ? rowData.getPhiCoDinhThanhToanThucTe().toString()
+                //                        : ""
+                //                );
                 cell18.setCellStyle(detailStyle);
 
                 if (rowData.getChiPhiDichVuKhoanVaKK() != null) {
                     chiPhiDichVuKhoanVaKKTongCong = chiPhiDichVuKhoanVaKKTongCong.add(rowData.getChiPhiDichVuKhoanVaKK());
                 }
                 Cell cell19 = row.createCell(19);
-                cell19.setCellValue(
-                    rowData.getChiPhiDichVuKhoanVaKK() != null && rowData.getChiPhiDichVuKhoanVaKK() != BigDecimal.ZERO
-                        ? rowData.getChiPhiDichVuKhoanVaKK().toString()
-                        : ""
-                );
+                if (rowData.getChiPhiDichVuKhoanVaKK() != null && rowData.getChiPhiDichVuKhoanVaKK() != BigDecimal.ZERO) {
+                    cell19.setCellValue(rowData.getChiPhiDichVuKhoanVaKK().doubleValue());
+                } else cell19.setCellValue("");
+                //                cell19.setCellValue(
+                //                    rowData.getChiPhiDichVuKhoanVaKK() != null && rowData.getChiPhiDichVuKhoanVaKK() != BigDecimal.ZERO
+                //                        ? rowData.getChiPhiDichVuKhoanVaKK().toString()
+                //                        : ""
+                //                );
                 cell19.setCellStyle(detailStyle);
 
                 if (rowData.getChiPhiKKKhac() != null) {
                     chiPhiKhoanVaKKkTongCong = chiPhiKhoanVaKKkTongCong.add(rowData.getChiPhiKKKhac());
                 }
                 Cell cell20 = row.createCell(20);
-                cell20.setCellValue(
-                    rowData.getChiPhiKKKhac() != null && rowData.getChiPhiKKKhac() != BigDecimal.ZERO
-                        ? rowData.getChiPhiKKKhac().toString()
-                        : ""
-                );
+                if (rowData.getChiPhiKKKhac() != null && rowData.getChiPhiKKKhac() != BigDecimal.ZERO) {
+                    cell20.setCellValue(rowData.getChiPhiKKKhac().doubleValue());
+                } else cell20.setCellValue("");
+                //                cell20.setCellValue(
+                //                    rowData.getChiPhiKKKhac() != null && rowData.getChiPhiKKKhac() != BigDecimal.ZERO
+                //                        ? rowData.getChiPhiKKKhac().toString()
+                //                        : ""
+                //                );
                 cell20.setCellStyle(detailStyle);
 
                 if (rowData.getTongChiPhiKVKK() != null) {
                     tongChiPhiKhoanVaKKTongCong = tongChiPhiKhoanVaKKTongCong.add(rowData.getTongChiPhiKVKK());
                 }
                 Cell cell21 = row.createCell(21);
-                cell21.setCellValue(
-                    rowData.getTongChiPhiKVKK() != null && rowData.getTongChiPhiKVKK() != BigDecimal.ZERO
-                        ? rowData.getTongChiPhiKVKK().toString()
-                        : ""
-                );
+                if (rowData.getTongChiPhiKVKK() != null && rowData.getTongChiPhiKVKK() != BigDecimal.ZERO) {
+                    cell21.setCellValue(rowData.getTongChiPhiKVKK().doubleValue());
+                } else cell21.setCellValue("");
+                //                cell21.setCellValue(
+                //                    rowData.getTongChiPhiKVKK() != null && rowData.getTongChiPhiKVKK() != BigDecimal.ZERO
+                //                        ? rowData.getTongChiPhiKVKK().toString()
+                //                        : ""
+                //                );
                 cell21.setCellStyle(detailStyle);
 
                 if (rowData.getChiPhiThueDichVu() != null) {
                     phiDichVuThucTeTongCong = phiDichVuThucTeTongCong.add(rowData.getChiPhiThueDichVu());
                 }
                 Cell cell22 = row.createCell(22);
-                cell22.setCellValue(rowData.getChiPhiThueDichVu() != null ? rowData.getChiPhiThueDichVu().toString() : "");
+                if (rowData.getChiPhiThueDichVu() != null && rowData.getChiPhiThueDichVu() != BigDecimal.ZERO) {
+                    cell22.setCellValue(rowData.getChiPhiThueDichVu().doubleValue());
+                } else cell22.setCellValue("");
+                //                cell22.setCellValue(rowData.getChiPhiThueDichVu() != null ? rowData.getChiPhiThueDichVu().toString() : "");
                 cell22.setCellStyle(detailStyle);
                 sttGDV++;
             }
@@ -620,41 +682,51 @@ public class SalaryDetailService {
                     sheetGDV.addMergedRegion(new CellRangeAddress(rowNumGDV, rowNumGDV, 0, 13));
                 } else if (i == 14) {
                     Cell cell = tongCong.createCell(i);
-                    cell.setCellValue(
-                        phiCoDinhDaThucHienTongCong != null && phiCoDinhDaThucHienTongCong != BigDecimal.ZERO
-                            ? phiCoDinhDaThucHienTongCong.toString()
-                            : ""
-                    );
+                    if (phiCoDinhDaThucHienTongCong != null && phiCoDinhDaThucHienTongCong != BigDecimal.ZERO) {
+                        cell.setCellValue(phiCoDinhDaThucHienTongCong.doubleValue());
+                    } else cell.setCellValue("");
+                    //                    cell.setCellValue(
+                    //                        phiCoDinhDaThucHienTongCong != null && phiCoDinhDaThucHienTongCong != BigDecimal.ZERO
+                    //                            ? phiCoDinhDaThucHienTongCong.toString()
+                    //                            : ""
+                    //                    );
                     cell.setCellStyle(detailStyleTieuDe);
                 } else if (i == 18) {
                     Cell cell = tongCong.createCell(i);
-                    cell.setCellValue(
-                        phiCoDinhThanhToanThucTeTongCong != BigDecimal.ZERO ? phiCoDinhThanhToanThucTeTongCong.toString() : ""
-                    );
+                    if (phiCoDinhThanhToanThucTeTongCong != null && phiCoDinhThanhToanThucTeTongCong != BigDecimal.ZERO) {
+                        cell.setCellValue(phiCoDinhThanhToanThucTeTongCong.doubleValue());
+                    } else cell.setCellValue("");
+                    //                    cell.setCellValue(
+                    //                        phiCoDinhThanhToanThucTeTongCong != BigDecimal.ZERO ? phiCoDinhThanhToanThucTeTongCong.toString() : ""
+                    //                    );
                     cell.setCellStyle(detailStyleTieuDe);
                 } else if (i == 19) {
                     Cell cell = tongCong.createCell(i);
-                    cell.setCellValue(
-                        chiPhiDichVuKhoanVaKKTongCong != null && chiPhiDichVuKhoanVaKKTongCong != BigDecimal.ZERO
-                            ? chiPhiDichVuKhoanVaKKTongCong.toString()
-                            : ""
-                    );
+                    if (chiPhiDichVuKhoanVaKKTongCong != null && chiPhiDichVuKhoanVaKKTongCong != BigDecimal.ZERO) {
+                        cell.setCellValue(chiPhiDichVuKhoanVaKKTongCong.doubleValue());
+                    } else cell.setCellValue("");
                     cell.setCellStyle(detailStyleTieuDe);
                 } else if (i == 20) {
                     Cell cell = tongCong.createCell(i);
-                    cell.setCellValue(
-                        chiPhiKhoanVaKKkTongCong != null && chiPhiKhoanVaKKkTongCong != BigDecimal.ZERO
-                            ? chiPhiKhoanVaKKkTongCong.toString()
-                            : ""
-                    );
+                    if (chiPhiKhoanVaKKkTongCong != null && chiPhiKhoanVaKKkTongCong != BigDecimal.ZERO) {
+                        cell.setCellValue(chiPhiKhoanVaKKkTongCong.doubleValue());
+                    } else cell.setCellValue("");
                     cell.setCellStyle(detailStyleTieuDe);
                 } else if (i == 21) {
                     Cell cell = tongCong.createCell(i);
-                    cell.setCellValue(tongChiPhiKhoanVaKKTongCong != BigDecimal.ZERO ? tongChiPhiKhoanVaKKTongCong.toString() : "");
+
+                    if (tongChiPhiKhoanVaKKTongCong != null && tongChiPhiKhoanVaKKTongCong != BigDecimal.ZERO) {
+                        cell.setCellValue(tongChiPhiKhoanVaKKTongCong.doubleValue());
+                    } else cell.setCellValue("");
+                    //                    cell.setCellValue(tongChiPhiKhoanVaKKTongCong != BigDecimal.ZERO ? tongChiPhiKhoanVaKKTongCong.toString() : "");
                     cell.setCellStyle(detailStyleTieuDe);
                 } else if (i == 22) {
                     Cell cell = tongCong.createCell(i);
-                    cell.setCellValue(phiDichVuThucTeTongCong != BigDecimal.ZERO ? phiDichVuThucTeTongCong.toString() : "");
+
+                    if (phiDichVuThucTeTongCong != null && phiDichVuThucTeTongCong != BigDecimal.ZERO) {
+                        cell.setCellValue(phiDichVuThucTeTongCong.doubleValue());
+                    } else cell.setCellValue("");
+                    //                    cell.setCellValue(phiDichVuThucTeTongCong != BigDecimal.ZERO ? phiDichVuThucTeTongCong.toString() : "");
                     cell.setCellStyle(detailStyleTieuDe);
                 } else {
                     Cell cell = tongCong.createCell(i);
@@ -766,68 +838,90 @@ public class SalaryDetailService {
                 cell6.setCellStyle(detailStyle);
 
                 Cell cell7 = row.createCell(7);
-                cell7.setCellValue(rowData.getLuongCoDinhThucTe() != null ? rowData.getLuongCoDinhThucTe().toString() : "");
+                if (rowData.getLuongCoDinhThucTe() != null && rowData.getLuongCoDinhThucTe() != BigDecimal.ZERO) {
+                    cell7.setCellValue(rowData.getLuongCoDinhThucTe().doubleValue());
+                } else cell7.setCellValue("");
                 cell7.setCellStyle(detailStyle);
 
                 Cell cell8 = row.createCell(8);
-                cell8.setCellValue(rowData.getDonGiaDichVu() != null ? rowData.getDonGiaDichVu().toString() : "");
+                if (rowData.getDonGiaDichVu() != null && rowData.getDonGiaDichVu() != BigDecimal.ZERO) {
+                    cell8.setCellValue(rowData.getDonGiaDichVu().doubleValue());
+                } else cell8.setCellValue("");
                 cell8.setCellStyle(detailStyle);
 
                 Cell cell9 = row.createCell(9);
-                cell9.setCellValue(rowData.getNumberWorkInMonth() != null ? rowData.getNumberWorkInMonth().toString() : "");
+                if (rowData.getNumberWorkInMonth() != null && rowData.getNumberWorkInMonth() != BigDecimal.ZERO) {
+                    cell9.setCellValue(rowData.getNumberWorkInMonth().doubleValue());
+                } else cell9.setCellValue("");
                 cell9.setCellStyle(detailStyle);
 
                 Cell cell10 = row.createCell(10);
-                cell10.setCellValue(rowData.getNumberWorking() != null ? rowData.getNumberWorking().toString() : "");
+                if (rowData.getNumberWorking() != null && rowData.getNumberWorking() != BigDecimal.ZERO) {
+                    cell10.setCellValue(rowData.getNumberWorking().doubleValue());
+                } else cell10.setCellValue("");
                 cell10.setCellStyle(detailStyle);
 
                 if (rowData.getPhiCoDinhDaThucHien() != null) {
                     phiCoDinhDaThucHienTongCong = phiCoDinhDaThucHienTongCong.add(rowData.getPhiCoDinhDaThucHien());
                 }
                 Cell cell11 = row.createCell(11);
-                cell11.setCellValue(rowData.getPhiCoDinhDaThucHien() != null ? rowData.getPhiCoDinhDaThucHien().toString() : "");
+                if (rowData.getPhiCoDinhDaThucHien() != null && rowData.getPhiCoDinhDaThucHien() != BigDecimal.ZERO) {
+                    cell11.setCellValue(rowData.getPhiCoDinhDaThucHien().doubleValue());
+                } else cell11.setCellValue("");
                 cell11.setCellStyle(detailStyle);
 
                 if (rowData.getChiPhiGiamTru() != null) {
                     chiPhiGiamTruTong = chiPhiGiamTruTong.add(rowData.getChiPhiGiamTru());
                 }
                 Cell cell12 = row.createCell(12);
-                cell12.setCellValue(rowData.getChiPhiGiamTru() != null ? rowData.getChiPhiGiamTru().toString() : "");
+                if (rowData.getChiPhiGiamTru() != null && rowData.getChiPhiGiamTru() != BigDecimal.ZERO) {
+                    cell12.setCellValue(rowData.getChiPhiGiamTru().doubleValue());
+                } else cell12.setCellValue("");
                 cell12.setCellStyle(detailStyle);
 
                 if (rowData.getPhiCoDinhThanhToanThucTe() != null) {
                     phiCoDinhThanhToanThucTeTongCong = phiCoDinhThanhToanThucTeTongCong.add(rowData.getPhiCoDinhThanhToanThucTe());
                 }
                 Cell cell13 = row.createCell(13);
-                cell13.setCellValue(rowData.getPhiCoDinhThanhToanThucTe() != null ? rowData.getPhiCoDinhThanhToanThucTe().toString() : "");
+                if (rowData.getPhiCoDinhThanhToanThucTe() != null && rowData.getPhiCoDinhThanhToanThucTe() != BigDecimal.ZERO) {
+                    cell13.setCellValue(rowData.getPhiCoDinhThanhToanThucTe().doubleValue());
+                } else cell13.setCellValue("");
                 cell13.setCellStyle(detailStyle);
 
                 if (rowData.getChiPhiDichVuKhoanVaKK() != null) {
                     chiPhiDichVuKhoanVaKKTongCong = chiPhiDichVuKhoanVaKKTongCong.add(rowData.getChiPhiDichVuKhoanVaKK());
                 }
                 Cell cell14 = row.createCell(14);
-                cell14.setCellValue(rowData.getChiPhiDichVuKhoanVaKK() != null ? rowData.getChiPhiDichVuKhoanVaKK().toString() : "");
+                if (rowData.getChiPhiDichVuKhoanVaKK() != null && rowData.getChiPhiDichVuKhoanVaKK() != BigDecimal.ZERO) {
+                    cell14.setCellValue(rowData.getChiPhiDichVuKhoanVaKK().doubleValue());
+                } else cell14.setCellValue("");
                 cell14.setCellStyle(detailStyle);
 
                 if (rowData.getChiPhiKKKhac() != null) {
                     chiPhiKhoanVaKKkTongCong = chiPhiKhoanVaKKkTongCong.add(rowData.getChiPhiKKKhac());
                 }
                 Cell cell15 = row.createCell(15);
-                cell15.setCellValue(rowData.getChiPhiKKKhac() != null ? rowData.getChiPhiKKKhac().toString() : "");
+                if (rowData.getChiPhiKKKhac() != null && rowData.getChiPhiKKKhac() != BigDecimal.ZERO) {
+                    cell15.setCellValue(rowData.getChiPhiKKKhac().doubleValue());
+                } else cell15.setCellValue("");
                 cell15.setCellStyle(detailStyle);
 
                 if (rowData.getTongChiPhiKVKK() != null) {
                     tongChiPhiKhoanVaKKTongCong = tongChiPhiKhoanVaKKTongCong.add(rowData.getTongChiPhiKVKK());
                 }
                 Cell cell16 = row.createCell(16);
-                cell16.setCellValue(rowData.getTongChiPhiKVKK() != null ? rowData.getTongChiPhiKVKK().toString() : "");
+                if (rowData.getTongChiPhiKVKK() != null && rowData.getTongChiPhiKVKK() != BigDecimal.ZERO) {
+                    cell16.setCellValue(rowData.getTongChiPhiKVKK().doubleValue());
+                } else cell16.setCellValue("");
                 cell16.setCellStyle(detailStyle);
 
                 if (rowData.getDonGiaDichVu() != null) {
                     phiDichVuThucTeTongCong = phiDichVuThucTeTongCong.add(rowData.getDonGiaDichVu());
                 }
                 Cell cell17 = row.createCell(17);
-                cell17.setCellValue(rowData.getDonGiaDichVu() != null ? rowData.getDonGiaDichVu().toString() : "");
+                if (rowData.getDonGiaDichVu() != null && rowData.getDonGiaDichVu() != BigDecimal.ZERO) {
+                    cell17.setCellValue(rowData.getDonGiaDichVu().doubleValue());
+                } else cell17.setCellValue("");
                 cell17.setCellStyle(detailStyle);
 
                 sttAm++;
@@ -842,15 +936,15 @@ public class SalaryDetailService {
                     sheetAM.addMergedRegion(new CellRangeAddress(rowNumAM, rowNumAM, 0, 10));
                 } else if (i == 11) {
                     Cell cell = tongCong.createCell(i);
-                    cell.setCellValue(
-                        phiCoDinhDaThucHienTongCong != null && phiCoDinhDaThucHienTongCong != BigDecimal.ZERO
-                            ? phiCoDinhDaThucHienTongCong.toString()
-                            : ""
-                    );
+                    if (phiCoDinhDaThucHienTongCong != null && phiCoDinhDaThucHienTongCong != BigDecimal.ZERO) {
+                        cell.setCellValue(phiCoDinhDaThucHienTongCong.doubleValue());
+                    } else cell.setCellValue("");
                     cell.setCellStyle(detailStyleTieuDe);
                 } else if (i == 12) {
                     Cell cell = tongCong.createCell(i);
-                    cell.setCellValue(chiPhiGiamTruTong != BigDecimal.ZERO ? chiPhiGiamTruTong.toString() : "");
+                    if (chiPhiGiamTruTong != null && chiPhiGiamTruTong != BigDecimal.ZERO) {
+                        cell.setCellValue(chiPhiGiamTruTong.doubleValue());
+                    } else cell.setCellValue("");
                     cell.setCellStyle(detailStyleTieuDe);
                 } else if (i == 13) {
                     Cell cell = tongCong.createCell(i);
@@ -860,27 +954,27 @@ public class SalaryDetailService {
                     cell.setCellStyle(detailStyleTieuDe);
                 } else if (i == 14) {
                     Cell cell = tongCong.createCell(i);
-                    cell.setCellValue(
-                        chiPhiDichVuKhoanVaKKTongCong != null && chiPhiDichVuKhoanVaKKTongCong != BigDecimal.ZERO
-                            ? chiPhiDichVuKhoanVaKKTongCong.toString()
-                            : ""
-                    );
+                    if (chiPhiDichVuKhoanVaKKTongCong != null && chiPhiDichVuKhoanVaKKTongCong != BigDecimal.ZERO) {
+                        cell.setCellValue(chiPhiDichVuKhoanVaKKTongCong.doubleValue());
+                    } else cell.setCellValue("");
                     cell.setCellStyle(detailStyleTieuDe);
                 } else if (i == 25) {
                     Cell cell = tongCong.createCell(i);
-                    cell.setCellValue(
-                        chiPhiKhoanVaKKkTongCong != null && chiPhiKhoanVaKKkTongCong != BigDecimal.ZERO
-                            ? chiPhiKhoanVaKKkTongCong.toString()
-                            : ""
-                    );
+                    if (chiPhiKhoanVaKKkTongCong != null && chiPhiKhoanVaKKkTongCong != BigDecimal.ZERO) {
+                        cell.setCellValue(chiPhiKhoanVaKKkTongCong.doubleValue());
+                    } else cell.setCellValue("");
                     cell.setCellStyle(detailStyleTieuDe);
                 } else if (i == 16) {
                     Cell cell = tongCong.createCell(i);
-                    cell.setCellValue(tongChiPhiKhoanVaKKTongCong != BigDecimal.ZERO ? tongChiPhiKhoanVaKKTongCong.toString() : "");
+                    if (tongChiPhiKhoanVaKKTongCong != null && tongChiPhiKhoanVaKKTongCong != BigDecimal.ZERO) {
+                        cell.setCellValue(tongChiPhiKhoanVaKKTongCong.doubleValue());
+                    } else cell.setCellValue("");
                     cell.setCellStyle(detailStyleTieuDe);
                 } else if (i == 17) {
                     Cell cell = tongCong.createCell(i);
-                    cell.setCellValue(phiDichVuThucTeTongCong != BigDecimal.ZERO ? phiDichVuThucTeTongCong.toString() : "");
+                    if (phiDichVuThucTeTongCong != null && phiDichVuThucTeTongCong != BigDecimal.ZERO) {
+                        cell.setCellValue(phiDichVuThucTeTongCong.doubleValue());
+                    } else cell.setCellValue("");
                     cell.setCellStyle(detailStyleTieuDe);
                 } else {
                     Cell cell = tongCong.createCell(i);
@@ -1121,15 +1215,17 @@ public class SalaryDetailService {
         for (SalaryDetail salaryDetail : salaryDetailList) {
             Employee employee = employeeRepository.getByCode(salaryDetail.getEmployeeCode());
             salaryDetail.setEmployeeId(employee != null ? employee.getId() : null);
-            salaryDetail.setNhom(employee != null ? employee.getNhom() : null);
+            salaryDetail.setNhom(employee != null ? employee.getNhom() : "");
 
             SalaryDetail salaryDetailCheck = salaryDetailRepository.getSalaryDetailBySalaryIdEndEmployeeCode(
                 salaryDetail.getSalaryId(),
                 salaryDetail.getEmployeeCode()
             );
-            salaryDetail.setId(salaryDetailCheck != null ? salaryDetailCheck.getId() : null);
-            salaryDetail.setDichVu(salaryDetailCheck.getDichVu());
-            salaryDetail.setTenDonVi(salaryDetailCheck.getTenDonVi());
+            if (salaryDetailCheck != null) {
+                salaryDetail.setId(salaryDetailCheck != null ? salaryDetailCheck.getId() : null);
+                salaryDetail.setDichVu(salaryDetailCheck.getDichVu());
+                salaryDetail.setTenDonVi(salaryDetailCheck.getTenDonVi());
+            }
         }
         List<SalaryDetail> salaryDetailsAm = new ArrayList<>();
         List<SalaryDetail> salaryDetailsHTVP = new ArrayList<>();

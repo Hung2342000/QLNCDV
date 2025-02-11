@@ -29,6 +29,7 @@ export class SalaryUpdateComponent implements OnInit {
   salaryDetailsGDV?: ISalaryDetail[] | any;
   salaryDetailsHTVP?: ISalaryDetail[] | any;
   salaryDetailsImportCheckGDV?: ISalaryDetail[] | any;
+  salaryDetailsImportCheckAM?: ISalaryDetail[] | any;
   salaryDetailsImport?: ISalaryDetail[] | any;
   isLoading = false;
   totalItems = 0;
@@ -268,6 +269,9 @@ export class SalaryUpdateComponent implements OnInit {
       if (wsname === 'GDV') {
         this.salaryDetailsImportCheckGDV = XLSX.utils.sheet_to_json(ws, { header: 1 });
       }
+      if (wsname === 'AM') {
+        this.salaryDetailsImportCheckAM = XLSX.utils.sheet_to_json(ws, { header: 1 });
+      }
     };
     reader.readAsBinaryString(target.files[0]);
   }
@@ -276,7 +280,7 @@ export class SalaryUpdateComponent implements OnInit {
     this.importClicked = true;
     if (this.checkUpload) {
       this.salaryDetailsImport = [];
-      if (this.salaryDetailsImportCheckGDV.length > 0) {
+      if (this.salaryDetailsImportCheckGDV && this.salaryDetailsImportCheckGDV.length > 0) {
         for (let i = 0; i < this.salaryDetailsImportCheckGDV.length; i++) {
           const resultObject: ISalaryDetail = {};
           if (
@@ -307,6 +311,37 @@ export class SalaryUpdateComponent implements OnInit {
             resultObject.chiPhiKKKhac = Number(this.salaryDetailsImportCheckGDV[i][20]);
             resultObject.tongChiPhiKVKK = Number(this.salaryDetailsImportCheckGDV[i][21]);
             resultObject.chiPhiThueDichVu = Number(this.salaryDetailsImportCheckGDV[i][22]);
+            this.salaryDetailsImport.push(resultObject);
+          }
+        }
+      }
+      if (this.salaryDetailsImportCheckAM && this.salaryDetailsImportCheckAM.length > 0) {
+        for (let i = 0; i < this.salaryDetailsImportCheckAM.length; i++) {
+          const resultObject: ISalaryDetail = {};
+          if (
+            this.salaryDetailsImportCheckAM[i].length === 18 &&
+            this.salaryDetailsImportCheckAM[i][0] !== 'STT' &&
+            this.salaryDetailsImportCheckAM[i][0] !== '(1)' &&
+            this.salaryDetailsImportCheckAM[i][0] !== -1 &&
+            this.salaryDetailsImportCheckAM[i][0] !== 'Tổng cộng'
+          ) {
+            resultObject.employeeCode = this.salaryDetailsImportCheckAM[i][1];
+            resultObject.salaryId = this.salary.id;
+            resultObject.vung = this.salaryDetailsImportCheckAM[i][3];
+            resultObject.mucChiToiThieu = Number(this.salaryDetailsImportCheckAM[i][4]);
+            resultObject.kpis = this.salaryDetailsImportCheckAM[i][6];
+            resultObject.heSoChucVu = '1';
+            resultObject.donGiaDichVu = Number(this.salaryDetailsImportCheckAM[i][8]);
+            resultObject.luongCoDinhThucTe = Number(this.salaryDetailsImportCheckAM[i][7]);
+            resultObject.numberWorkInMonth = Number(this.salaryDetailsImportCheckAM[i][9]);
+            resultObject.numberWorking = Number(this.salaryDetailsImportCheckAM[i][10]);
+            resultObject.phiCoDinhDaThucHien = Number(this.salaryDetailsImportCheckAM[i][11]);
+            resultObject.chiPhiGiamTru = Number(this.salaryDetailsImportCheckAM[i][12]);
+            resultObject.phiCoDinhThanhToanThucTe = Number(this.salaryDetailsImportCheckAM[i][13]);
+            resultObject.chiPhiDichVuKhoanVaKK = Number(this.salaryDetailsImportCheckAM[i][14]);
+            resultObject.chiPhiKKKhac = Number(this.salaryDetailsImportCheckAM[i][15]);
+            resultObject.tongChiPhiKVKK = Number(this.salaryDetailsImportCheckAM[i][16]);
+            resultObject.chiPhiThueDichVu = Number(this.salaryDetailsImportCheckAM[i][17]);
             this.salaryDetailsImport.push(resultObject);
           }
         }
