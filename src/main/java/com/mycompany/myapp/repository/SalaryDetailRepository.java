@@ -32,6 +32,9 @@ public interface SalaryDetailRepository extends JpaRepository<SalaryDetail, Long
     @Query("select a from SalaryDetail a where a.salaryId = :idSalary AND a.nhom = 'AM' ORDER BY a.dichVu asc, a.tenDonVi asc")
     List<SalaryDetail> getAllBySalaryIdAM(@Param("idSalary") Long idSalary);
 
+    @Query("select a from SalaryDetail a where a.salaryId = :idSalary AND a.nhom = 'KAM' ORDER BY a.dichVu asc, a.tenDonVi asc")
+    List<SalaryDetail> getAllBySalaryIdKAM(@Param("idSalary") Long idSalary);
+
     @Query(
         "SELECT sd FROM SalaryDetail sd JOIN Employee e on sd.employeeId = e.id  where sd.salaryId = :idSalary and e.codeEmployee = :employeeCode AND ROWNUM = 1"
     )

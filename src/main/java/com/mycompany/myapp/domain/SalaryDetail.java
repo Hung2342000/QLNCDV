@@ -112,6 +112,12 @@ public class SalaryDetail implements Serializable {
     @Column(name = "he_so_chuc_vu")
     private String heSoChucVu;
 
+    @Column(name = "so_luong_hop_dong")
+    private BigDecimal soLuongHopDong;
+
+    @Column(name = "ap_dung_muc_luong_co_dinh")
+    private String apDungMucLuongCoDinh;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -370,6 +376,22 @@ public class SalaryDetail implements Serializable {
 
     public void setHeSoChucVu(String heSoChucVu) {
         this.heSoChucVu = heSoChucVu;
+    }
+
+    public BigDecimal getSoLuongHopDong() {
+        return soLuongHopDong;
+    }
+
+    public void setSoLuongHopDong(BigDecimal soLuongHopDong) {
+        this.soLuongHopDong = soLuongHopDong;
+    }
+
+    public String getApDungMucLuongCoDinh() {
+        return apDungMucLuongCoDinh;
+    }
+
+    public void setApDungMucLuongCoDinh(String apDungMucLuongCoDinh) {
+        this.apDungMucLuongCoDinh = apDungMucLuongCoDinh;
     }
 
     @Override

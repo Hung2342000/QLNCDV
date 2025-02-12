@@ -30,6 +30,8 @@ export interface ISalaryDetail {
   tenDonVi?: string | null;
   dichVu?: string | null;
   heSoChucVu?: string | null;
+  soLuongHopDong?: number | null;
+  apDungMucLuongCoDinh?: string | null;
 }
 
 export class SalaryDetail implements ISalaryDetail {
@@ -64,7 +66,9 @@ export class SalaryDetail implements ISalaryDetail {
     public nhom?: string | null,
     public tenDonVi?: string | null,
     public dichVu?: string | null,
-    public heSoChucVu?: string | null
+    public heSoChucVu?: string | null,
+    public soLuongHopDong?: number | null,
+    public apDungMucLuongCoDinh?: string | null
   ) {}
 }
 

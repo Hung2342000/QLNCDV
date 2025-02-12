@@ -27,9 +27,12 @@ export class SalaryUpdateComponent implements OnInit {
   salaryDetails?: ISalaryDetail[] | any;
   salaryDetailsAm?: ISalaryDetail[] | any;
   salaryDetailsGDV?: ISalaryDetail[] | any;
+  salaryDetailsKAM?: ISalaryDetail[] | any;
   salaryDetailsHTVP?: ISalaryDetail[] | any;
   salaryDetailsImportCheckGDV?: ISalaryDetail[] | any;
   salaryDetailsImportCheckAM?: ISalaryDetail[] | any;
+  salaryDetailsImportCheckKAM?: ISalaryDetail[] | any;
+  salaryDetailsImportCheckHTVP?: ISalaryDetail[] | any;
   salaryDetailsImport?: ISalaryDetail[] | any;
   isLoading = false;
   totalItems = 0;
@@ -66,9 +69,14 @@ export class SalaryUpdateComponent implements OnInit {
     detailsGDV: new FormArray([new FormControl()]),
   });
 
+  formKAM: FormGroup = new FormGroup({
+    detailsKAM: new FormArray([new FormControl()]),
+  });
+
   private updatedData: any;
   private updatedDataAm: any;
   private updatedDataGDV: any;
+  private updatedDataKAM: any;
   private mergedData: any;
 
   constructor(
@@ -181,6 +189,34 @@ export class SalaryUpdateComponent implements OnInit {
       dichVu: [itemGDV.dichVu],
     });
   }
+  createRowFormKAM(itemKAM: any): FormGroup {
+    return this.fb.group({
+      id: [itemKAM.id],
+      salaryId: [itemKAM.salaryId],
+      employeeId: [itemKAM.employeeId],
+      diaBan: [itemKAM.diaBan],
+      vung: [itemKAM.vung],
+      chucDanh: [itemKAM.chucDanh],
+      heSoChucVu: [itemKAM.heSoChucVu],
+      soLuongHopDong: [itemKAM.soLuongHopDong],
+      donGiaDichVu: [itemKAM.donGiaDichVu],
+      mucChiToiThieu: [itemKAM.mucChiToiThieu],
+      htc: [itemKAM.htc],
+      numberWorking: [itemKAM.numberWorking],
+      numberWorkInMonth: [itemKAM.numberWorkInMonth],
+      phiCoDinhDaThucHien: [itemKAM.phiCoDinhDaThucHien],
+      luongCoDinhThucTe: [itemKAM.luongCoDinhThucTe],
+      chiPhiGiamTru: [itemKAM.chiPhiGiamTru],
+      phiCoDinhThanhToanThucTe: [itemKAM.phiCoDinhThanhToanThucTe],
+      chiPhiDichVuKhoanVaKK: [itemKAM.chiPhiDichVuKhoanVaKK],
+      chiPhiThueDichVu: [itemKAM.chiPhiThueDichVu],
+      nhom: [itemKAM.nhom],
+      note: [itemKAM.note],
+      tenDonVi: [itemKAM.tenDonVi],
+      dichVu: [itemKAM.dichVu],
+      apDungMucLuongCoDinh: [itemKAM.apDungMucLuongCoDinh],
+    });
+  }
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ salary }) => {
       this.updateForm(salary);
@@ -192,6 +228,7 @@ export class SalaryUpdateComponent implements OnInit {
         this.salaryDetailsHTVP = this.salaryDetails.filter((item: ISalaryDetail) => item.nhom === 'HTVP');
         this.salaryDetailsAm = this.salaryDetails.filter((item: ISalaryDetail) => item.nhom === 'AM');
         this.salaryDetailsGDV = this.salaryDetails.filter((item: ISalaryDetail) => item.nhom === 'GDV');
+        this.salaryDetailsKAM = this.salaryDetails.filter((item: ISalaryDetail) => item.nhom === 'KAM');
         this.form = this.fb.group({
           details: this.fb.array(this.salaryDetailsHTVP.map((item: ISalaryDetail) => this.createRowForm(item))),
         });
@@ -200,6 +237,9 @@ export class SalaryUpdateComponent implements OnInit {
         });
         this.formGDV = this.fb.group({
           detailsGDV: this.fb.array(this.salaryDetailsGDV.map((item: ISalaryDetail) => this.createRowFormGDV(item))),
+        });
+        this.formKAM = this.fb.group({
+          detailsKAM: this.fb.array(this.salaryDetailsKAM.map((item: ISalaryDetail) => this.createRowFormKAM(item))),
         });
       },
     });
@@ -215,8 +255,10 @@ export class SalaryUpdateComponent implements OnInit {
     this.updatedData = this.form.value.details;
     this.updatedDataAm = this.formAm.value.detailsAm;
     this.updatedDataGDV = this.formGDV.value.detailsGDV;
+    this.updatedDataKAM = this.formKAM.value.detailsKAM;
     this.mergedData = this.updatedData.concat(this.updatedDataAm);
     this.mergedData = this.mergedData.concat(this.updatedDataGDV);
+    this.mergedData = this.mergedData.concat(this.updatedDataKAM);
     if (this.mergedData.length > 0) {
       this.salaryService.createAllDetail(this.mergedData).subscribe(
         data => {
@@ -271,6 +313,12 @@ export class SalaryUpdateComponent implements OnInit {
       }
       if (wsname === 'AM') {
         this.salaryDetailsImportCheckAM = XLSX.utils.sheet_to_json(ws, { header: 1 });
+      }
+      if (wsname === 'KAM') {
+        this.salaryDetailsImportCheckKAM = XLSX.utils.sheet_to_json(ws, { header: 1 });
+      }
+      if (wsname === 'HTVP') {
+        this.salaryDetailsImportCheckHTVP = XLSX.utils.sheet_to_json(ws, { header: 1 });
       }
     };
     reader.readAsBinaryString(target.files[0]);
@@ -346,23 +394,82 @@ export class SalaryUpdateComponent implements OnInit {
           }
         }
       }
-    }
-    if (this.salaryDetailsImport.length > 0) {
-      this.salaryService.createAllDetailImport(this.salaryDetailsImport).subscribe(
-        data => {
-          this.toastSalary.showToast('Thành công');
-          this.closeModal();
-          this.reload();
-          setTimeout(() => {
-            this.isEdit = false;
-          }, 500);
-        },
-        error => {
-          alert('có lỗi sảy ra');
+      if (this.salaryDetailsImportCheckKAM && this.salaryDetailsImportCheckKAM.length > 0) {
+        for (let i = 0; i < this.salaryDetailsImportCheckKAM.length; i++) {
+          const resultObject: ISalaryDetail = {};
+          if (
+            this.salaryDetailsImportCheckKAM[i].length === 20 &&
+            this.salaryDetailsImportCheckKAM[i][0] !== 'STT' &&
+            this.salaryDetailsImportCheckKAM[i][0] !== '(1)' &&
+            this.salaryDetailsImportCheckKAM[i][0] !== -1 &&
+            this.salaryDetailsImportCheckKAM[i][0] !== 'Tổng cộng'
+          ) {
+            resultObject.employeeCode = this.salaryDetailsImportCheckKAM[i][1];
+            resultObject.salaryId = this.salary.id;
+            resultObject.chucDanh = this.salaryDetailsImportCheckKAM[i][3];
+            resultObject.diaBan = this.salaryDetailsImportCheckKAM[i][4];
+            resultObject.soLuongHopDong = this.salaryDetailsImportCheckKAM[i][5];
+            resultObject.apDungMucLuongCoDinh = this.salaryDetailsImportCheckKAM[i][6];
+            resultObject.vung = this.salaryDetailsImportCheckKAM[i][7];
+            resultObject.mucChiToiThieu = Number(this.salaryDetailsImportCheckKAM[i][8]);
+            resultObject.heSoChucVu = this.salaryDetailsImportCheckKAM[i][9];
+            resultObject.htc = this.salaryDetailsImportCheckKAM[i][10];
+            resultObject.luongCoDinhThucTe = Number(this.salaryDetailsImportCheckKAM[i][11]);
+            resultObject.donGiaDichVu = Number(this.salaryDetailsImportCheckKAM[i][12]);
+            resultObject.numberWorkInMonth = Number(this.salaryDetailsImportCheckKAM[i][13]);
+            resultObject.numberWorking = Number(this.salaryDetailsImportCheckKAM[i][14]);
+            resultObject.phiCoDinhDaThucHien = Number(this.salaryDetailsImportCheckKAM[i][15]);
+            resultObject.chiPhiGiamTru = Number(this.salaryDetailsImportCheckKAM[i][16]);
+            resultObject.phiCoDinhThanhToanThucTe = Number(this.salaryDetailsImportCheckKAM[i][17]);
+            resultObject.chiPhiDichVuKhoanVaKK = Number(this.salaryDetailsImportCheckKAM[i][18]);
+            resultObject.chiPhiThueDichVu = Number(this.salaryDetailsImportCheckKAM[i][19]);
+            this.salaryDetailsImport.push(resultObject);
+          }
         }
-      );
-    } else {
-      alert('Dữ liệu không hợp lệ');
+      }
+      if (this.salaryDetailsImportCheckHTVP && this.salaryDetailsImportCheckHTVP.length > 0) {
+        for (let i = 0; i < this.salaryDetailsImportCheckHTVP.length; i++) {
+          const resultObject: ISalaryDetail = {};
+          if (
+            this.salaryDetailsImportCheckHTVP[i].length === 15 &&
+            this.salaryDetailsImportCheckHTVP[i][0] !== 'STT' &&
+            this.salaryDetailsImportCheckHTVP[i][0] !== 'Tổng cộng'
+          ) {
+            resultObject.employeeCode = this.salaryDetailsImportCheckHTVP[i][1];
+            resultObject.salaryId = this.salary.id;
+            resultObject.diemCungCapDV = this.salaryDetailsImportCheckHTVP[i][3];
+            resultObject.chucDanh = this.salaryDetailsImportCheckHTVP[i][4];
+            resultObject.vung = this.salaryDetailsImportCheckHTVP[i][5];
+            resultObject.donGiaDichVu = Number(this.salaryDetailsImportCheckHTVP[i][6]);
+            resultObject.numberWorkInMonth = Number(this.salaryDetailsImportCheckHTVP[i][7]);
+            resultObject.numberWorking = Number(this.salaryDetailsImportCheckHTVP[i][8]);
+            resultObject.donGiaDichVuThucNhan = Number(this.salaryDetailsImportCheckHTVP[i][9]);
+            resultObject.mucChiToiThieu = Number(this.salaryDetailsImportCheckHTVP[i][10]);
+            resultObject.xepLoai = this.salaryDetailsImportCheckHTVP[i][11];
+            resultObject.htc = this.salaryDetailsImportCheckHTVP[i][12];
+            resultObject.chiPhiGiamTru = Number(this.salaryDetailsImportCheckHTVP[i][13]);
+            resultObject.chiPhiThueDichVu = Number(this.salaryDetailsImportCheckHTVP[i][14]);
+            this.salaryDetailsImport.push(resultObject);
+          }
+        }
+      }
+      if (this.salaryDetailsImport.length > 0) {
+        this.salaryService.createAllDetailImport(this.salaryDetailsImport).subscribe(
+          data => {
+            this.toastSalary.showToast('Thành công');
+            this.closeModal();
+            this.reload();
+            setTimeout(() => {
+              this.isEdit = false;
+            }, 500);
+          },
+          error => {
+            alert('có lỗi sảy ra');
+          }
+        );
+      } else {
+        alert('Dữ liệu không hợp lệ');
+      }
     }
   }
   reload(): void {
@@ -372,6 +479,7 @@ export class SalaryUpdateComponent implements OnInit {
         this.salaryDetailsHTVP = this.salaryDetails.filter((item: ISalaryDetail) => item.nhom === 'HTVP');
         this.salaryDetailsAm = this.salaryDetails.filter((item: ISalaryDetail) => item.nhom === 'AM');
         this.salaryDetailsGDV = this.salaryDetails.filter((item: ISalaryDetail) => item.nhom === 'GDV');
+        this.salaryDetailsKAM = this.salaryDetails.filter((item: ISalaryDetail) => item.nhom === 'KAM');
         this.form = this.fb.group({
           details: this.fb.array(this.salaryDetailsHTVP.map((item: ISalaryDetail) => this.createRowForm(item))),
         });
@@ -380,6 +488,9 @@ export class SalaryUpdateComponent implements OnInit {
         });
         this.formGDV = this.fb.group({
           detailsGDV: this.fb.array(this.salaryDetailsGDV.map((item: ISalaryDetail) => this.createRowFormGDV(item))),
+        });
+        this.formKAM = this.fb.group({
+          detailsKAM: this.fb.array(this.salaryDetailsKAM.map((item: ISalaryDetail) => this.createRowFormKAM(item))),
         });
       },
     });
@@ -420,6 +531,9 @@ export class SalaryUpdateComponent implements OnInit {
   trackIdGDV(_index: number, item: ISalaryDetail): number {
     return item.id!;
   }
+  trackIdKAM(_index: number, item: ISalaryDetail): number {
+    return item.id!;
+  }
   save(): void {
     this.isSaving = true;
     const salary = this.createFrom();
@@ -451,6 +565,9 @@ export class SalaryUpdateComponent implements OnInit {
   }
   get detailsGDV(): FormArray {
     return this.formGDV.get('detailsGDV') as FormArray;
+  }
+  get detailsKAM(): FormArray {
+    return this.formKAM.get('detailsKAM') as FormArray;
   }
   get details(): FormArray {
     return this.form.get('details') as FormArray;
