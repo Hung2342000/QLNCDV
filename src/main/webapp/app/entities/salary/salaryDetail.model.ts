@@ -32,6 +32,8 @@ export interface ISalaryDetail {
   heSoChucVu?: string | null;
   soLuongHopDong?: number | null;
   apDungMucLuongCoDinh?: string | null;
+  mucChiPhiCoDinhThucTe?: number | null;
+  chiPhiBoSungCPTTV?: number | null;
 }
 
 export class SalaryDetail implements ISalaryDetail {
@@ -68,7 +70,9 @@ export class SalaryDetail implements ISalaryDetail {
     public dichVu?: string | null,
     public heSoChucVu?: string | null,
     public soLuongHopDong?: number | null,
-    public apDungMucLuongCoDinh?: string | null
+    public apDungMucLuongCoDinh?: string | null,
+    public mucChiPhiCoDinhThucTe?: number | null,
+    public chiPhiBoSungCPTTV?: number | null
   ) {}
 }
 

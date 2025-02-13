@@ -26,6 +26,7 @@ export class SalaryUpdateComponent implements OnInit {
   salary?: ISalary | any;
   salaryDetails?: ISalaryDetail[] | any;
   salaryDetailsAm?: ISalaryDetail[] | any;
+  salaryDetailsNVBH?: ISalaryDetail[] | any;
   salaryDetailsGDV?: ISalaryDetail[] | any;
   salaryDetailsKAM?: ISalaryDetail[] | any;
   salaryDetailsHTVP?: ISalaryDetail[] | any;
@@ -33,6 +34,7 @@ export class SalaryUpdateComponent implements OnInit {
   salaryDetailsImportCheckAM?: ISalaryDetail[] | any;
   salaryDetailsImportCheckKAM?: ISalaryDetail[] | any;
   salaryDetailsImportCheckHTVP?: ISalaryDetail[] | any;
+  salaryDetailsImportCheckNVBH?: ISalaryDetail[] | any;
   salaryDetailsImport?: ISalaryDetail[] | any;
   isLoading = false;
   totalItems = 0;
@@ -73,10 +75,15 @@ export class SalaryUpdateComponent implements OnInit {
     detailsKAM: new FormArray([new FormControl()]),
   });
 
+  formNVBH: FormGroup = new FormGroup({
+    detailsNBVH: new FormArray([new FormControl()]),
+  });
+
   private updatedData: any;
   private updatedDataAm: any;
   private updatedDataGDV: any;
   private updatedDataKAM: any;
+  private updatedDataNVBH: any;
   private mergedData: any;
 
   constructor(
@@ -217,6 +224,31 @@ export class SalaryUpdateComponent implements OnInit {
       apDungMucLuongCoDinh: [itemKAM.apDungMucLuongCoDinh],
     });
   }
+  createRowFormNVBH(itemNVBH: any): FormGroup {
+    return this.fb.group({
+      id: [itemNVBH.id],
+      salaryId: [itemNVBH.salaryId],
+      employeeId: [itemNVBH.employeeId],
+      diaBan: [itemNVBH.diaBan],
+      vung: [itemNVBH.vung],
+      donGiaDichVu: [itemNVBH.donGiaDichVu],
+      mucChiToiThieu: [itemNVBH.mucChiToiThieu],
+      kpis: [itemNVBH.kpis],
+      htc: [itemNVBH.htc],
+      numberWorking: [itemNVBH.numberWorking],
+      numberWorkInMonth: [itemNVBH.numberWorkInMonth],
+      phiCoDinhThanhToanThucTe: [itemNVBH.phiCoDinhThanhToanThucTe],
+      mucChiPhiCoDinhThucTe: [itemNVBH.mucChiPhiCoDinhThucTe],
+      chiPhiDichVuKhoanVaKK: [itemNVBH.chiPhiDichVuKhoanVaKK],
+      chiPhiKKKhac: [itemNVBH.chiPhiKKKhac],
+      tongChiPhiKVKK: [itemNVBH.tongChiPhiKVKK],
+      chiPhiThueDichVu: [itemNVBH.chiPhiThueDichVu],
+      nhom: [itemNVBH.nhom],
+      chiPhiBoSungCPTTV: [itemNVBH.chiPhiBoSungCPTTV],
+      tenDonVi: [itemNVBH.tenDonVi],
+      dichVu: [itemNVBH.dichVu],
+    });
+  }
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ salary }) => {
       this.updateForm(salary);
@@ -229,6 +261,7 @@ export class SalaryUpdateComponent implements OnInit {
         this.salaryDetailsAm = this.salaryDetails.filter((item: ISalaryDetail) => item.nhom === 'AM');
         this.salaryDetailsGDV = this.salaryDetails.filter((item: ISalaryDetail) => item.nhom === 'GDV');
         this.salaryDetailsKAM = this.salaryDetails.filter((item: ISalaryDetail) => item.nhom === 'KAM');
+        this.salaryDetailsNVBH = this.salaryDetails.filter((item: ISalaryDetail) => item.nhom === 'NVBH');
         this.form = this.fb.group({
           details: this.fb.array(this.salaryDetailsHTVP.map((item: ISalaryDetail) => this.createRowForm(item))),
         });
@@ -240,6 +273,9 @@ export class SalaryUpdateComponent implements OnInit {
         });
         this.formKAM = this.fb.group({
           detailsKAM: this.fb.array(this.salaryDetailsKAM.map((item: ISalaryDetail) => this.createRowFormKAM(item))),
+        });
+        this.formNVBH = this.fb.group({
+          detailsNVBH: this.fb.array(this.salaryDetailsNVBH.map((item: ISalaryDetail) => this.createRowFormNVBH(item))),
         });
       },
     });
@@ -256,9 +292,11 @@ export class SalaryUpdateComponent implements OnInit {
     this.updatedDataAm = this.formAm.value.detailsAm;
     this.updatedDataGDV = this.formGDV.value.detailsGDV;
     this.updatedDataKAM = this.formKAM.value.detailsKAM;
+    this.updatedDataNVBH = this.formNVBH.value.detailsNVBH;
     this.mergedData = this.updatedData.concat(this.updatedDataAm);
     this.mergedData = this.mergedData.concat(this.updatedDataGDV);
     this.mergedData = this.mergedData.concat(this.updatedDataKAM);
+    this.mergedData = this.mergedData.concat(this.updatedDataNVBH);
     if (this.mergedData.length > 0) {
       this.salaryService.createAllDetail(this.mergedData).subscribe(
         data => {
@@ -319,6 +357,9 @@ export class SalaryUpdateComponent implements OnInit {
       }
       if (wsname === 'HTVP') {
         this.salaryDetailsImportCheckHTVP = XLSX.utils.sheet_to_json(ws, { header: 1 });
+      }
+      if (wsname === 'NVBH') {
+        this.salaryDetailsImportCheckNVBH = XLSX.utils.sheet_to_json(ws, { header: 1 });
       }
     };
     reader.readAsBinaryString(target.files[0]);
@@ -453,6 +494,37 @@ export class SalaryUpdateComponent implements OnInit {
           }
         }
       }
+      if (this.salaryDetailsImportCheckNVBH && this.salaryDetailsImportCheckNVBH.length > 0) {
+        for (let i = 0; i < this.salaryDetailsImportCheckNVBH.length; i++) {
+          const resultObject: ISalaryDetail = {};
+          if (
+            this.salaryDetailsImportCheckNVBH[i].length === 18 &&
+            this.salaryDetailsImportCheckNVBH[i][0] !== 'STT' &&
+            this.salaryDetailsImportCheckNVBH[i][0] !== '(1)' &&
+            this.salaryDetailsImportCheckNVBH[i][0] !== -1 &&
+            this.salaryDetailsImportCheckNVBH[i][0] !== 'Tổng cộng'
+          ) {
+            resultObject.employeeCode = this.salaryDetailsImportCheckNVBH[i][1];
+            resultObject.salaryId = this.salary.id;
+            resultObject.diaBan = this.salaryDetailsImportCheckNVBH[i][3];
+            resultObject.vung = this.salaryDetailsImportCheckNVBH[i][4];
+            resultObject.donGiaDichVu = Number(this.salaryDetailsImportCheckNVBH[i][5]);
+            resultObject.mucChiToiThieu = Number(this.salaryDetailsImportCheckNVBH[i][6]);
+            resultObject.kpis = this.salaryDetailsImportCheckNVBH[i][7];
+            resultObject.htc = this.salaryDetailsImportCheckNVBH[i][8];
+            resultObject.numberWorkInMonth = Number(this.salaryDetailsImportCheckNVBH[i][9]);
+            resultObject.numberWorking = Number(this.salaryDetailsImportCheckNVBH[i][10]);
+            resultObject.phiCoDinhThanhToanThucTe = Number(this.salaryDetailsImportCheckNVBH[i][11]);
+            resultObject.mucChiPhiCoDinhThucTe = Number(this.salaryDetailsImportCheckNVBH[i][12]);
+            resultObject.chiPhiDichVuKhoanVaKK = Number(this.salaryDetailsImportCheckNVBH[i][13]);
+            resultObject.chiPhiKKKhac = Number(this.salaryDetailsImportCheckNVBH[i][14]);
+            resultObject.tongChiPhiKVKK = Number(this.salaryDetailsImportCheckNVBH[i][15]);
+            resultObject.chiPhiBoSungCPTTV = Number(this.salaryDetailsImportCheckNVBH[i][16]);
+            resultObject.chiPhiThueDichVu = Number(this.salaryDetailsImportCheckNVBH[i][17]);
+            this.salaryDetailsImport.push(resultObject);
+          }
+        }
+      }
       if (this.salaryDetailsImport.length > 0) {
         this.salaryService.createAllDetailImport(this.salaryDetailsImport).subscribe(
           data => {
@@ -480,6 +552,7 @@ export class SalaryUpdateComponent implements OnInit {
         this.salaryDetailsAm = this.salaryDetails.filter((item: ISalaryDetail) => item.nhom === 'AM');
         this.salaryDetailsGDV = this.salaryDetails.filter((item: ISalaryDetail) => item.nhom === 'GDV');
         this.salaryDetailsKAM = this.salaryDetails.filter((item: ISalaryDetail) => item.nhom === 'KAM');
+        this.salaryDetailsNVBH = this.salaryDetails.filter((item: ISalaryDetail) => item.nhom === 'NVBH');
         this.form = this.fb.group({
           details: this.fb.array(this.salaryDetailsHTVP.map((item: ISalaryDetail) => this.createRowForm(item))),
         });
@@ -491,6 +564,9 @@ export class SalaryUpdateComponent implements OnInit {
         });
         this.formKAM = this.fb.group({
           detailsKAM: this.fb.array(this.salaryDetailsKAM.map((item: ISalaryDetail) => this.createRowFormKAM(item))),
+        });
+        this.formNVBH = this.fb.group({
+          detailsNVBH: this.fb.array(this.salaryDetailsNVBH.map((item: ISalaryDetail) => this.createRowFormNVBH(item))),
         });
       },
     });
@@ -534,6 +610,9 @@ export class SalaryUpdateComponent implements OnInit {
   trackIdKAM(_index: number, item: ISalaryDetail): number {
     return item.id!;
   }
+  trackIdNVBH(_index: number, item: ISalaryDetail): number {
+    return item.id!;
+  }
   save(): void {
     this.isSaving = true;
     const salary = this.createFrom();
@@ -574,6 +653,10 @@ export class SalaryUpdateComponent implements OnInit {
   }
   get detailsAm(): FormArray {
     return this.formAm.get('detailsAm') as FormArray;
+  }
+
+  get detailsNVBH(): FormArray {
+    return this.formNVBH.get('detailsNVBH') as FormArray;
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<ISalary>>): void {
