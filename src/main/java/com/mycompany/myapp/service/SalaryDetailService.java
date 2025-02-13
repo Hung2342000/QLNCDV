@@ -1470,6 +1470,10 @@ public class SalaryDetailService {
             for (SalaryDetail salaryDetail : salaryDetailsGDV) {
                 if (salaryDetail.getKpis() != null && salaryDetail.getKpis() != "" && Integer.parseInt(salaryDetail.getKpis()) >= 70) {
                     salaryDetail.setHtc("1");
+                } else if (
+                    salaryDetail.getKpis() != null && salaryDetail.getKpis() != "" && Integer.parseInt(salaryDetail.getKpis()) < 70
+                ) {
+                    salaryDetail.setHtc("0");
                 }
                 if (
                     salaryDetail.getNumberWorking() != null &&
@@ -1483,14 +1487,15 @@ public class SalaryDetailService {
                             .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
                             .multiply(salaryDetail.getDonGiaDichVu())
                             .setScale(0, RoundingMode.HALF_UP);
-                    luongCoDinhThucTe =
-                        salaryDetail
-                            .getNumberWorking()
-                            .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
-                            .multiply(new BigDecimal(salaryDetail.getHtc()))
-                            .multiply(salaryDetail.getMucChiToiThieu())
-                            .setScale(0, RoundingMode.HALF_UP);
-
+                    if (salaryDetail.getHtc() != null && salaryDetail.getHtc() != "") {
+                        luongCoDinhThucTe =
+                            salaryDetail
+                                .getNumberWorking()
+                                .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
+                                .multiply(new BigDecimal(salaryDetail.getHtc()))
+                                .multiply(salaryDetail.getMucChiToiThieu())
+                                .setScale(0, RoundingMode.HALF_UP);
+                    }
                     luongCoDinhThucTeBoSung =
                         salaryDetail
                             .getNumberWorking()
@@ -1708,7 +1713,9 @@ public class SalaryDetailService {
             for (SalaryDetail salaryDetail : salaryDetailsGDV) {
                 if (salaryDetail.getKpis() != null && salaryDetail.getKpis() != "" && Integer.parseInt(salaryDetail.getKpis()) >= 70) {
                     salaryDetail.setHtc("1");
-                } else {
+                } else if (
+                    salaryDetail.getKpis() != null && salaryDetail.getKpis() != "" && Integer.parseInt(salaryDetail.getKpis()) < 70
+                ) {
                     salaryDetail.setHtc("0");
                 }
 
@@ -1724,13 +1731,15 @@ public class SalaryDetailService {
                             .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
                             .multiply(salaryDetail.getDonGiaDichVu())
                             .setScale(0, RoundingMode.HALF_UP);
-                    luongCoDinhThucTe =
-                        salaryDetail
-                            .getNumberWorking()
-                            .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
-                            .multiply(new BigDecimal(salaryDetail.getHtc()))
-                            .multiply(salaryDetail.getMucChiToiThieu())
-                            .setScale(0, RoundingMode.HALF_UP);
+                    if (salaryDetail.getHtc() != null && salaryDetail.getHtc() != "") {
+                        luongCoDinhThucTe =
+                            salaryDetail
+                                .getNumberWorking()
+                                .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
+                                .multiply(new BigDecimal(salaryDetail.getHtc()))
+                                .multiply(salaryDetail.getMucChiToiThieu())
+                                .setScale(0, RoundingMode.HALF_UP);
+                    }
                     luongCoDinhThucTeBoSung =
                         salaryDetail
                             .getNumberWorking()
