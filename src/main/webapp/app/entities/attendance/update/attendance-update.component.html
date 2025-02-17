@@ -1,6 +1,54 @@
 <h4>
   <span style="color: rgba(0, 81, 255, 0.85)">Bảng chấm công tháng {{ attendance.month }} năm {{ attendance.year }}</span>
 </h4>
+<div class="row g-2">
+  <div class="col-md-2">
+    <input
+      (keyup.enter)="reLoad()"
+      [(ngModel)]="searchCode"
+      class="form-control"
+      style="height: 30px"
+      type="search"
+      placeholder="Mã nhân viên"
+      aria-label="Tìm kiếm"
+    />
+  </div>
+  <div class="col-md-2">
+    <input
+      (keyup.enter)="reLoad()"
+      [(ngModel)]="searchName"
+      class="form-control"
+      style="height: 30px"
+      type="search"
+      placeholder="Họ và tên"
+      aria-label="Tìm kiếm"
+    />
+  </div>
+  <div class="col-md-2">
+    <select class="form-select" [(ngModel)]="searchDepartment" (change)="reLoad()">
+      <option value=""></option>
+      <option [value]="'TTKDCNS'">TTKDCNS</option>
+      <option [value]="'Phòng Tổng Hợp'">Phòng Tổng Hợp</option>
+      <option [value]="'Phòng KDDVVT'">Phòng KDDVVT</option>
+      <option [value]="'Phòng CSKH'">Phòng CSKH</option>
+      <option [value]="'Phòng Kế toán'">Phòng Kế toán</option>
+      <option [value]="'MobiFone tỉnh Phú Thọ'">MobiFone tỉnh Phú Thọ</option>
+      <option [value]="'MobiFone tỉnh Vĩnh Phúc'">MobiFone tỉnh Vĩnh Phúc</option>
+      <option [value]="'MobiFone tỉnh Yên Bái'">MobiFone tỉnh Yên Bái</option>
+      <option [value]="'MobiFone tỉnh Lào Cai'">MobiFone tỉnh Lào Cai</option>
+      <option [value]="'MobiFone tỉnh Hòa Bình'">MobiFone tỉnh Hòa Bình</option>
+      <option [value]="'MobiFone tỉnh Sơn La'">MobiFone tỉnh Sơn La</option>
+      <option [value]="'MobiFone tỉnh Sơn La'">MobiFone tỉnh Sơn La</option>
+      <option [value]="'MobiFone tỉnh Điện Biên'">MobiFone tỉnh Điện Biên</option>
+      <option [value]="'MobiFone tỉnh Lai Châu'">MobiFone tỉnh Lai Châu</option>
+      <option [value]="'MobiFone tỉnh Hà Nam'">MobiFone tỉnh Hà Nam</option>
+      <option [value]="'MobiFone tỉnh Ninh Bình'">MobiFone tỉnh Ninh Bình</option>
+      <option [value]="'MobiFone tỉnh Nam Định'">MobiFone tỉnh Nam Định</option>
+      <option [value]="'MobiFone tỉnh Hà Giang'">MobiFone tỉnh Hà Giang</option>
+      <option [value]="'MobiFone tỉnh Tuyên Quang'">MobiFone tỉnh Tuyên Quang</option>
+    </select>
+  </div>
+</div>
 <div *ngIf="isEdit === false" class="d-flex justify-content-end">
   <button style="margin-top: 10px; margin-bottom: 20px; margin-right: 5px" (click)="exportToExcel()" class="btn btn-danger btn-sm">
     <span>Export</span>
@@ -13,28 +61,28 @@
     <span>Đóng</span>
   </button>
 </div>
-<form [formGroup]="form" (ngSubmit)="onSubmit()">
-  <div class="d-flex justify-content-end" *ngIf="isEdit == true">
-    <button style="margin-top: 10px; margin-right: 5px; margin-bottom: 20px" type="submit" class="btn btn-primary btn-sm">
-      <span>Lưu</span>
-    </button>
+<div></div>
+<div class="d-flex justify-content-end" *ngIf="isEdit == true">
+  <button style="margin-top: 10px; margin-right: 5px; margin-bottom: 20px" class="btn btn-primary btn-sm" (click)="onSubmit()">
+    <span>Lưu</span>
+  </button>
+  <button style="margin-top: 10px; margin-bottom: 20px" (click)="close()" class="btn btn-dark btn-sm">
+    <span>Đóng</span>
+  </button>
+</div>
 
-    <button style="margin-top: 10px; margin-bottom: 20px" (click)="close()" class="btn btn-dark btn-sm">
-      <span>Đóng</span>
-    </button>
-  </div>
-
+<form [formGroup]="form">
   <div style="max-height: 650px; width: 100%; overflow-x: auto; overflow-y: auto; white-space: nowrap">
     <table class="table lh-table-column--bytes table-bordered">
-      <thead style="background-color: #3b3e66; color: white">
+      <thead style="background-color: #3b3e66; color: white; position: sticky; top: 0; z-index: 1000">
         <tr>
           <th style="width: 50px; position: sticky; left: 0; z-index: 2; background: #3b3e66"><span>STT</span></th>
-          <th style="min-width: 140px !important; position: sticky; left: 45px; z-index: 2; background: #3b3e66">
+          <th style="width: 140px !important; background: #3b3e66">
             <span>Mã nhân viên</span>
           </th>
           <th style="min-width: 240px !important; position: sticky; left: 45px; z-index: 2; background: #3b3e66"><span>Nhân viên</span></th>
-          <th style="min-width: 140px !important; position: sticky; left: 45px; z-index: 2; background: #3b3e66"><span>Đơn vị</span></th>
-          <th style="min-width: 240px !important; position: sticky; left: 45px; z-index: 2; background: #3b3e66"><span>Loại hình</span></th>
+          <th style="min-width: 140px !important"><span>Đơn vị</span></th>
+          <th style="min-width: 240px !important"><span>Loại hình</span></th>
           <th style="min-width: 90px !important">Ngày 1</th>
           <th style="min-width: 90px !important">Ngày 2</th>
           <th style="min-width: 90px !important">Ngày 3</th>
@@ -74,26 +122,18 @@
         <tr *ngFor="let detail of details.value; let i = index" [formGroupName]="i">
           <td style="position: sticky; left: 0; z-index: 2; background: white">{{ i + 1 }}</td>
 
-          <td style="position: sticky; left: 45px; z-index: 2; background: white">
+          <td style="background: white">
             <span>{{ detail.employeeCode }}</span>
           </td>
 
           <td style="position: sticky; left: 45px; z-index: 2; background: white">
-            <select
-              style="border: none; font-weight: 600; pointer-events: none"
-              class="form-select"
-              formControlName="employeeId"
-              data-cy="employeeId"
-              name="employeeId"
-            >
-              <option *ngFor="let employee of employeeList" [value]="employee.id">{{ employee.name }}</option>
-            </select>
+            <span>{{ detail.employeeName }}</span>
           </td>
-          <td style="position: sticky; left: 45px; z-index: 2; background: white">
+          <td style="background: white">
             <span>{{ detail.department }}</span>
           </td>
 
-          <td style="position: sticky; left: 45px; z-index: 2; background: white">
+          <td style="background: white">
             <span>{{ detail.serviceTypeName }}</span>
           </td>
 

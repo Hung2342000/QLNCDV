@@ -319,6 +319,7 @@ public class SalaryDetailService {
         centeredBoldStyle.setBorderTop(BorderStyle.THIN);
         centeredBoldStyle.setBorderRight(BorderStyle.THIN);
         centeredBoldStyle.setBorderLeft(BorderStyle.THIN);
+
         Salary salary = this.salaryRepository.findById(salaryId).get();
         if (salaryDetailListHTVP != null && salaryDetailListHTVP.size() > 0) {
             Sheet sheetHtvp = workbook.createSheet("HTVP");
@@ -627,7 +628,7 @@ public class SalaryDetailService {
                 cell8.setCellStyle(detailStyle);
 
                 Cell cell9 = row.createCell(9);
-                cell9.setCellValue(rowData.getKpis() != null ? rowData.getKpis().toString() : "");
+                cell9.setCellValue(rowData.getKpis() != null ? rowData.getKpis() : "");
                 cell9.setCellStyle(detailStyle);
 
                 Cell cell10 = row.createCell(10);
@@ -1573,336 +1574,11 @@ public class SalaryDetailService {
             salaryDetailsNVBH =
                 salaryDetailList.stream().filter(salaryDetail -> salaryDetail.getNhom().equals("NVBH")).collect(Collectors.toList());
         }
-        if (salaryDetailsHTVP.size() > 0) {
-            for (SalaryDetail salaryDetail : salaryDetailsHTVP) {
-                BigDecimal chiPhiGiamTru = BigDecimal.ZERO;
-                BigDecimal donGia = BigDecimal.ZERO;
-                if (
-                    salaryDetail.getDonGiaDichVu() != null &&
-                    salaryDetail.getNumberWorking() != null &&
-                    salaryDetail.getNumberWorkInMonth() != null
-                ) {
-                    donGia =
-                        salaryDetail
-                            .getNumberWorking()
-                            .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
-                            .multiply(salaryDetail.getDonGiaDichVu())
-                            .setScale(0, RoundingMode.HALF_UP);
-                }
-                salaryDetail.setDonGiaDichVuThucNhan(donGia);
-                if (salaryDetail.getXepLoai() != null && salaryDetail.getXepLoai().equals("A")) {
-                    salaryDetail.setHtc("1");
-                } else if (salaryDetail.getXepLoai() != null && salaryDetail.getXepLoai().equals("B")) {
-                    salaryDetail.setHtc("0.9");
-                } else if (salaryDetail.getXepLoai() != null && salaryDetail.getXepLoai().equals("C")) {
-                    salaryDetail.setHtc("0.8");
-                }
-                if (
-                    salaryDetail.getMucChiToiThieu() != null &&
-                    salaryDetail.getNumberWorking() != null &&
-                    salaryDetail.getNumberWorkInMonth() != null &&
-                    salaryDetail.getHtc() != null &&
-                    !salaryDetail.getHtc().equals("")
-                ) {
-                    chiPhiGiamTru =
-                        salaryDetail
-                            .getNumberWorking()
-                            .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
-                            .multiply(salaryDetail.getMucChiToiThieu())
-                            .multiply(BigDecimal.ONE.subtract(new BigDecimal(salaryDetail.getHtc())))
-                            .setScale(0, RoundingMode.HALF_UP);
-                }
-                salaryDetail.setChiPhiGiamTru(chiPhiGiamTru);
-                salaryDetail.setChiPhiThueDichVu(salaryDetail.getDonGiaDichVuThucNhan().subtract(salaryDetail.getChiPhiGiamTru()));
-                salaryDetailRepository.save(salaryDetail);
-            }
-        }
-        if (salaryDetailsAm.size() > 0) {
-            BigDecimal phiCoDinhDaThucHien = BigDecimal.ZERO;
-            BigDecimal luongCoDinhThucTe = BigDecimal.ZERO;
-            for (SalaryDetail salaryDetail : salaryDetailsAm) {
-                if (
-                    salaryDetail.getNumberWorking() != null &&
-                    salaryDetail.getNumberWorkInMonth() != null &&
-                    salaryDetail.getDonGiaDichVu() != null &&
-                    salaryDetail.getMucChiToiThieu() != null
-                ) {
-                    phiCoDinhDaThucHien =
-                        salaryDetail
-                            .getNumberWorking()
-                            .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
-                            .multiply(salaryDetail.getDonGiaDichVu())
-                            .setScale(0, RoundingMode.HALF_UP);
-                    luongCoDinhThucTe =
-                        salaryDetail
-                            .getNumberWorking()
-                            .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
-                            .multiply(salaryDetail.getMucChiToiThieu())
-                            .setScale(0, RoundingMode.HALF_UP);
-                }
-
-                salaryDetail.setLuongCoDinhThucTe(luongCoDinhThucTe);
-                salaryDetail.setPhiCoDinhDaThucHien(phiCoDinhDaThucHien);
-
-                BigDecimal chiPhiGiamTru = BigDecimal.ZERO;
-
-                if (
-                    salaryDetail.getMucChiToiThieu() != null &&
-                    salaryDetail.getNumberWorking() != null &&
-                    salaryDetail.getNumberWorkInMonth() != null &&
-                    salaryDetail.getKpis() != null &&
-                    !salaryDetail.getKpis().equals("")
-                ) {
-                    chiPhiGiamTru =
-                        salaryDetail
-                            .getNumberWorking()
-                            .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
-                            .multiply(salaryDetail.getMucChiToiThieu())
-                            .multiply(BigDecimal.ONE.subtract(new BigDecimal(salaryDetail.getKpis())))
-                            .setScale(0, RoundingMode.HALF_UP);
-                }
-
-                salaryDetail.setChiPhiGiamTru(chiPhiGiamTru);
-                salaryDetail.setPhiCoDinhThanhToanThucTe(salaryDetail.getPhiCoDinhDaThucHien().subtract(chiPhiGiamTru));
-                BigDecimal tongChiPhiKVKK = BigDecimal.ZERO;
-                if (salaryDetail.getChiPhiDichVuKhoanVaKK() != null) {
-                    tongChiPhiKVKK = tongChiPhiKVKK.add(salaryDetail.getChiPhiDichVuKhoanVaKK());
-                }
-                if (salaryDetail.getChiPhiKKKhac() != null) {
-                    tongChiPhiKVKK = tongChiPhiKVKK.add(salaryDetail.getChiPhiKKKhac());
-                }
-                salaryDetail.setTongChiPhiKVKK(tongChiPhiKVKK);
-                BigDecimal phiDichVuThucTe = BigDecimal.ZERO;
-                if (salaryDetail.getPhiCoDinhThanhToanThucTe() != null) {
-                    phiDichVuThucTe = phiDichVuThucTe.add(salaryDetail.getPhiCoDinhThanhToanThucTe());
-                }
-                if (salaryDetail.getTongChiPhiKVKK() != null) {
-                    phiDichVuThucTe = phiDichVuThucTe.add(salaryDetail.getTongChiPhiKVKK());
-                }
-                salaryDetail.setChiPhiThueDichVu(phiDichVuThucTe);
-                salaryDetailRepository.save(salaryDetail);
-            }
-        }
-
-        if (salaryDetailsKAM.size() > 0) {
-            BigDecimal phiCoDinhDaThucHien = BigDecimal.ZERO;
-            BigDecimal luongCoDinh = BigDecimal.ZERO;
-            for (SalaryDetail salaryDetail : salaryDetailsKAM) {
-                if (
-                    salaryDetail.getNumberWorking() != null &&
-                    salaryDetail.getNumberWorkInMonth() != null &&
-                    salaryDetail.getDonGiaDichVu() != null &&
-                    salaryDetail.getMucChiToiThieu() != null
-                ) {
-                    phiCoDinhDaThucHien =
-                        salaryDetail
-                            .getNumberWorking()
-                            .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
-                            .multiply(salaryDetail.getDonGiaDichVu())
-                            .setScale(0, RoundingMode.HALF_UP);
-                    luongCoDinh =
-                        salaryDetail
-                            .getNumberWorking()
-                            .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
-                            .multiply(salaryDetail.getMucChiToiThieu())
-                            .multiply(new BigDecimal(salaryDetail.getHtc()))
-                            .setScale(0, RoundingMode.HALF_UP);
-                }
-
-                salaryDetail.setLuongCoDinhThucTe(luongCoDinh);
-                salaryDetail.setPhiCoDinhDaThucHien(phiCoDinhDaThucHien);
-
-                BigDecimal chiPhiGiamTru = BigDecimal.ZERO;
-
-                if (
-                    salaryDetail.getMucChiToiThieu() != null &&
-                    salaryDetail.getNumberWorking() != null &&
-                    salaryDetail.getNumberWorkInMonth() != null &&
-                    salaryDetail.getHtc() != null &&
-                    !salaryDetail.getHtc().equals("")
-                ) {
-                    chiPhiGiamTru =
-                        salaryDetail
-                            .getNumberWorking()
-                            .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
-                            .multiply(salaryDetail.getMucChiToiThieu())
-                            .multiply(BigDecimal.ONE.subtract(new BigDecimal(salaryDetail.getHtc())))
-                            .setScale(0, RoundingMode.HALF_UP);
-                }
-
-                salaryDetail.setChiPhiGiamTru(chiPhiGiamTru);
-                salaryDetail.setPhiCoDinhThanhToanThucTe(salaryDetail.getPhiCoDinhDaThucHien().subtract(chiPhiGiamTru));
-
-                BigDecimal phiDichVuThucTe = BigDecimal.ZERO;
-                if (salaryDetail.getPhiCoDinhThanhToanThucTe() != null) {
-                    phiDichVuThucTe = phiDichVuThucTe.add(salaryDetail.getPhiCoDinhThanhToanThucTe());
-                }
-                if (salaryDetail.getChiPhiDichVuKhoanVaKK() != null) {
-                    phiDichVuThucTe = phiDichVuThucTe.add(salaryDetail.getChiPhiDichVuKhoanVaKK());
-                }
-                salaryDetail.setChiPhiThueDichVu(phiDichVuThucTe);
-                salaryDetailRepository.save(salaryDetail);
-            }
-        }
-
-        if (salaryDetailsGDV.size() > 0) {
-            BigDecimal phiCoDinhDaThucHien = BigDecimal.ZERO;
-            BigDecimal luongCoDinhThucTe = BigDecimal.ZERO;
-            BigDecimal luongCoDinhThucTeBoSung = BigDecimal.ZERO;
-            for (SalaryDetail salaryDetail : salaryDetailsGDV) {
-                if (salaryDetail.getKpis() != null && salaryDetail.getKpis() != "" && Integer.parseInt(salaryDetail.getKpis()) >= 70) {
-                    salaryDetail.setHtc("1");
-                } else if (
-                    salaryDetail.getKpis() != null && salaryDetail.getKpis() != "" && Integer.parseInt(salaryDetail.getKpis()) < 70
-                ) {
-                    salaryDetail.setHtc("0");
-                }
-                if (
-                    salaryDetail.getNumberWorking() != null &&
-                    salaryDetail.getNumberWorkInMonth() != null &&
-                    salaryDetail.getDonGiaDichVu() != null &&
-                    salaryDetail.getMucChiToiThieu() != null
-                ) {
-                    phiCoDinhDaThucHien =
-                        salaryDetail
-                            .getNumberWorking()
-                            .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
-                            .multiply(salaryDetail.getDonGiaDichVu())
-                            .setScale(0, RoundingMode.HALF_UP);
-                    if (salaryDetail.getHtc() != null && salaryDetail.getHtc() != "") {
-                        luongCoDinhThucTe =
-                            salaryDetail
-                                .getNumberWorking()
-                                .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
-                                .multiply(new BigDecimal(salaryDetail.getHtc()))
-                                .multiply(salaryDetail.getMucChiToiThieu())
-                                .setScale(0, RoundingMode.HALF_UP);
-                    }
-                    luongCoDinhThucTeBoSung =
-                        salaryDetail
-                            .getNumberWorking()
-                            .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
-                            .multiply(salaryDetail.getMucChiToiThieu())
-                            .setScale(0, RoundingMode.HALF_UP);
-                }
-
-                salaryDetail.setLuongCoDinhThucTe(luongCoDinhThucTe);
-                salaryDetail.setPhiCoDinhDaThucHien(phiCoDinhDaThucHien);
-
-                BigDecimal chiPhiGiamTru = BigDecimal.ZERO;
-
-                if (
-                    salaryDetail.getMucChiToiThieu() != null &&
-                    salaryDetail.getNumberWorking() != null &&
-                    salaryDetail.getNumberWorkInMonth() != null &&
-                    salaryDetail.getHtc() != null &&
-                    !salaryDetail.getHtc().equals("")
-                ) {
-                    chiPhiGiamTru =
-                        salaryDetail
-                            .getNumberWorking()
-                            .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
-                            .multiply(salaryDetail.getMucChiToiThieu())
-                            .multiply(BigDecimal.ONE.subtract(new BigDecimal(salaryDetail.getHtc())))
-                            .setScale(0, RoundingMode.HALF_UP);
-                }
-
-                salaryDetail.setChiPhiGiamTru(chiPhiGiamTru);
-                salaryDetail.setPhiCoDinhThanhToanThucTe(salaryDetail.getPhiCoDinhDaThucHien().subtract(chiPhiGiamTru));
-                BigDecimal tongChiPhiKVKK = BigDecimal.ZERO;
-                if (salaryDetail.getChiPhiDichVuKhoanVaKK() != null) {
-                    tongChiPhiKVKK = tongChiPhiKVKK.add(salaryDetail.getChiPhiDichVuKhoanVaKK());
-                }
-                if (salaryDetail.getChiPhiKKKhac() != null) {
-                    tongChiPhiKVKK = tongChiPhiKVKK.add(salaryDetail.getChiPhiKKKhac());
-                }
-                salaryDetail.setTongChiPhiKVKK(tongChiPhiKVKK);
-
-                BigDecimal mucBSLuongToiThieuVung = BigDecimal.ZERO;
-                if (luongCoDinhThucTeBoSung != null) {
-                    mucBSLuongToiThieuVung = mucBSLuongToiThieuVung.add(luongCoDinhThucTeBoSung);
-                }
-                if (salaryDetail.getLuongCoDinhThucTe() != null) {
-                    mucBSLuongToiThieuVung = mucBSLuongToiThieuVung.subtract(salaryDetail.getLuongCoDinhThucTe());
-                }
-                if (salaryDetail.getTongChiPhiKVKK() != null) {
-                    mucBSLuongToiThieuVung = mucBSLuongToiThieuVung.subtract(salaryDetail.getTongChiPhiKVKK());
-                }
-                salaryDetail.setMucBSLuongToiThieuVung(mucBSLuongToiThieuVung);
-
-                BigDecimal phiDichVuThucTe = BigDecimal.ZERO;
-                if (salaryDetail.getPhiCoDinhThanhToanThucTe() != null) {
-                    phiDichVuThucTe = phiDichVuThucTe.add(salaryDetail.getPhiCoDinhThanhToanThucTe());
-                }
-                if (salaryDetail.getTongChiPhiKVKK() != null) {
-                    phiDichVuThucTe = phiDichVuThucTe.add(salaryDetail.getTongChiPhiKVKK());
-                }
-                if (salaryDetail.getMucBSLuongToiThieuVung() != null) {
-                    phiDichVuThucTe = phiDichVuThucTe.add(salaryDetail.getMucBSLuongToiThieuVung());
-                }
-                salaryDetail.setChiPhiThueDichVu(phiDichVuThucTe);
-                salaryDetailRepository.save(salaryDetail);
-            }
-        }
-
-        if (salaryDetailsNVBH.size() > 0) {
-            BigDecimal phiCoDinhThanhToanThucTe = BigDecimal.ZERO;
-            BigDecimal mucChiPhiCoDinhThucTe = BigDecimal.ZERO;
-            for (SalaryDetail salaryDetail : salaryDetailsNVBH) {
-                if (
-                    salaryDetail.getNumberWorking() != null &&
-                    salaryDetail.getNumberWorkInMonth() != null &&
-                    salaryDetail.getDonGiaDichVu() != null &&
-                    salaryDetail.getMucChiToiThieu() != null &&
-                    salaryDetail.getHtc() != null &&
-                    salaryDetail.getHtc() != ""
-                ) {
-                    phiCoDinhThanhToanThucTe =
-                        salaryDetail
-                            .getNumberWorking()
-                            .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
-                            .multiply(salaryDetail.getDonGiaDichVu())
-                            .multiply(new BigDecimal(salaryDetail.getHtc()))
-                            .setScale(0, RoundingMode.HALF_UP);
-                    mucChiPhiCoDinhThucTe =
-                        salaryDetail
-                            .getNumberWorking()
-                            .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
-                            .multiply(salaryDetail.getMucChiToiThieu())
-                            .multiply(new BigDecimal(salaryDetail.getHtc()))
-                            .setScale(0, RoundingMode.HALF_UP);
-                }
-
-                salaryDetail.setPhiCoDinhThanhToanThucTe(phiCoDinhThanhToanThucTe);
-                salaryDetail.setMucChiPhiCoDinhThucTe(mucChiPhiCoDinhThucTe);
-
-                BigDecimal tongChiPhiKVKK = BigDecimal.ZERO;
-                if (salaryDetail.getChiPhiDichVuKhoanVaKK() != null) {
-                    tongChiPhiKVKK = tongChiPhiKVKK.add(salaryDetail.getChiPhiDichVuKhoanVaKK());
-                }
-                if (salaryDetail.getChiPhiKKKhac() != null) {
-                    tongChiPhiKVKK = tongChiPhiKVKK.add(salaryDetail.getChiPhiKKKhac());
-                }
-                salaryDetail.setTongChiPhiKVKK(tongChiPhiKVKK);
-                BigDecimal chiPhiBoSung = BigDecimal.ZERO;
-                if (salaryDetail.getMucChiToiThieu() != null) {
-                    chiPhiBoSung = chiPhiBoSung.subtract(salaryDetail.getMucChiToiThieu()).add(mucChiPhiCoDinhThucTe).add(tongChiPhiKVKK);
-                }
-                if (chiPhiBoSung.compareTo(BigDecimal.ZERO) == 1) {
-                    salaryDetail.setChiPhiBoSungCPTTV(chiPhiBoSung);
-                }
-
-                BigDecimal phiDichVuThucTe = BigDecimal.ZERO;
-                if (salaryDetail.getPhiCoDinhThanhToanThucTe() != null) {
-                    phiDichVuThucTe = phiDichVuThucTe.add(salaryDetail.getPhiCoDinhThanhToanThucTe());
-                }
-                if (salaryDetail.getTongChiPhiKVKK() != null) {
-                    phiDichVuThucTe = phiDichVuThucTe.add(salaryDetail.getTongChiPhiKVKK());
-                }
-                salaryDetail.setChiPhiThueDichVu(phiDichVuThucTe);
-                salaryDetailRepository.save(salaryDetail);
-            }
-        }
+        htvpCreate(salaryDetailsHTVP);
+        gdvCreate(salaryDetailsGDV);
+        kamCreate(salaryDetailsKAM);
+        amCreate(salaryDetailsAm);
+        nvbhCreate(salaryDetailsNVBH);
     }
 
     public void createSalaryDetailAllImport(List<SalaryDetail> salaryDetailList) {
@@ -1938,31 +1614,161 @@ public class SalaryDetailService {
             salaryDetailsNVBH =
                 salaryDetailList.stream().filter(salaryDetail -> salaryDetail.getNhom().equals("NVBH")).collect(Collectors.toList());
         }
+        htvpCreate(salaryDetailsHTVP);
+        gdvCreate(salaryDetailsGDV);
+        kamCreate(salaryDetailsKAM);
+        amCreate(salaryDetailsAm);
+        nvbhCreate(salaryDetailsNVBH);
+    }
 
-        if (salaryDetailsHTVP.size() > 0) {
-            for (SalaryDetail salaryDetail : salaryDetailsHTVP) {
-                BigDecimal chiPhiGiamTru = BigDecimal.ZERO;
-                BigDecimal donGia = BigDecimal.ZERO;
+    public void nvbhCreate(List<SalaryDetail> salaryDetailList) {
+        if (salaryDetailList.size() > 0) {
+            BigDecimal phiCoDinhThanhToanThucTe = BigDecimal.ZERO;
+            BigDecimal mucChiPhiCoDinhThucTe = BigDecimal.ZERO;
+
+            for (SalaryDetail salaryDetail : salaryDetailList) {
+                if (salaryDetail.getKpis() != null && salaryDetail.getKpis() != "") {
+                    String kpi = salaryDetail.getKpis();
+                    if (kpi.contains("%")) {
+                        kpi = kpi.replace("%", "");
+                    }
+                    if (kpi.contains(",")) {
+                        kpi = kpi.replace(",", ".");
+                    }
+                    if (Double.parseDouble(kpi) >= 1) {
+                        salaryDetail.setHtc("1");
+                    } else if (Double.parseDouble(kpi) >= 0.85 && Double.parseDouble(kpi) < 1) {
+                        salaryDetail.setHtc("0.9");
+                    } else if (Double.parseDouble(kpi) >= 0.7 && Double.parseDouble(kpi) < 0.85) {
+                        salaryDetail.setHtc("0.75");
+                    } else if (Double.parseDouble(kpi) >= 0.5 && Double.parseDouble(kpi) < 0.7) {
+                        salaryDetail.setHtc("0.6");
+                    } else if (Double.parseDouble(kpi) < 0.5) {
+                        salaryDetail.setHtc("0.5");
+                    }
+                }
                 if (
-                    salaryDetail.getDonGiaDichVu() != null &&
                     salaryDetail.getNumberWorking() != null &&
-                    salaryDetail.getNumberWorkInMonth() != null
+                    salaryDetail.getNumberWorkInMonth() != null &&
+                    salaryDetail.getDonGiaDichVu() != null &&
+                    salaryDetail.getMucChiToiThieu() != null &&
+                    salaryDetail.getHtc() != null &&
+                    salaryDetail.getHtc() != ""
                 ) {
-                    donGia =
+                    phiCoDinhThanhToanThucTe =
+                        salaryDetail
+                            .getNumberWorking()
+                            .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
+                            .multiply(salaryDetail.getDonGiaDichVu())
+                            .multiply(new BigDecimal(salaryDetail.getHtc()))
+                            .setScale(0, RoundingMode.HALF_UP);
+                    mucChiPhiCoDinhThucTe =
+                        salaryDetail
+                            .getNumberWorking()
+                            .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
+                            .multiply(salaryDetail.getMucChiToiThieu())
+                            .multiply(new BigDecimal(salaryDetail.getHtc()))
+                            .setScale(0, RoundingMode.HALF_UP);
+                }
+
+                if (phiCoDinhThanhToanThucTe.compareTo(BigDecimal.ZERO) > 0) {
+                    salaryDetail.setPhiCoDinhThanhToanThucTe(phiCoDinhThanhToanThucTe);
+                }
+                if (mucChiPhiCoDinhThucTe.compareTo(BigDecimal.ZERO) > 0) {
+                    salaryDetail.setMucChiPhiCoDinhThucTe(mucChiPhiCoDinhThucTe);
+                }
+
+                BigDecimal tongChiPhiKVKK = BigDecimal.ZERO;
+                if (salaryDetail.getChiPhiDichVuKhoanVaKK() != null) {
+                    tongChiPhiKVKK = tongChiPhiKVKK.add(salaryDetail.getChiPhiDichVuKhoanVaKK());
+                }
+                if (salaryDetail.getChiPhiKKKhac() != null) {
+                    tongChiPhiKVKK = tongChiPhiKVKK.add(salaryDetail.getChiPhiKKKhac());
+                }
+                if (tongChiPhiKVKK.compareTo(BigDecimal.ZERO) > 0) {
+                    salaryDetail.setTongChiPhiKVKK(tongChiPhiKVKK);
+                }
+                BigDecimal chiPhiBoSung = BigDecimal.ZERO;
+                if (salaryDetail.getMucChiToiThieu() != null) {
+                    chiPhiBoSung = chiPhiBoSung.subtract(salaryDetail.getMucChiToiThieu()).add(mucChiPhiCoDinhThucTe).add(tongChiPhiKVKK);
+                }
+                if (chiPhiBoSung.compareTo(BigDecimal.ZERO) == 1) {
+                    salaryDetail.setChiPhiBoSungCPTTV(chiPhiBoSung);
+                }
+
+                BigDecimal phiDichVuThucTe = BigDecimal.ZERO;
+                if (salaryDetail.getPhiCoDinhThanhToanThucTe() != null) {
+                    phiDichVuThucTe = phiDichVuThucTe.add(salaryDetail.getPhiCoDinhThanhToanThucTe());
+                }
+                if (salaryDetail.getTongChiPhiKVKK() != null) {
+                    phiDichVuThucTe = phiDichVuThucTe.add(salaryDetail.getTongChiPhiKVKK());
+                }
+                if (phiDichVuThucTe.compareTo(BigDecimal.ZERO) > 0) {
+                    salaryDetail.setChiPhiThueDichVu(phiDichVuThucTe);
+                }
+                salaryDetailRepository.save(salaryDetail);
+            }
+        }
+    }
+
+    public void gdvCreate(List<SalaryDetail> salaryDetailList) {
+        if (salaryDetailList.size() > 0) {
+            BigDecimal phiCoDinhDaThucHien = BigDecimal.ZERO;
+            BigDecimal luongCoDinhThucTe = BigDecimal.ZERO;
+            BigDecimal luongCoDinhThucTeBoSung = BigDecimal.ZERO;
+            for (SalaryDetail salaryDetail : salaryDetailList) {
+                if (salaryDetail.getKpis() != null && salaryDetail.getKpis() != "") {
+                    String kpi = salaryDetail.getKpis();
+                    if (kpi.contains("%")) {
+                        kpi = kpi.replace("%", "");
+                    }
+                    if (kpi.contains(",")) {
+                        kpi = kpi.replace(",", ".");
+                    }
+                    if (Double.parseDouble(kpi) >= 0.7) {
+                        salaryDetail.setHtc("1");
+                    } else if (Double.parseDouble(kpi) < 0.7) {
+                        salaryDetail.setHtc("0");
+                    }
+                }
+
+                if (
+                    salaryDetail.getNumberWorking() != null &&
+                    salaryDetail.getNumberWorkInMonth() != null &&
+                    salaryDetail.getDonGiaDichVu() != null &&
+                    salaryDetail.getMucChiToiThieu() != null
+                ) {
+                    phiCoDinhDaThucHien =
                         salaryDetail
                             .getNumberWorking()
                             .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
                             .multiply(salaryDetail.getDonGiaDichVu())
                             .setScale(0, RoundingMode.HALF_UP);
+                    if (salaryDetail.getHtc() != null && salaryDetail.getHtc() != "") {
+                        luongCoDinhThucTe =
+                            salaryDetail
+                                .getNumberWorking()
+                                .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
+                                .multiply(new BigDecimal(salaryDetail.getHtc()))
+                                .multiply(salaryDetail.getMucChiToiThieu())
+                                .setScale(0, RoundingMode.HALF_UP);
+                    }
+                    luongCoDinhThucTeBoSung =
+                        salaryDetail
+                            .getNumberWorking()
+                            .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
+                            .multiply(salaryDetail.getMucChiToiThieu())
+                            .setScale(0, RoundingMode.HALF_UP);
                 }
-                salaryDetail.setDonGiaDichVuThucNhan(donGia);
-                if (salaryDetail.getXepLoai() != null && salaryDetail.getXepLoai().equals("A")) {
-                    salaryDetail.setHtc("1");
-                } else if (salaryDetail.getXepLoai() != null && salaryDetail.getXepLoai().equals("B")) {
-                    salaryDetail.setHtc("0.9");
-                } else if (salaryDetail.getXepLoai() != null && salaryDetail.getXepLoai().equals("C")) {
-                    salaryDetail.setHtc("0.8");
+                if (luongCoDinhThucTe.compareTo(BigDecimal.ZERO) == 1) {
+                    salaryDetail.setLuongCoDinhThucTe(luongCoDinhThucTe);
                 }
+                if (phiCoDinhDaThucHien.compareTo(BigDecimal.ZERO) == 1) {
+                    salaryDetail.setPhiCoDinhDaThucHien(phiCoDinhDaThucHien);
+                }
+
+                BigDecimal chiPhiGiamTru = BigDecimal.ZERO;
+
                 if (
                     salaryDetail.getMucChiToiThieu() != null &&
                     salaryDetail.getNumberWorking() != null &&
@@ -1978,15 +1784,120 @@ public class SalaryDetailService {
                             .multiply(BigDecimal.ONE.subtract(new BigDecimal(salaryDetail.getHtc())))
                             .setScale(0, RoundingMode.HALF_UP);
                 }
-                salaryDetail.setChiPhiGiamTru(chiPhiGiamTru);
-                salaryDetail.setChiPhiThueDichVu(salaryDetail.getDonGiaDichVuThucNhan().subtract(salaryDetail.getChiPhiGiamTru()));
+                if (chiPhiGiamTru.compareTo(BigDecimal.ZERO) == 1) {
+                    salaryDetail.setChiPhiGiamTru(chiPhiGiamTru);
+                }
+                salaryDetail.setPhiCoDinhThanhToanThucTe(salaryDetail.getPhiCoDinhDaThucHien().subtract(chiPhiGiamTru));
+                BigDecimal tongChiPhiKVKK = BigDecimal.ZERO;
+                if (salaryDetail.getChiPhiDichVuKhoanVaKK() != null) {
+                    tongChiPhiKVKK = tongChiPhiKVKK.add(salaryDetail.getChiPhiDichVuKhoanVaKK());
+                }
+                if (salaryDetail.getChiPhiKKKhac() != null) {
+                    tongChiPhiKVKK = tongChiPhiKVKK.add(salaryDetail.getChiPhiKKKhac());
+                }
+                if (tongChiPhiKVKK.compareTo(BigDecimal.ZERO) == 1) {
+                    salaryDetail.setTongChiPhiKVKK(tongChiPhiKVKK);
+                }
+                if (salaryDetail.getHtc() != null && salaryDetail.getHtc().equals("0")) {
+                    BigDecimal mucBSLuongToiThieuVung = BigDecimal.ZERO;
+                    if (luongCoDinhThucTeBoSung != null) {
+                        mucBSLuongToiThieuVung = mucBSLuongToiThieuVung.add(luongCoDinhThucTeBoSung);
+                    }
+                    if (salaryDetail.getLuongCoDinhThucTe() != null) {
+                        mucBSLuongToiThieuVung = mucBSLuongToiThieuVung.subtract(salaryDetail.getLuongCoDinhThucTe());
+                    }
+                    if (salaryDetail.getTongChiPhiKVKK() != null) {
+                        mucBSLuongToiThieuVung = mucBSLuongToiThieuVung.subtract(salaryDetail.getTongChiPhiKVKK());
+                    }
+                    salaryDetail.setMucBSLuongToiThieuVung(mucBSLuongToiThieuVung);
+                }
+
+                BigDecimal phiDichVuThucTe = BigDecimal.ZERO;
+                if (salaryDetail.getPhiCoDinhThanhToanThucTe() != null) {
+                    phiDichVuThucTe = phiDichVuThucTe.add(salaryDetail.getPhiCoDinhThanhToanThucTe());
+                }
+                if (salaryDetail.getTongChiPhiKVKK() != null) {
+                    phiDichVuThucTe = phiDichVuThucTe.add(salaryDetail.getTongChiPhiKVKK());
+                }
+                if (salaryDetail.getMucBSLuongToiThieuVung() != null) {
+                    phiDichVuThucTe = phiDichVuThucTe.add(salaryDetail.getMucBSLuongToiThieuVung());
+                }
+                if (phiDichVuThucTe.compareTo(BigDecimal.ZERO) == 1) {
+                    salaryDetail.setChiPhiThueDichVu(phiDichVuThucTe);
+                }
                 salaryDetailRepository.save(salaryDetail);
             }
         }
-        if (salaryDetailsAm.size() > 0) {
+    }
+
+    public void kamCreate(List<SalaryDetail> salaryDetailList) {
+        if (salaryDetailList.size() > 0) {
+            BigDecimal phiCoDinhDaThucHien = BigDecimal.ZERO;
+            BigDecimal luongCoDinh = BigDecimal.ZERO;
+            for (SalaryDetail salaryDetail : salaryDetailList) {
+                if (
+                    salaryDetail.getNumberWorking() != null &&
+                    salaryDetail.getNumberWorkInMonth() != null &&
+                    salaryDetail.getDonGiaDichVu() != null &&
+                    salaryDetail.getMucChiToiThieu() != null
+                ) {
+                    phiCoDinhDaThucHien =
+                        salaryDetail
+                            .getNumberWorking()
+                            .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
+                            .multiply(salaryDetail.getDonGiaDichVu())
+                            .setScale(0, RoundingMode.HALF_UP);
+                    luongCoDinh =
+                        salaryDetail
+                            .getNumberWorking()
+                            .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
+                            .multiply(salaryDetail.getMucChiToiThieu())
+                            .multiply(new BigDecimal(salaryDetail.getHtc()))
+                            .setScale(0, RoundingMode.HALF_UP);
+                }
+
+                salaryDetail.setLuongCoDinhThucTe(luongCoDinh);
+                salaryDetail.setPhiCoDinhDaThucHien(phiCoDinhDaThucHien);
+
+                BigDecimal chiPhiGiamTru = BigDecimal.ZERO;
+
+                if (
+                    salaryDetail.getMucChiToiThieu() != null &&
+                    salaryDetail.getNumberWorking() != null &&
+                    salaryDetail.getNumberWorkInMonth() != null &&
+                    salaryDetail.getHtc() != null &&
+                    !salaryDetail.getHtc().equals("")
+                ) {
+                    chiPhiGiamTru =
+                        salaryDetail
+                            .getNumberWorking()
+                            .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
+                            .multiply(salaryDetail.getMucChiToiThieu())
+                            .multiply(BigDecimal.ONE.subtract(new BigDecimal(salaryDetail.getHtc())))
+                            .setScale(0, RoundingMode.HALF_UP);
+                }
+
+                salaryDetail.setChiPhiGiamTru(chiPhiGiamTru);
+                salaryDetail.setPhiCoDinhThanhToanThucTe(salaryDetail.getPhiCoDinhDaThucHien().subtract(chiPhiGiamTru));
+
+                BigDecimal phiDichVuThucTe = BigDecimal.ZERO;
+                if (salaryDetail.getPhiCoDinhThanhToanThucTe() != null) {
+                    phiDichVuThucTe = phiDichVuThucTe.add(salaryDetail.getPhiCoDinhThanhToanThucTe());
+                }
+                if (salaryDetail.getChiPhiDichVuKhoanVaKK() != null) {
+                    phiDichVuThucTe = phiDichVuThucTe.add(salaryDetail.getChiPhiDichVuKhoanVaKK());
+                }
+                salaryDetail.setChiPhiThueDichVu(phiDichVuThucTe);
+                salaryDetailRepository.save(salaryDetail);
+            }
+        }
+    }
+
+    public void amCreate(List<SalaryDetail> salaryDetailList) {
+        if (salaryDetailList.size() > 0) {
             BigDecimal phiCoDinhDaThucHien = BigDecimal.ZERO;
             BigDecimal luongCoDinhThucTe = BigDecimal.ZERO;
-            for (SalaryDetail salaryDetail : salaryDetailsAm) {
+            for (SalaryDetail salaryDetail : salaryDetailList) {
                 if (
                     salaryDetail.getNumberWorking() != null &&
                     salaryDetail.getNumberWorkInMonth() != null &&
@@ -2049,53 +1960,33 @@ public class SalaryDetailService {
                 salaryDetailRepository.save(salaryDetail);
             }
         }
+    }
 
-        if (salaryDetailsGDV.size() > 0) {
-            BigDecimal phiCoDinhDaThucHien = BigDecimal.ZERO;
-            BigDecimal luongCoDinhThucTe = BigDecimal.ZERO;
-            BigDecimal luongCoDinhThucTeBoSung = BigDecimal.ZERO;
-            for (SalaryDetail salaryDetail : salaryDetailsGDV) {
-                if (salaryDetail.getKpis() != null && salaryDetail.getKpis() != "" && Integer.parseInt(salaryDetail.getKpis()) >= 70) {
+    public void htvpCreate(List<SalaryDetail> salaryDetailList) {
+        if (salaryDetailList.size() > 0) {
+            for (SalaryDetail salaryDetail : salaryDetailList) {
+                BigDecimal chiPhiGiamTru = BigDecimal.ZERO;
+                BigDecimal donGia = BigDecimal.ZERO;
+                if (
+                    salaryDetail.getDonGiaDichVu() != null &&
+                    salaryDetail.getNumberWorking() != null &&
+                    salaryDetail.getNumberWorkInMonth() != null
+                ) {
+                    donGia =
+                        salaryDetail
+                            .getNumberWorking()
+                            .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
+                            .multiply(salaryDetail.getDonGiaDichVu())
+                            .setScale(0, RoundingMode.HALF_UP);
+                }
+                salaryDetail.setDonGiaDichVuThucNhan(donGia);
+                if (salaryDetail.getXepLoai() != null && salaryDetail.getXepLoai().equals("A")) {
                     salaryDetail.setHtc("1");
-                } else if (
-                    salaryDetail.getKpis() != null && salaryDetail.getKpis() != "" && Integer.parseInt(salaryDetail.getKpis()) < 70
-                ) {
-                    salaryDetail.setHtc("0");
+                } else if (salaryDetail.getXepLoai() != null && salaryDetail.getXepLoai().equals("B")) {
+                    salaryDetail.setHtc("0.9");
+                } else if (salaryDetail.getXepLoai() != null && salaryDetail.getXepLoai().equals("C")) {
+                    salaryDetail.setHtc("0.8");
                 }
-
-                if (
-                    salaryDetail.getNumberWorking() != null &&
-                    salaryDetail.getNumberWorkInMonth() != null &&
-                    salaryDetail.getDonGiaDichVu() != null &&
-                    salaryDetail.getMucChiToiThieu() != null
-                ) {
-                    phiCoDinhDaThucHien =
-                        salaryDetail
-                            .getNumberWorking()
-                            .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
-                            .multiply(salaryDetail.getDonGiaDichVu())
-                            .setScale(0, RoundingMode.HALF_UP);
-                    if (salaryDetail.getHtc() != null && salaryDetail.getHtc() != "") {
-                        luongCoDinhThucTe =
-                            salaryDetail
-                                .getNumberWorking()
-                                .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
-                                .multiply(new BigDecimal(salaryDetail.getHtc()))
-                                .multiply(salaryDetail.getMucChiToiThieu())
-                                .setScale(0, RoundingMode.HALF_UP);
-                    }
-                    luongCoDinhThucTeBoSung =
-                        salaryDetail
-                            .getNumberWorking()
-                            .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
-                            .multiply(salaryDetail.getMucChiToiThieu())
-                            .setScale(0, RoundingMode.HALF_UP);
-                }
-
-                salaryDetail.setLuongCoDinhThucTe(luongCoDinhThucTe);
-                salaryDetail.setPhiCoDinhDaThucHien(phiCoDinhDaThucHien);
-
-                BigDecimal chiPhiGiamTru = BigDecimal.ZERO;
                 if (
                     salaryDetail.getMucChiToiThieu() != null &&
                     salaryDetail.getNumberWorking() != null &&
@@ -2111,160 +2002,8 @@ public class SalaryDetailService {
                             .multiply(BigDecimal.ONE.subtract(new BigDecimal(salaryDetail.getHtc())))
                             .setScale(0, RoundingMode.HALF_UP);
                 }
-
                 salaryDetail.setChiPhiGiamTru(chiPhiGiamTru);
-                salaryDetail.setPhiCoDinhThanhToanThucTe(salaryDetail.getPhiCoDinhDaThucHien().subtract(chiPhiGiamTru));
-                BigDecimal tongChiPhiKVKK = BigDecimal.ZERO;
-                if (salaryDetail.getChiPhiDichVuKhoanVaKK() != null) {
-                    tongChiPhiKVKK = tongChiPhiKVKK.add(salaryDetail.getChiPhiDichVuKhoanVaKK());
-                }
-                if (salaryDetail.getChiPhiKKKhac() != null) {
-                    tongChiPhiKVKK = tongChiPhiKVKK.add(salaryDetail.getChiPhiKKKhac());
-                }
-                salaryDetail.setTongChiPhiKVKK(tongChiPhiKVKK);
-
-                BigDecimal mucBSLuongToiThieuVung = BigDecimal.ZERO;
-                if (luongCoDinhThucTeBoSung != null) {
-                    mucBSLuongToiThieuVung = mucBSLuongToiThieuVung.add(luongCoDinhThucTeBoSung);
-                }
-                if (salaryDetail.getLuongCoDinhThucTe() != null) {
-                    mucBSLuongToiThieuVung = mucBSLuongToiThieuVung.subtract(salaryDetail.getLuongCoDinhThucTe());
-                }
-                if (salaryDetail.getTongChiPhiKVKK() != null) {
-                    mucBSLuongToiThieuVung = mucBSLuongToiThieuVung.subtract(salaryDetail.getTongChiPhiKVKK());
-                }
-                salaryDetail.setMucBSLuongToiThieuVung(mucBSLuongToiThieuVung);
-                BigDecimal phiDichVuThucTe = BigDecimal.ZERO;
-                if (salaryDetail.getPhiCoDinhThanhToanThucTe() != null) {
-                    phiDichVuThucTe = phiDichVuThucTe.add(salaryDetail.getPhiCoDinhThanhToanThucTe());
-                }
-                if (salaryDetail.getTongChiPhiKVKK() != null) {
-                    phiDichVuThucTe = phiDichVuThucTe.add(salaryDetail.getTongChiPhiKVKK());
-                }
-                if (salaryDetail.getMucBSLuongToiThieuVung() != null) {
-                    phiDichVuThucTe = phiDichVuThucTe.add(salaryDetail.getMucBSLuongToiThieuVung());
-                }
-                salaryDetail.setChiPhiThueDichVu(phiDichVuThucTe);
-                salaryDetailRepository.save(salaryDetail);
-            }
-        }
-
-        if (salaryDetailsKAM.size() > 0) {
-            BigDecimal phiCoDinhDaThucHien = BigDecimal.ZERO;
-            BigDecimal luongCoDinh = BigDecimal.ZERO;
-            for (SalaryDetail salaryDetail : salaryDetailsKAM) {
-                if (
-                    salaryDetail.getNumberWorking() != null &&
-                    salaryDetail.getNumberWorkInMonth() != null &&
-                    salaryDetail.getDonGiaDichVu() != null &&
-                    salaryDetail.getMucChiToiThieu() != null
-                ) {
-                    phiCoDinhDaThucHien =
-                        salaryDetail
-                            .getNumberWorking()
-                            .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
-                            .multiply(salaryDetail.getDonGiaDichVu())
-                            .setScale(0, RoundingMode.HALF_UP);
-                    luongCoDinh =
-                        salaryDetail
-                            .getNumberWorking()
-                            .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
-                            .multiply(salaryDetail.getMucChiToiThieu())
-                            .multiply(new BigDecimal(salaryDetail.getHtc()))
-                            .setScale(0, RoundingMode.HALF_UP);
-                }
-
-                salaryDetail.setLuongCoDinhThucTe(luongCoDinh);
-                salaryDetail.setPhiCoDinhDaThucHien(phiCoDinhDaThucHien);
-
-                BigDecimal chiPhiGiamTru = BigDecimal.ZERO;
-
-                if (
-                    salaryDetail.getMucChiToiThieu() != null &&
-                    salaryDetail.getNumberWorking() != null &&
-                    salaryDetail.getNumberWorkInMonth() != null &&
-                    salaryDetail.getHtc() != null &&
-                    !salaryDetail.getHtc().equals("")
-                ) {
-                    chiPhiGiamTru =
-                        salaryDetail
-                            .getNumberWorking()
-                            .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
-                            .multiply(salaryDetail.getMucChiToiThieu())
-                            .multiply(BigDecimal.ONE.subtract(new BigDecimal(salaryDetail.getHtc())))
-                            .setScale(0, RoundingMode.HALF_UP);
-                }
-
-                salaryDetail.setChiPhiGiamTru(chiPhiGiamTru);
-                salaryDetail.setPhiCoDinhThanhToanThucTe(salaryDetail.getPhiCoDinhDaThucHien().subtract(chiPhiGiamTru));
-
-                BigDecimal phiDichVuThucTe = BigDecimal.ZERO;
-                if (salaryDetail.getPhiCoDinhThanhToanThucTe() != null) {
-                    phiDichVuThucTe = phiDichVuThucTe.add(salaryDetail.getPhiCoDinhThanhToanThucTe());
-                }
-                if (salaryDetail.getChiPhiDichVuKhoanVaKK() != null) {
-                    phiDichVuThucTe = phiDichVuThucTe.add(salaryDetail.getChiPhiDichVuKhoanVaKK());
-                }
-                salaryDetail.setChiPhiThueDichVu(phiDichVuThucTe);
-                salaryDetailRepository.save(salaryDetail);
-            }
-        }
-
-        if (salaryDetailsNVBH.size() > 0) {
-            BigDecimal phiCoDinhThanhToanThucTe = BigDecimal.ZERO;
-            BigDecimal mucChiPhiCoDinhThucTe = BigDecimal.ZERO;
-            for (SalaryDetail salaryDetail : salaryDetailsNVBH) {
-                if (
-                    salaryDetail.getNumberWorking() != null &&
-                    salaryDetail.getNumberWorkInMonth() != null &&
-                    salaryDetail.getDonGiaDichVu() != null &&
-                    salaryDetail.getMucChiToiThieu() != null &&
-                    salaryDetail.getHtc() != null &&
-                    salaryDetail.getHtc() != ""
-                ) {
-                    phiCoDinhThanhToanThucTe =
-                        salaryDetail
-                            .getNumberWorking()
-                            .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
-                            .multiply(salaryDetail.getDonGiaDichVu())
-                            .multiply(new BigDecimal(salaryDetail.getHtc()))
-                            .setScale(0, RoundingMode.HALF_UP);
-                    mucChiPhiCoDinhThucTe =
-                        salaryDetail
-                            .getNumberWorking()
-                            .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
-                            .multiply(salaryDetail.getMucChiToiThieu())
-                            .multiply(new BigDecimal(salaryDetail.getHtc()))
-                            .setScale(0, RoundingMode.HALF_UP);
-                }
-
-                salaryDetail.setPhiCoDinhThanhToanThucTe(phiCoDinhThanhToanThucTe);
-                salaryDetail.setMucChiPhiCoDinhThucTe(mucChiPhiCoDinhThucTe);
-
-                BigDecimal tongChiPhiKVKK = BigDecimal.ZERO;
-                if (salaryDetail.getChiPhiDichVuKhoanVaKK() != null) {
-                    tongChiPhiKVKK = tongChiPhiKVKK.add(salaryDetail.getChiPhiDichVuKhoanVaKK());
-                }
-                if (salaryDetail.getChiPhiKKKhac() != null) {
-                    tongChiPhiKVKK = tongChiPhiKVKK.add(salaryDetail.getChiPhiKKKhac());
-                }
-                salaryDetail.setTongChiPhiKVKK(tongChiPhiKVKK);
-                BigDecimal chiPhiBoSung = BigDecimal.ZERO;
-                if (salaryDetail.getMucChiToiThieu() != null) {
-                    chiPhiBoSung = chiPhiBoSung.subtract(salaryDetail.getMucChiToiThieu()).add(mucChiPhiCoDinhThucTe).add(tongChiPhiKVKK);
-                }
-                if (chiPhiBoSung.compareTo(BigDecimal.ZERO) == 1) {
-                    salaryDetail.setChiPhiBoSungCPTTV(chiPhiBoSung);
-                }
-
-                BigDecimal phiDichVuThucTe = BigDecimal.ZERO;
-                if (salaryDetail.getPhiCoDinhThanhToanThucTe() != null) {
-                    phiDichVuThucTe = phiDichVuThucTe.add(salaryDetail.getPhiCoDinhThanhToanThucTe());
-                }
-                if (salaryDetail.getTongChiPhiKVKK() != null) {
-                    phiDichVuThucTe = phiDichVuThucTe.add(salaryDetail.getTongChiPhiKVKK());
-                }
-                salaryDetail.setChiPhiThueDichVu(phiDichVuThucTe);
+                salaryDetail.setChiPhiThueDichVu(salaryDetail.getDonGiaDichVuThucNhan().subtract(salaryDetail.getChiPhiGiamTru()));
                 salaryDetailRepository.save(salaryDetail);
             }
         }

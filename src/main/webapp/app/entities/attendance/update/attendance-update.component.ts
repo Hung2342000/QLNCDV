@@ -11,6 +11,7 @@ import { IEmployee } from '../../employee/employee.model';
 import { EmployeeService } from '../../employee/service/employee.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastComponent } from '../../../layouts/toast/toast.component';
+import { IDepartment } from '../../employee/department.model';
 
 @Component({
   selector: 'jhi-attendance-update',
@@ -30,6 +31,10 @@ export class AttendanceUpdateComponent implements OnInit {
   form!: FormGroup;
   checkMonth?: number;
   content?: string;
+  searchName?: string = '';
+  searchCode?: string = '';
+  searchDepartment?: string = '';
+  searchNhom?: string = '';
   private updatedData: any;
 
   constructor(
@@ -46,15 +51,20 @@ export class AttendanceUpdateComponent implements OnInit {
       this.attendance = attendance;
       this.checkMonth = this.getDaysInMonth(attendance.month, attendance.year);
     });
-
-    this.attendanceService.queryAll(this.attendance.id).subscribe({
-      next: (res: HttpResponse<IAttendanceDetail[]>) => {
-        this.attendanceDetails = res.body;
-        this.form = this.fb.group({
-          details: this.fb.array(this.attendanceDetails.map((item: IAttendanceDetail) => this.createRowForm(item))),
-        });
-      },
-    });
+    this.attendanceService
+      .queryAll(this.attendance.id, {
+        searchCode: this.searchCode,
+        searchName: this.searchName,
+        searchDepartment: this.searchDepartment,
+      })
+      .subscribe({
+        next: (res: HttpResponse<IAttendanceDetail[]>) => {
+          this.attendanceDetails = res.body;
+          this.form = this.fb.group({
+            details: this.fb.array(this.attendanceDetails.map((item: IAttendanceDetail) => this.createRowForm(item))),
+          });
+        },
+      });
 
     this.employeeService.queryAll().subscribe({
       next: (res: HttpResponse<IEmployee[]>) => {
@@ -114,6 +124,7 @@ export class AttendanceUpdateComponent implements OnInit {
       attendanceId: [item.attendanceId],
       employeeId: [item.employeeId],
       employeeCode: [item.employeeCode],
+      employeeName: [item.employeeName],
       serviceTypeName: [item.serviceTypeName],
       department: [item.department],
       day1: [item.day1],
@@ -178,14 +189,20 @@ export class AttendanceUpdateComponent implements OnInit {
     this.modalService.dismissAll();
   }
   reLoad(): void {
-    this.attendanceService.queryAll(this.attendance.id).subscribe({
-      next: (res: HttpResponse<IAttendanceDetail[]>) => {
-        this.attendanceDetails = res.body;
-        this.form = this.fb.group({
-          details: this.fb.array(this.attendanceDetails.map((item: IAttendanceDetail) => this.createRowForm(item))),
-        });
-      },
-    });
+    this.attendanceService
+      .queryAll(this.attendance.id, {
+        searchCode: this.searchCode,
+        searchName: this.searchName,
+        searchDepartment: this.searchDepartment,
+      })
+      .subscribe({
+        next: (res: HttpResponse<IAttendanceDetail[]>) => {
+          this.attendanceDetails = res.body;
+          this.form = this.fb.group({
+            details: this.fb.array(this.attendanceDetails.map((item: IAttendanceDetail) => this.createRowForm(item))),
+          });
+        },
+      });
   }
   closeModalDetail(): void {
     this.modalService.dismissAll();
@@ -213,22 +230,8 @@ export class AttendanceUpdateComponent implements OnInit {
     return day === 0 || day === 6; // Kiểm tra nếu là Chủ Nhật (0) hoặc Thứ 7 (6)
   }
 
-  // loadPage(): void {
-  //   this.attendanceService.queryAttendanceDetail(this.attendance.id).subscribe({
-  //     next: (res: HttpResponse<IAttendanceDetail[]>) => {
-  //       this.attendanceDetails = res.body;
-  //     },
-  //   });
-  // }
-
   get details(): FormArray {
     return this.form.get('details') as FormArray;
-  }
-  protected subscribeToSaveResponse(result: Observable<HttpResponse<IAttendance>>): void {
-    result.pipe(finalize(() => this.onSaveFinalize())).subscribe({
-      next: () => this.onSaveSuccess(),
-      error: () => this.onSaveError(),
-    });
   }
   protected subscribeToSaveResponseDetail(result: Observable<HttpResponse<IAttendanceDetail>>): void {
     result.pipe(finalize(() => this.onSaveFinalize())).subscribe({

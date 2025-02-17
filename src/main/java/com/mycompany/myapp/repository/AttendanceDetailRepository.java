@@ -18,6 +18,16 @@ public interface AttendanceDetailRepository extends JpaRepository<AttendanceDeta
     @Query("select a from AttendanceDetail a where a.attendanceId = :id")
     List<AttendanceDetail> selectAllByAttId(@Param("id") Long id);
 
+    @Query(
+        "select a from AttendanceDetail a where a.attendanceId = :id and LOWER(a.employeeCode) LIKE %:searchCode% AND LOWER(a.employeeName) LIKE %:searchName% and a.department LIKE %:searchDepartment%"
+    )
+    List<AttendanceDetail> selectAllByAttIdSearch(
+        @Param("id") Long id,
+        @Param("searchCode") String searchCode,
+        @Param("searchName") String searchName,
+        @Param("searchDepartment") String searchDepartment
+    );
+
     @Query("select a from AttendanceDetail a where a.attendanceId = :id and a.employeeId = :employeeId")
     AttendanceDetail selectAllByAttIdAndEm(@Param("id") Long id, @Param("employeeId") Long employeeId);
 

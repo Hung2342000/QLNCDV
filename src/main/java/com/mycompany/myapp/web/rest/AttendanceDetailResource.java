@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -100,27 +101,20 @@ public class AttendanceDetailResource {
     }
 
     @GetMapping("/attendanceDetail/all/{id}")
-    public ResponseEntity<List<AttendanceDetail>> getAllAttendanceDetailAll(@PathVariable Long id) {
-        List<AttendanceDetail> attendancDetailList = attendanceDetailRepository.selectAllByAttId(id);
+    public ResponseEntity<List<AttendanceDetail>> getAllAttendanceDetailAll(
+        @PathVariable Long id,
+        String searchCode,
+        String searchName,
+        String searchDepartment
+    ) {
+        List<AttendanceDetail> attendancDetailList = attendanceDetailRepository.selectAllByAttIdSearch(
+            id,
+            searchCode.toUpperCase(),
+            searchName.toLowerCase(),
+            searchDepartment.toUpperCase()
+        );
         return ResponseEntity.ok().body(attendancDetailList);
     }
-
-    //    @GetMapping("/attendanceDetail/{id}")
-    //    public ResponseEntity<AttendanceDetail> getAttendance(@PathVariable Long id) {
-    //        log.debug("REST request to get Attendance : {}", id);
-    //        Optional<AttendanceDetail> attendance = attendanceDetailRepository.findById(id);
-    //        return ResponseUtil.wrapOrNotFound(attendance);
-    //    }
-
-    //    @DeleteMapping("/attendanceDetail/{id}")
-    //    public ResponseEntity<Void> deleteAttendance(@PathVariable Long id) {
-    //        log.debug("REST request to delete Attendance : {}", id);
-    //        attendanceDetailService.delete(id);
-    //        return ResponseEntity
-    //            .noContent()
-    //            .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
-    //            .build();
-    //    }
 
     @PostMapping("/attendanceDetail/all")
     public void createAttendanceDetailAll(@Valid @RequestBody List<AttendanceDetail> attendanceDetail) throws URISyntaxException {

@@ -122,6 +122,9 @@ public class EmployeeService {
             if (serviceType.getNhom() != null) {
                 employee.setNhom(serviceType.getNhom());
             }
+            if (serviceType.getServiceName() != null) {
+                employee.setServiceTypeName(serviceType.getServiceName());
+            }
         }
         employeeRepository.save(employee);
         return employee;

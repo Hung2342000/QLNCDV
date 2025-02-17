@@ -375,12 +375,33 @@ public class SalaryService {
                     salaryDetail.setNumberWorkInMonth(BigDecimal.valueOf(numberWorking));
                 }
             }
+            salaryDetail.setHtc("1");
+            salaryDetail.setKpis("1");
 
             salaryDetail.setVung(employee.getRegion());
+
             salaryDetail.setChucDanh(serviceTypeName(employee.getServiceType()));
             salaryDetail.setDonGiaDichVu(employee.getBasicSalary());
             salaryDetail.setMucChiToiThieu(employee.getMucChiTraToiThieu());
             salaryDetail.setNhom(employee.getNhom());
+            BigDecimal phiCoDinhThanhToanThucTe = BigDecimal.ZERO;
+            if (
+                salaryDetail.getNumberWorking() != null &&
+                salaryDetail.getNumberWorkInMonth() != null &&
+                salaryDetail.getDonGiaDichVu() != null &&
+                salaryDetail.getMucChiToiThieu() != null &&
+                salaryDetail.getHtc() != null &&
+                salaryDetail.getHtc() != ""
+            ) {
+                phiCoDinhThanhToanThucTe =
+                    salaryDetail
+                        .getNumberWorking()
+                        .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
+                        .multiply(salaryDetail.getDonGiaDichVu())
+                        .multiply(new BigDecimal(salaryDetail.getHtc()))
+                        .setScale(0, RoundingMode.HALF_UP);
+            }
+            salaryDetail.setPhiCoDinhThanhToanThucTe(phiCoDinhThanhToanThucTe);
             salaryDetailListAM.add(salaryDetail);
         }
 

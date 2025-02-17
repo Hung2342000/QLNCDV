@@ -63,8 +63,8 @@ export class AttendanceService {
       .pipe(map((res: EntityArrayResponseType) => res));
   }
 
-  queryAll(id: number): Observable<EntityArrayResponseDetailType> {
-    return this.http.get<IAttendanceDetail[]>(`${this.resourceUrlDetail}/all/${id}`, { observe: 'response' });
+  queryAll(id: number, options?: any): Observable<EntityArrayResponseDetailType> {
+    return this.http.get<IAttendanceDetail[]>(`${this.resourceUrlDetail}/all/${id}`, { params: options, observe: 'response' });
   }
   queryAttendanceAll(): Observable<EntityArrayResponseType> {
     return this.http.get<IAttendance[]>(`${this.resourceUrl}/all`, { observe: 'response' });

@@ -82,6 +82,7 @@ public class AttendanceService {
             AttendanceDetail attendanceDetail = new AttendanceDetail();
             attendanceDetail.setAttendanceId(attendance.getId());
             attendanceDetail.setEmployeeId(employee.getId());
+            attendanceDetail.setEmployeeName(employee.getName());
             attendanceDetail.setServiceTypeName(employee.getServiceTypeName());
             attendanceDetail.setEmployeeCode(employee.getCodeEmployee());
             Department department = departmentRepository.findDepartmentByCode(employee.getDepartment());
