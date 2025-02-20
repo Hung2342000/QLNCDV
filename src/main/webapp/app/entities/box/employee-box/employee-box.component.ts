@@ -38,9 +38,6 @@ export class EmployeeBoxComponent implements OnInit {
     protected router: Router,
     protected modalService: NgbModal
   ) {}
-  isAllSelected(): boolean {
-    return this.employees.every((emp: IEmployee) => emp.selected) ? true : false; // Kiểm tra tất cả checkbox đã chọn chưa
-  }
   ngOnInit(): void {
     this.employeeService.queryDepartment().subscribe({
       next: (res: HttpResponse<IDepartment[]>) => {
@@ -55,7 +52,7 @@ export class EmployeeBoxComponent implements OnInit {
     const pageToLoad: number = page ?? this.page ?? 1;
 
     this.employeeService
-      .query({
+      .queryBox({
         page: pageToLoad - 1,
         size: this.itemsPerPage,
         sort: this.sort(),
@@ -80,7 +77,7 @@ export class EmployeeBoxComponent implements OnInit {
     this.isLoading = true;
 
     this.employeeService
-      .query({
+      .queryBox({
         page: 0,
         size: this.itemsPerPage,
         searchName: this.searchName,
@@ -115,10 +112,6 @@ export class EmployeeBoxComponent implements OnInit {
       }
     }
     return name;
-  }
-  toggleSelectAll(): void {
-    const allSelected = this.isAllSelected(); // Kiểm tra xem có tất cả checkbox đã được chọn không
-    this.employees.forEach((emp: IEmployee) => (emp.selected = !allSelected)); // Nếu đã chọn hết thì bỏ chọn, ngược lại thì chọn tất cả
   }
   trackId(_index: number, item: IEmployee): number {
     return item.id!;

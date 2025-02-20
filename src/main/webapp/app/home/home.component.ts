@@ -11,6 +11,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { EmployeeService } from '../entities/employee/service/employee.service';
 import { ICountEmployee } from '../entities/employee/count-employee.model';
 import { IDepartment } from '../entities/employee/department.model';
+import { ChartConfiguration, ChartType } from 'chart.js';
 
 @Component({
   selector: 'jhi-home',
@@ -22,48 +23,39 @@ export class HomeComponent implements OnInit, OnDestroy {
   account: Account | null = null;
   isSaving = false;
   countEmployee?: ICountEmployee[] | any;
-  count?: number | any;
-  departments?: IDepartment[] | any;
-  barChartData = [
-    {
-      data: [],
-      label: 'Nhân viên',
-      backgroundColor: '#2d3e4f',
-      borderColor: 'rgb(54,111,235)',
-      borderWidth: 1,
-      hoverBackgroundColor: 'rgb(54,111,235)',
-      hoverBorderColor: 'rgba(54,78,235,0.2)',
-    },
-  ];
+  count = 0;
+  countDLV = 0;
+  departments: string[] = [];
+  counts: number[] = [];
+  countsGroup: number[] = [];
+  groups: string[] = [];
+  lineChartData?: ChartConfiguration['data'];
+  lineChartDataByGroup?: ChartConfiguration['data'];
 
-  // Nhãn trục X
-  barChartLabels: string[] = [];
-
-  // Tùy chọn biểu đồ
-  barChartOptions = {
+  // Cấu hình chung
+  public lineChartOptions: ChartConfiguration['options'] = {
     responsive: true,
     plugins: {
-      legend: {
-        display: true,
-        position: 'none',
-      },
-    },
-    scales: {
-      x: {
-        beginAtZero: true,
-      },
-      y: {
-        beginAtZero: true,
-      },
+      legend: { display: false },
+      tooltip: { enabled: true },
     },
   };
+  public lineChartOptionsGroup: ChartConfiguration['options'] = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: true, position: 'right' },
+      tooltip: { enabled: true },
+    },
+  };
+
+  public lineChartType: ChartType = 'line';
 
   private readonly destroy$ = new Subject<void>();
   constructor(
     protected modalService: NgbModal,
     protected employeeService: EmployeeService,
     private accountService: AccountService,
-    private router: Router,
     protected fb: FormBuilder,
     protected activatedRoute: ActivatedRoute
   ) {}
@@ -74,14 +66,57 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.countEmployee = res.body;
         if (this.countEmployee && this.countEmployee.length > 0) {
           for (let i = 0; i < this.countEmployee.length; i++) {
-            if (this.countEmployee[i].department) {
-              this.count = this.countEmployee[i].countEmployee;
-            }
-            if (typeof this.countEmployee[i].code === 'string') {
-              this.barChartLabels.push(this.countEmployee[i].code);
+            if (this.countEmployee[i].countEmployee && this.countEmployee[i].countEmployee > 0) {
+              this.departments.push(this.countEmployee[i].code);
+              this.counts.push(this.countEmployee[i].countEmployee);
             }
           }
         }
+        this.lineChartData = {
+          datasets: [
+            {
+              data: this.counts,
+              label: 'Số nhân viên',
+              fill: true,
+              tension: 0.5,
+              borderColor: '#4251f5',
+              backgroundColor: '#010b3a',
+              hoverBackgroundColor: '#e51e42',
+            },
+          ],
+          labels: this.departments,
+        };
+      },
+    });
+    this.employeeService.queryCountEmployeeByGroup().subscribe({
+      next: (res: HttpResponse<ICountEmployee[]>) => {
+        this.countEmployee = res.body;
+        if (this.countEmployee && this.countEmployee.length > 0) {
+          for (let i = 0; i < this.countEmployee.length; i++) {
+            if (this.countEmployee[i].code && this.countEmployee[i].code !== 'Đang làm việc') {
+              this.groups.push(this.countEmployee[i].code);
+              this.countsGroup.push(this.countEmployee[i].countEmployee);
+            } else if (this.countEmployee[i].code && this.countEmployee[i].code === 'Đang làm việc') {
+              this.countDLV = this.countEmployee[i].countEmployee;
+            }
+            if (this.countEmployee[i].countEmployee && this.countEmployee[i].countEmployee > 0) {
+              this.count = this.count + Number(this.countEmployee[i].countEmployee);
+            }
+          }
+        }
+        this.lineChartDataByGroup = {
+          datasets: [
+            {
+              data: this.countsGroup,
+              label: 'Số nhân viên',
+              fill: true,
+              tension: 0.5,
+              borderColor: '#4251f5',
+              backgroundColor: ['#f5e642', '#42f59c', '#f54242', '#4251f5', '#4251f5'],
+            },
+          ],
+          labels: this.groups,
+        };
       },
     });
     this.accountService

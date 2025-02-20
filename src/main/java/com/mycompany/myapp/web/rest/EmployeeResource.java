@@ -206,6 +206,20 @@ public class EmployeeResource {
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
+    @GetMapping("/employees/box")
+    public ResponseEntity<List<Employee>> getAllEmployeesBox(
+        @org.springdoc.api.annotations.ParameterObject Pageable pageable,
+        String searchCode,
+        String searchName,
+        String searchDepartment,
+        String searchNhom
+    ) {
+        log.debug("REST request to get a page of Employees");
+        Page<Employee> page = employeeService.getAllEmployeesBox(pageable, searchCode, searchName, searchDepartment, searchNhom);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
     @GetMapping("/employees/all")
     public ResponseEntity<List<Employee>> getAllEmployees() {
         log.debug("REST request to get a page of Employees");
@@ -230,7 +244,7 @@ public class EmployeeResource {
      * {@code DELETE  /employees/:id} : delete the "id" employee.
      *
      * @param id the id of the employee to delete.
-     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
+    z * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/employees/{id}")
     public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
@@ -246,6 +260,13 @@ public class EmployeeResource {
     public ResponseEntity<List<CountEmployee>> getAllEmployeesCount() {
         log.debug("REST request to get a page of Employees");
         List<CountEmployee> employeeList = employeeService.getAllCountEmployee();
+        return ResponseEntity.ok().body(employeeList);
+    }
+
+    @GetMapping("/employees/count-group")
+    public ResponseEntity<List<CountEmployee>> getAllEmployeesCountGroup() {
+        log.debug("REST request to get a page of Employees");
+        List<CountEmployee> employeeList = employeeService.getAllCountEmployeeByNhom();
         return ResponseEntity.ok().body(employeeList);
     }
 

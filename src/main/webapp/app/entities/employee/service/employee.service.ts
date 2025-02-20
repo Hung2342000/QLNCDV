@@ -65,6 +65,9 @@ export class EmployeeService {
   queryCountEmployee(): Observable<EntityArrayResponseCountEmployeeType> {
     return this.http.get<ICountEmployee[]>(this.resourceUrl + '/count', { observe: 'response' });
   }
+  queryCountEmployeeByGroup(): Observable<EntityArrayResponseCountEmployeeType> {
+    return this.http.get<ICountEmployee[]>(this.resourceUrl + '/count-group', { observe: 'response' });
+  }
   find(id: number): Observable<EntityResponseType> {
     return this.http
       .get<IEmployee>(`${this.resourceUrl}/${id}`, { observe: 'response' })
@@ -75,6 +78,12 @@ export class EmployeeService {
     const options = createRequestOption(req);
     return this.http
       .get<IEmployee[]>(this.resourceUrl, { params: options, observe: 'response' })
+      .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
+  }
+  queryBox(req?: any): Observable<EntityArrayResponseType> {
+    const options = createRequestOption(req);
+    return this.http
+      .get<IEmployee[]>(this.resourceUrl + '/box', { params: options, observe: 'response' })
       .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
   }
 

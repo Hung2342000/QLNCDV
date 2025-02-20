@@ -20,4 +20,10 @@ public interface CountEmployeeRepository extends JpaRepository<CountEmployee, Lo
         "SELECT  new CountEmployee ( d.name, count(*)) FROM Employee e JOIN Department d on e.department = d.code group by d.code, d.name  ORDER BY count(d.code) desc "
     )
     List<CountEmployee> listAllCountEmployee();
+
+    @Query("SELECT  new CountEmployee ( e.nhom, count(*)) FROM Employee e  group by e.nhom ")
+    List<CountEmployee> listAllCountEmployeeByNhom();
+
+    @Query("SELECT  new CountEmployee ( e.nhom, count(*)) FROM Employee e where e.department = :department group by e.nhom  ")
+    List<CountEmployee> listAllCountEmployeeByNhomAnDDepartment(@Param("department") String department);
 }

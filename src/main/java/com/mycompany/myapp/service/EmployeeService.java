@@ -101,6 +101,57 @@ public class EmployeeService {
         return page;
     }
 
+    public Page<Employee> getAllEmployeesBox(
+        Pageable pageable,
+        String searchCode,
+        String searchName,
+        String searchDepartment,
+        String searchNhom
+    ) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username;
+        User user = new User();
+        Object principal = authentication.getPrincipal();
+        UserDetails userDetails = (UserDetails) principal;
+        username = userDetails.getUsername();
+        user = userRepository.findOneByLogin(username).get();
+        Page<Employee> page = new PageImpl<>(Collections.emptyList(), PageRequest.of(0, 10), 0);
+        if (
+            authentication != null &&
+            !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(USER).contains(authority)) &&
+            getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority))
+        ) {
+            if (searchNhom.equals("") || searchNhom == null) {
+                page =
+                    employeeRepository.listAllEmployeesNoNhomBox(
+                        searchCode.toLowerCase(),
+                        searchName.toLowerCase(),
+                        searchDepartment,
+                        pageable
+                    );
+            } else page =
+                employeeRepository.listAllEmployeesBox(
+                    searchCode.toLowerCase(),
+                    searchName.toLowerCase(),
+                    searchDepartment,
+                    searchNhom,
+                    pageable
+                );
+        } else if (
+            authentication != null && !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority))
+        ) {
+            page =
+                employeeRepository.listAllEmployeesDepartmentBox(
+                    searchCode.toLowerCase(),
+                    searchName.toLowerCase(),
+                    user.getDepartment(),
+                    searchNhom,
+                    pageable
+                );
+        }
+        return page;
+    }
+
     public Employee saveEmployee(Employee employee) {
         ServiceType serviceType = new ServiceType();
         if (employee.getServiceType() != null) {
@@ -184,6 +235,31 @@ public class EmployeeService {
         return employeeList;
     }
 
+    public List<CountEmployee> getAllCountEmployeeByNhom() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username;
+        User user = new User();
+        Object principal = authentication.getPrincipal();
+        UserDetails userDetails = (UserDetails) principal;
+        username = userDetails.getUsername();
+        user = userRepository.findOneByLogin(username).get();
+        Long countDLV;
+        List<CountEmployee> employeeList = new ArrayList<>();
+
+        if (authentication != null && getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority))) {
+            employeeList = countEmployeeRepository.listAllCountEmployeeByNhom();
+            countDLV = employeeRepository.countEmployeeDLV();
+        } else {
+            employeeList = countEmployeeRepository.listAllCountEmployeeByNhomAnDDepartment(user.getDepartment());
+            countDLV = employeeRepository.countEmployeeDLVDepartment(user.getDepartment());
+        }
+        CountEmployee employee = new CountEmployee();
+        employee.setCode("Đang làm việc");
+        employee.setCountEmployee(countDLV);
+        employeeList.add(employee);
+        return employeeList;
+    }
+
     public List<Employee> importEmployee(List<Employee> employeeList) {
         List<Employee> employees = new ArrayList<>();
         if (employeeList.size() > 0) {
@@ -227,6 +303,9 @@ public class EmployeeService {
                 } else {
                     // check null khi tim kiem
                     employee.setNhom(" ");
+                }
+                if (employee.getStatus() == null || employee.getStatus().equals("")) {
+                    employee.setStatus("Đang làm việc");
                 }
                 Employee employeeCheck = new Employee();
                 employeeCheck = employeeRepository.getByCode(employee.getCodeEmployee());

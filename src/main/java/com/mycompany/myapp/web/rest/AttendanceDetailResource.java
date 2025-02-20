@@ -109,7 +109,7 @@ public class AttendanceDetailResource {
     ) {
         List<AttendanceDetail> attendancDetailList = attendanceDetailRepository.selectAllByAttIdSearch(
             id,
-            searchCode.toUpperCase(),
+            searchCode.toLowerCase(),
             searchName.toLowerCase(),
             searchDepartment.toUpperCase()
         );

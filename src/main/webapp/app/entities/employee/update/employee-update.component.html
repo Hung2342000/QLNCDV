@@ -123,6 +123,41 @@
             <input type="text" class="form-control" name="address" id="field_address" data-cy="address" formControlName="address" />
           </div>
           <div class="row mb-3">
+            <label class="form-label" for="field_status">Trạng thái</label>
+            <select class="form-select" id="field_status" formControlName="status" data-cy="status" name="status">
+              <option [value]="'Đang làm việc'">Đang làm việc</option>
+              <option [value]="'Nghỉ thai sản'">Nghỉ thai sản</option>
+              <option [value]="'Nghỉ phép dài hạn'">Nghỉ phép dài hạn</option>
+            </select>
+          </div>
+          <!--          <div class="row mb-3">-->
+          <!--            <label class="form-label">Loại hình dịch vụ</label>-->
+          <!--            <ng-select-->
+          <!--              id="field_serviceType"-->
+          <!--              formControlName="serviceType"-->
+          <!--              data-cy="serviceType"-->
+          <!--              name="serviceType"-->
+          <!--              class="form-select custom-ng-select"-->
+          <!--              [items]="serviceTypesCustom"-->
+          <!--              bindLabel="serviceName"-->
+          <!--              bindValue="id"-->
+          <!--              [searchable]="true"-->
+          <!--            >-->
+          <!--              <ng-template ng-option-tmp let-item="item">-->
+          <!--                <div class="option-row">-->
+          <!--                  <div class="column">{{ item.serviceName }}</div>-->
+          <!--                  <div class="column">{{ item.region }}</div>-->
+          <!--                  <div class="column">{{ item.rank }}</div>-->
+          <!--                  <div class="column">{{ item.basicSalary }}</div>-->
+          <!--                </div>-->
+          <!--              </ng-template>-->
+          <!--            </ng-select>-->
+          <!--          </div>-->
+        </div>
+      </div>
+      <div class="row">
+        <div style="margin-left: 4%" class="col-md-7">
+          <div class="row mb-3">
             <label class="form-label">Loại hình dịch vụ</label>
             <ng-select
               id="field_serviceType"
@@ -145,35 +180,9 @@
               </ng-template>
             </ng-select>
           </div>
-          <!--          <div class="row mb-3">-->
-          <!--            <label class="form-label" for="field_region">Vùng</label>-->
-          <!--            <select class="form-select" id="field_region" formControlName="region" data-cy="region" name="region">-->
-          <!--              <option [value]="'2'">2</option>-->
-          <!--              <option [value]="'3'">3</option>-->
-          <!--            </select>-->
-          <!--          </div>-->
-          <!--          <div>-->
-          <!--            <input-->
-          <!--              type="checkbox"-->
-          <!--              class="form-check-input"-->
-          <!--              id="field_isTeller"-->
-          <!--              formControlName="isTeller"-->
-          <!--              data-cy="isTeller"-->
-          <!--              name="isTeller"-->
-          <!--            />-->
-          <!--            <label class="form-label" for="field_isTeller">Là giao dịch viên</label>-->
-          <!--          </div>-->
-
-          <!--          <div *ngIf="editForm.get('isTeller')?.value" class="row mb-3">-->
-          <!--            <label class="form-label" for="field_rank">Cấp bậc</label>-->
-          <!--            <select class="form-select" id="field_rank" formControlName="rank" data-cy="rank" name="rank">-->
-          <!--              <option [value]="'I'">I</option>-->
-          <!--              <option [value]="'SiS'">SiS</option>-->
-          <!--              <option [value]="'Khác'">Khác</option>-->
-          <!--            </select>-->
-          <!--          </div>-->
         </div>
       </div>
+
       <div class="text-end" style="margin-bottom: 30px; margin-top: 20px">
         <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-info btn-sm" (click)="previousState()">
           <span>Quay lại</span>

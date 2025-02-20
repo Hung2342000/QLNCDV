@@ -38,6 +38,7 @@ export class EmployeeUpdateComponent implements OnInit {
     serviceType: [],
     region: [],
     rank: [],
+    status: [],
   });
 
   constructor(protected employeeService: EmployeeService, protected activatedRoute: ActivatedRoute, protected fb: FormBuilder) {}
@@ -107,6 +108,7 @@ export class EmployeeUpdateComponent implements OnInit {
       serviceType: employee.serviceType,
       region: employee.region,
       rank: employee.rank,
+      status: employee.status,
     });
   }
 
@@ -128,6 +130,7 @@ export class EmployeeUpdateComponent implements OnInit {
       serviceType: this.editForm.get(['serviceType'])!.value,
       region: this.editForm.get(['region'])!.value,
       rank: this.editForm.get(['rank'])!.value,
+      status: this.editForm.get(['status'])!.value,
     };
   }
 }
