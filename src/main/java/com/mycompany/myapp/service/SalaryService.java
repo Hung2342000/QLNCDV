@@ -211,6 +211,7 @@ public class SalaryService {
             Department department = departmentRepository.findDepartmentByCode(employee.getDepartment());
             if (department != null) {
                 salaryDetail.setTenDonVi(department.getName());
+                salaryDetail.setDiaBan(department.getName());
             }
             salaryDetail.setDichVu(employee.getServiceTypeName() + " cấp " + employee.getRank() + " - vùng " + employee.getRegion());
             AttendanceDetail attendanceDetail = new AttendanceDetail();
@@ -263,7 +264,6 @@ public class SalaryService {
             salaryDetail.setChucDanh(serviceTypeName(employee.getServiceType()));
             salaryDetail.setDonGiaDichVu(employee.getBasicSalary());
             salaryDetail.setNhom(employee.getNhom());
-            salaryDetail.setDiaBan(employee.getDepartment());
             salaryDetailListGDV.add(salaryDetail);
         }
 

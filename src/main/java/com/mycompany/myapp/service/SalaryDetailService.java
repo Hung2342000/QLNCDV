@@ -1692,9 +1692,7 @@ public class SalaryDetailService {
                 if (salaryDetail.getMucChiToiThieu() != null) {
                     chiPhiBoSung = chiPhiBoSung.subtract(salaryDetail.getMucChiToiThieu()).add(mucChiPhiCoDinhThucTe).add(tongChiPhiKVKK);
                 }
-                if (chiPhiBoSung.compareTo(BigDecimal.ZERO) == 1) {
-                    salaryDetail.setChiPhiBoSungCPTTV(chiPhiBoSung);
-                }
+                salaryDetail.setChiPhiBoSungCPTTV(chiPhiBoSung);
 
                 BigDecimal phiDichVuThucTe = BigDecimal.ZERO;
                 if (salaryDetail.getPhiCoDinhThanhToanThucTe() != null) {
@@ -1760,9 +1758,9 @@ public class SalaryDetailService {
                             .multiply(salaryDetail.getMucChiToiThieu())
                             .setScale(0, RoundingMode.HALF_UP);
                 }
-                if (luongCoDinhThucTe.compareTo(BigDecimal.ZERO) == 1) {
-                    salaryDetail.setLuongCoDinhThucTe(luongCoDinhThucTe);
-                }
+
+                salaryDetail.setLuongCoDinhThucTe(luongCoDinhThucTe);
+
                 if (phiCoDinhDaThucHien.compareTo(BigDecimal.ZERO) == 1) {
                     salaryDetail.setPhiCoDinhDaThucHien(phiCoDinhDaThucHien);
                 }
@@ -1822,9 +1820,7 @@ public class SalaryDetailService {
                 if (salaryDetail.getMucBSLuongToiThieuVung() != null) {
                     phiDichVuThucTe = phiDichVuThucTe.add(salaryDetail.getMucBSLuongToiThieuVung());
                 }
-                if (phiDichVuThucTe.compareTo(BigDecimal.ZERO) == 1) {
-                    salaryDetail.setChiPhiThueDichVu(phiDichVuThucTe);
-                }
+                salaryDetail.setChiPhiThueDichVu(phiDichVuThucTe);
                 salaryDetailRepository.save(salaryDetail);
             }
         }

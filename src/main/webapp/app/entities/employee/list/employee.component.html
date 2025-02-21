@@ -12,8 +12,11 @@
       >
         <span jhiTranslate="qldvApp.employee.home.createLabel"> Thêm </span>
       </button>
-      <button data-cy="entityConfirmDeleteButton" class="btn btn-danger btn-sm" (click)="importExcel()">
+      <button style="margin-right: 10px" data-cy="entityConfirmDeleteButton" class="btn btn-danger btn-sm" (click)="importExcel()">
         <span>Import</span>
+      </button>
+      <button (click)="exportToExcel()" class="btn btn-primary btn-sm">
+        <span>Export</span>
       </button>
     </div>
   </h4>

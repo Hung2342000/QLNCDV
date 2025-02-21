@@ -247,6 +247,25 @@ export class EmployeeComponent implements OnInit {
       return new Array(0);
     }
   }
+  exportToExcel(): void {
+    this.employeeService
+      .exportToExcel({
+        searchCode: this.searchCode,
+        searchName: this.searchName,
+        searchDepartment: this.searchDepartment,
+        searchNhom: this.searchNhom,
+      })
+      .subscribe(response => {
+        const blob = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'danhsachnhanvien.xlsx';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      });
+  }
   view(employee: IEmployee): void {
     const modalRef = this.modalService.open(EmployeeDetailComponent, { size: 'xl', backdrop: 'static' });
     modalRef.componentInstance.employee = employee;

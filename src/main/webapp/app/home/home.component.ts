@@ -99,7 +99,12 @@ export class HomeComponent implements OnInit, OnDestroy {
             } else if (this.countEmployee[i].code && this.countEmployee[i].code === 'Đang làm việc') {
               this.countDLV = this.countEmployee[i].countEmployee;
             }
-            if (this.countEmployee[i].countEmployee && this.countEmployee[i].countEmployee > 0) {
+            if (
+              this.countEmployee[i].code &&
+              this.countEmployee[i].code !== 'Đang làm việc' &&
+              this.countEmployee[i].countEmployee &&
+              this.countEmployee[i].countEmployee > 0
+            ) {
               this.count = this.count + Number(this.countEmployee[i].countEmployee);
             }
           }

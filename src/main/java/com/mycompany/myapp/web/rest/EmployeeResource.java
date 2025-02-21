@@ -6,6 +6,7 @@ import com.mycompany.myapp.repository.CountEmployeeRepository;
 import com.mycompany.myapp.repository.EmployeeRepository;
 import com.mycompany.myapp.service.EmployeeService;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -19,6 +20,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -275,5 +278,16 @@ public class EmployeeResource {
         log.debug("REST request to save Tool : {}", employeeList);
         List<Employee> employees = employeeService.importEmployee(employeeList);
         return ResponseEntity.ok().body(employees);
+    }
+
+    @GetMapping("/employees/export")
+    public ResponseEntity<byte[]> getAllEmployeesExport(String searchCode, String searchName, String searchDepartment, String searchNhom)
+        throws IOException {
+        log.debug("REST request to get a page of Employees");
+        byte[] excelBytes = employeeService.export(searchCode, searchName, searchDepartment, searchNhom);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+        headers.setContentDispositionFormData("attachment", "bangchamcong.xlsx");
+        return new ResponseEntity<>(excelBytes, headers, HttpStatus.OK);
     }
 }

@@ -382,6 +382,7 @@ export class SalaryUpdateComponent implements OnInit {
             resultObject.employeeCode = this.salaryDetailsImportCheckGDV[i][1];
             resultObject.salaryId = this.salary.id;
             resultObject.tenDonVi = this.salaryDetailsImportCheckGDV[i][3];
+            resultObject.diaBan = this.salaryDetailsImportCheckGDV[i][3];
             resultObject.vung = this.salaryDetailsImportCheckGDV[i][4];
             resultObject.cap = this.salaryDetailsImportCheckGDV[i][5];
             resultObject.donGiaDichVu = Number(this.salaryDetailsImportCheckGDV[i][6]);

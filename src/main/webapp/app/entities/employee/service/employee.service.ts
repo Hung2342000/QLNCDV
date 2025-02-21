@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import dayjs from 'dayjs/esm';
@@ -41,6 +41,13 @@ export class EmployeeService {
       .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
   }
 
+  exportToExcel(req?: any): Observable<any> {
+    return this.http.get(`${this.resourceUrl}/export`, {
+      params: req,
+      responseType: 'blob',
+      headers: new HttpHeaders().append('Content-Type', 'application/json'),
+    });
+  }
   partialUpdate(employee: IEmployee): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(employee);
     return this.http

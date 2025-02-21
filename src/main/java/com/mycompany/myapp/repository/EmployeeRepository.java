@@ -108,4 +108,23 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     @Query("SELECT new CountEmployee( d.code, count(d.code)) FROM Employee e JOIN Department d on e.department = d.code group by d.code")
     List<CountEmployee> listAllEmployeesDepartmentNoPage();
+
+    @Query(
+        "select a from Employee a where LOWER(a.codeEmployee) LIKE %:searchCode% AND LOWER(a.name) LIKE %:searchName% and a.department LIKE %:searchDepartment% and a.nhom  LIKE %:searchNhom%"
+    )
+    List<Employee> listAllEmployeesExport(
+        @Param("searchCode") String searchCode,
+        @Param("searchName") String searchName,
+        @Param("searchDepartment") String searchDepartment,
+        @Param("searchNhom") String searchNhom
+    );
+
+    @Query(
+        "select a from Employee a where LOWER(a.codeEmployee) LIKE %:searchCode% AND LOWER(a.name) LIKE %:searchName% and a.nhom = :searchNhom"
+    )
+    List<Employee> listAllEmployeesExporUser(
+        @Param("searchCode") String searchCode,
+        @Param("searchName") String searchName,
+        @Param("searchNhom") String searchNhom
+    );
 }
