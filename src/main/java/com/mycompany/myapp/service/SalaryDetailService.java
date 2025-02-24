@@ -1168,7 +1168,7 @@ public class SalaryDetailService {
                 cell3.setCellStyle(detailStyle);
 
                 Cell cell4 = row.createCell(4);
-                cell4.setCellValue(rowData.getTenDonVi());
+                cell4.setCellValue(rowData.getDiaBan());
                 cell4.setCellStyle(detailStyle);
 
                 Cell cell5 = row.createCell(5);

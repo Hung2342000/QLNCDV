@@ -13,6 +13,7 @@ export interface IEmployee {
   privateEmail?: string | null;
   department?: string | null;
   startDate?: dayjs.Dayjs | null;
+  closeDate?: dayjs.Dayjs | null;
   basicSalary?: number | null;
   serviceType?: number | null;
   serviceTypeName?: string | null;
@@ -20,6 +21,7 @@ export interface IEmployee {
   isTeller?: boolean | null;
   rank?: string | null;
   nhom?: string | null;
+  diaBan?: string | null;
   status?: string | null;
 }
 
@@ -37,6 +39,7 @@ export class Employee implements IEmployee {
     public privateEmail?: string | null,
     public department?: string | null,
     public startDate?: dayjs.Dayjs | null,
+    public closeDate?: dayjs.Dayjs | null,
     public basicSalary?: number | null,
     public serviceType?: number | null,
     public serviceTypeName?: string | null,
@@ -44,6 +47,7 @@ export class Employee implements IEmployee {
     public isTeller?: boolean | null,
     public rank?: string | null,
     public nhom?: string | null,
+    public diaBan?: string | null,
     public status?: string | null
   ) {}
 }

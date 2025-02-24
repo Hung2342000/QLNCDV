@@ -34,11 +34,13 @@ export class EmployeeUpdateComponent implements OnInit {
     privateEmail: [],
     department: [],
     startDate: [],
+    closeDate: [],
     basicSalary: [],
     serviceType: [],
     region: [],
     rank: [],
     status: [],
+    diaBan: [],
   });
 
   constructor(protected employeeService: EmployeeService, protected activatedRoute: ActivatedRoute, protected fb: FormBuilder) {}
@@ -105,10 +107,12 @@ export class EmployeeUpdateComponent implements OnInit {
       privateEmail: employee.privateEmail,
       department: employee.department,
       startDate: employee.startDate?.format(DATE_FORMAT_CUSTOM),
+      closeDate: employee.closeDate?.format(DATE_FORMAT_CUSTOM),
       serviceType: employee.serviceType,
       region: employee.region,
       rank: employee.rank,
       status: employee.status,
+      diaBan: employee.diaBan,
     });
   }
 
@@ -127,10 +131,12 @@ export class EmployeeUpdateComponent implements OnInit {
       privateEmail: this.editForm.get(['privateEmail'])!.value,
       department: this.editForm.get(['department'])!.value,
       startDate: this.editForm.get(['startDate'])!.value,
+      closeDate: this.editForm.get(['closeDate'])!.value,
       serviceType: this.editForm.get(['serviceType'])!.value,
       region: this.editForm.get(['region'])!.value,
       rank: this.editForm.get(['rank'])!.value,
       status: this.editForm.get(['status'])!.value,
+      diaBan: this.editForm.get(['diaBan'])!.value,
     };
   }
 }

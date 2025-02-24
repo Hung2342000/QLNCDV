@@ -15,6 +15,7 @@ import { IServiceType } from '../service-type.model';
 import * as XLSX from 'xlsx';
 import { numbers } from '@material/tooltip';
 import { ToastComponent } from '../../../layouts/toast/toast.component';
+import dayjs from 'dayjs/esm';
 
 @Component({
   selector: 'jhi-employee',
@@ -38,6 +39,10 @@ export class EmployeeComponent implements OnInit {
   searchCode?: string = '';
   searchDepartment?: string = '';
   searchNhom?: string = '';
+  searchStatus?: string = '';
+  searchService?: string = '';
+  searchStartDate: string | null | any;
+  searchStartCheck: string | null | any;
   serviceTypesCustom?: IServiceType[] | any;
   checkUpload = false;
   importClicked = false;
@@ -52,7 +57,11 @@ export class EmployeeComponent implements OnInit {
   loadPage(page?: number, dontNavigate?: boolean): void {
     this.isLoading = true;
     const pageToLoad: number = page ?? this.page ?? 1;
-
+    if (this.searchStartDate && this.searchStartDate !== '') {
+      this.searchStartCheck = dayjs(this.searchStartDate).format('YYYY-MM-DD');
+    } else {
+      this.searchStartCheck = '';
+    }
     this.employeeService
       .query({
         page: pageToLoad - 1,
@@ -62,6 +71,9 @@ export class EmployeeComponent implements OnInit {
         searchName: this.searchName,
         searchDepartment: this.searchDepartment,
         searchNhom: this.searchNhom,
+        searchStatus: this.searchStatus,
+        searchService: this.searchService,
+        searchStartDate: this.searchStartCheck,
       })
       .subscribe({
         next: (res: HttpResponse<IEmployee[]>) => {
@@ -88,10 +100,16 @@ export class EmployeeComponent implements OnInit {
       },
     });
   }
-
+  onDateChange(): void {
+    this.loadPageSearch();
+  }
   loadPageSearch(page?: number, dontNavigate?: boolean): void {
     this.isLoading = true;
-
+    if (this.searchStartDate && this.searchStartDate !== '') {
+      this.searchStartCheck = dayjs(this.searchStartDate).format('YYYY-MM-DD');
+    } else {
+      this.searchStartCheck = '';
+    }
     this.employeeService
       .query({
         page: 0,
@@ -101,6 +119,9 @@ export class EmployeeComponent implements OnInit {
         searchName: this.searchName,
         searchDepartment: this.searchDepartment,
         searchNhom: this.searchNhom,
+        searchStatus: this.searchStatus,
+        searchService: this.searchService,
+        searchStartDate: this.searchStartCheck,
       })
       .subscribe({
         next: (res: HttpResponse<IEmployee[]>) => {

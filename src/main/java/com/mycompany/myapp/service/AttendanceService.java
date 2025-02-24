@@ -61,6 +61,14 @@ public class AttendanceService {
     }
 
     public Attendance createAttendance(Attendance attendance) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username;
+        User user = new User();
+        Object principal = authentication.getPrincipal();
+        UserDetails userDetails = (UserDetails) principal;
+        username = userDetails.getUsername();
+        user = userRepository.findOneByLogin(username).get();
+
         List<Employee> listEmployee = new ArrayList<>();
         if (attendance.getSearchNhom() == null || attendance.getSearchNhom().equals("")) {
             listEmployee =
@@ -76,6 +84,13 @@ public class AttendanceService {
                 );
         if (listEmployee != null && listEmployee.size() > 0) {
             attendance.setEmployees(listEmployee);
+        }
+
+        attendance.setDepartmentCode(user.getDepartment());
+        String ngayNghi = attendance.getNgayNghi();
+        List<String> ngayNghiCheck = new ArrayList<>();
+        if (ngayNghi != null) {
+            ngayNghiCheck.addAll(Arrays.asList(ngayNghi.split("[,;\\s]+")));
         }
         Attendance attendanceCreate = this.attendanceRepository.save(attendance);
         for (Employee employee : listEmployee) {
@@ -111,6 +126,8 @@ public class AttendanceService {
                             Boolean check = isWeekend(date);
                             if (check) {
                                 field.set(attendanceDetail, "weekend");
+                            } else if (Arrays.asList(ngayNghiCheck).contains(daycheck)) {
+                                field.set(attendanceDetail, "-");
                             } else {
                                 field.set(attendanceDetail, "+");
                                 countDay = countDay.add(BigDecimal.valueOf(1));
@@ -127,6 +144,8 @@ public class AttendanceService {
                                 Boolean check = isWeekend(date);
                                 if (check) {
                                     field.set(attendanceDetail, "weekend");
+                                } else if (Arrays.asList(ngayNghiCheck).contains(daycheck)) {
+                                    field.set(attendanceDetail, "-");
                                 } else {
                                     field.set(attendanceDetail, "+");
                                     countDay = countDay.add(BigDecimal.valueOf(1));
@@ -144,6 +163,8 @@ public class AttendanceService {
                                     Boolean check = isWeekend(date);
                                     if (check) {
                                         field.set(attendanceDetail, "weekend");
+                                    } else if (Arrays.asList(ngayNghiCheck).contains(daycheck)) {
+                                        field.set(attendanceDetail, "-");
                                     } else {
                                         field.set(attendanceDetail, "+");
                                         countDay = countDay.add(BigDecimal.valueOf(1));
@@ -159,6 +180,8 @@ public class AttendanceService {
                                     Boolean check = isWeekend(date);
                                     if (check) {
                                         field.set(attendanceDetail, "weekend");
+                                    } else if (Arrays.asList(ngayNghiCheck).contains(daycheck)) {
+                                        field.set(attendanceDetail, "-");
                                     } else {
                                         field.set(attendanceDetail, "+");
                                         countDay = countDay.add(BigDecimal.valueOf(1));
@@ -203,9 +226,11 @@ public class AttendanceService {
         ) {
             page = this.attendanceRepository.findAll(pageable);
         } else if (
-            authentication != null && !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority))
+            authentication != null &&
+            !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority)) &&
+            getAuthorities(authentication).anyMatch(authority -> Arrays.asList(USER).contains(authority))
         ) {
-            page = this.attendanceRepository.findAll(pageable);
+            page = this.attendanceRepository.getAttendanceByDepartment(user.getDepartment(), pageable);
         }
         return page;
     }
@@ -224,7 +249,7 @@ public class AttendanceService {
         } else if (
             authentication != null && !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority))
         ) {
-            list = this.attendanceRepository.findAll();
+            list = this.attendanceRepository.getAttendanceByDepartment(user.getDepartment());
         }
         return list;
     }

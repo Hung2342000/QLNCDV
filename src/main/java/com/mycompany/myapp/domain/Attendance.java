@@ -58,6 +58,9 @@ public class Attendance implements Serializable {
     @Column(name = "search_department")
     private String searchDepartment;
 
+    @Column(name = "ngay_nghi")
+    private String ngayNghi;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -154,6 +157,14 @@ public class Attendance implements Serializable {
 
     public void setNumberWork(BigDecimal numberWork) {
         this.numberWork = numberWork;
+    }
+
+    public String getNgayNghi() {
+        return ngayNghi;
+    }
+
+    public void setNgayNghi(String ngayNghi) {
+        this.ngayNghi = ngayNghi;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

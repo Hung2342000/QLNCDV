@@ -63,7 +63,10 @@ public class EmployeeService {
         String searchCode,
         String searchName,
         String searchDepartment,
-        String searchNhom
+        String searchNhom,
+        String searchStatus,
+        String searchService,
+        String searchStartDate
     ) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username;
@@ -73,6 +76,10 @@ public class EmployeeService {
         username = userDetails.getUsername();
         user = userRepository.findOneByLogin(username).get();
         Page<Employee> page = new PageImpl<>(Collections.emptyList(), PageRequest.of(0, 10), 0);
+
+        if (searchStartDate.equals("")) {
+            searchStartDate = "2200-12-01";
+        }
         if (
             authentication != null &&
             !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(USER).contains(authority)) &&
@@ -84,6 +91,9 @@ public class EmployeeService {
                         searchCode.toLowerCase(),
                         searchName.toLowerCase(),
                         searchDepartment,
+                        searchStatus,
+                        searchService,
+                        searchStartDate,
                         pageable
                     );
             } else page =
@@ -92,6 +102,9 @@ public class EmployeeService {
                     searchName.toLowerCase(),
                     searchDepartment,
                     searchNhom,
+                    searchStatus,
+                    searchService,
+                    searchStartDate,
                     pageable
                 );
         } else if (
@@ -103,6 +116,9 @@ public class EmployeeService {
                     searchName.toLowerCase(),
                     user.getDepartment(),
                     searchNhom,
+                    searchStatus,
+                    searchService,
+                    searchStartDate,
                     pageable
                 );
         }
@@ -183,6 +199,9 @@ public class EmployeeService {
             }
             if (serviceType.getServiceName() != null) {
                 employee.setServiceTypeName(serviceType.getServiceName());
+            }
+            if (employee.getStatus() == null) {
+                employee.setStatus("Đang làm việc");
             }
         }
         employeeRepository.save(employee);
@@ -432,7 +451,7 @@ public class EmployeeService {
         return employeeList;
     }
 
-    public List<CountEmployee> getAllCountEmployeeByNhom() {
+    public List<CountEmployee> getAllCountEmployeeByNhom(String startDate) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username;
         User user = new User();
@@ -442,18 +461,50 @@ public class EmployeeService {
         user = userRepository.findOneByLogin(username).get();
         Long countDLV;
         List<CountEmployee> employeeList = new ArrayList<>();
-
+        if (startDate.equals("")) {
+            startDate = "2200-12-01";
+        }
         if (authentication != null && getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority))) {
-            employeeList = countEmployeeRepository.listAllCountEmployeeByNhom();
+            if (startDate != null && startDate != "") {
+                employeeList = countEmployeeRepository.listAllCountEmployeeByNhomStartDate(startDate, "");
+            } else employeeList = countEmployeeRepository.listAllCountEmployeeByNhom("");
             countDLV = employeeRepository.countEmployeeDLV();
         } else {
-            employeeList = countEmployeeRepository.listAllCountEmployeeByNhomAnDDepartment(user.getDepartment());
+            if (startDate != null && startDate != "") {
+                employeeList = countEmployeeRepository.listAllCountEmployeeByNhomStartDate(startDate, user.getDepartment());
+            } else employeeList = countEmployeeRepository.listAllCountEmployeeByNhom(user.getDepartment());
             countDLV = employeeRepository.countEmployeeDLVDepartment(user.getDepartment());
         }
         CountEmployee employee = new CountEmployee();
         employee.setCode("Đang làm việc");
         employee.setCountEmployee(countDLV);
         employeeList.add(employee);
+        return employeeList;
+    }
+
+    public List<CountEmployee> getAllCountEmployeeByStatus(String startDate) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username;
+        User user = new User();
+        Object principal = authentication.getPrincipal();
+        UserDetails userDetails = (UserDetails) principal;
+        username = userDetails.getUsername();
+        user = userRepository.findOneByLogin(username).get();
+        List<CountEmployee> employeeList = new ArrayList<>();
+
+        if (startDate.equals("")) {
+            startDate = "2200-12-01";
+        }
+
+        if (authentication != null && getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority))) {
+            if (startDate != null && startDate != "") {
+                employeeList = countEmployeeRepository.listAllCountEmployeeByStatusStartDate(startDate, "");
+            } else employeeList = countEmployeeRepository.listAllCountEmployeeByStatus("");
+        } else {
+            if (startDate != null && startDate != "") {
+                employeeList = countEmployeeRepository.listAllCountEmployeeByStatusStartDate(startDate, user.getDepartment());
+            } else employeeList = countEmployeeRepository.listAllCountEmployeeByStatus(user.getDepartment());
+        }
         return employeeList;
     }
 

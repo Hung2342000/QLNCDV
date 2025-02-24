@@ -59,6 +59,10 @@
             <label class="form-label" jhiTranslate="qldvApp.employee.otherId" for="field_otherId">Căn cước công dân</label>
             <input type="text" class="form-control" name="otherId" id="field_otherId" data-cy="otherId" formControlName="otherId" />
           </div>
+          <div class="row mb-3">
+            <label class="form-label" for="field_diaBan">Địa bàn</label>
+            <input type="text" class="form-control" name="diaBan" id="field_diaBan" data-cy="diaBan" formControlName="diaBan" />
+          </div>
         </div>
         <div class="col-md-1"></div>
         <!-- Cột 2 -->
@@ -93,6 +97,15 @@
               formControlName="privateEmail"
             />
           </div>
+          <div class="row mb-3">
+            <label class="form-label" for="field_status">Trạng thái</label>
+            <select class="form-select" id="field_status" formControlName="status" data-cy="status" name="status">
+              <option [value]="'Đang làm việc'">Đang làm việc</option>
+              <option [value]="'Nghỉ thai sản'">Nghỉ thai sản</option>
+              <option [value]="'Nghỉ phép dài hạn'">Nghỉ phép dài hạn</option>
+              <option [value]="'Nghỉ việc'">Nghỉ việc</option>
+            </select>
+          </div>
         </div>
         <div class="col-md-1"></div>
         <!-- Cột 3 -->
@@ -118,18 +131,28 @@
               [convertModelValue]="true"
             />
           </div>
+
+          <div class="row mb-3">
+            <label class="form-label" for="field_closeDate">Ngày nghỉ việc</label>
+            <input
+              style="background-color: #fff"
+              class="form-control"
+              type="text"
+              mwlFlatpickr
+              data-cy="closeDate"
+              id="field_closeDate"
+              name="closeDate"
+              formControlName="closeDate"
+              [dateFormat]="'d-m-Y'"
+              [convertModelValue]="true"
+            />
+          </div>
+
           <div class="row mb-3">
             <label class="form-label" jhiTranslate="qldvApp.employee.address" for="field_address">Địa chỉ</label>
             <input type="text" class="form-control" name="address" id="field_address" data-cy="address" formControlName="address" />
           </div>
-          <div class="row mb-3">
-            <label class="form-label" for="field_status">Trạng thái</label>
-            <select class="form-select" id="field_status" formControlName="status" data-cy="status" name="status">
-              <option [value]="'Đang làm việc'">Đang làm việc</option>
-              <option [value]="'Nghỉ thai sản'">Nghỉ thai sản</option>
-              <option [value]="'Nghỉ phép dài hạn'">Nghỉ phép dài hạn</option>
-            </select>
-          </div>
+
           <!--          <div class="row mb-3">-->
           <!--            <label class="form-label">Loại hình dịch vụ</label>-->
           <!--            <ng-select-->

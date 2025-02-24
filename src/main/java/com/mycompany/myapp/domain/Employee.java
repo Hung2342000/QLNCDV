@@ -55,6 +55,9 @@ public class Employee implements Serializable {
     @Column(name = "start_date")
     private LocalDate startDate;
 
+    @Column(name = "close_date")
+    private LocalDate closeDate;
+
     @Column(name = "basic_salary")
     private BigDecimal basicSalary;
 
@@ -75,6 +78,9 @@ public class Employee implements Serializable {
 
     @Column(name = "nhom")
     private String nhom;
+
+    @Column(name = "dia_ban")
+    private String diaBan;
 
     @Column(name = "status")
     private String status;
@@ -299,6 +305,22 @@ public class Employee implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public LocalDate getCloseDate() {
+        return closeDate;
+    }
+
+    public void setCloseDate(LocalDate closeDate) {
+        this.closeDate = closeDate;
+    }
+
+    public String getDiaBan() {
+        return diaBan;
+    }
+
+    public void setDiaBan(String diaBan) {
+        this.diaBan = diaBan;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

@@ -103,7 +103,7 @@ public class SalaryResource {
     @GetMapping("/salary")
     public ResponseEntity<List<Salary>> getAllSalarys(@org.springdoc.api.annotations.ParameterObject Pageable pageable) {
         log.debug("REST request to get a page of Salarys");
-        Page<Salary> page = salaryRepository.findAll(pageable);
+        Page<Salary> page = salaryService.pageSalary(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }

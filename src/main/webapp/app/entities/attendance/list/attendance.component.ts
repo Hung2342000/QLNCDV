@@ -47,6 +47,7 @@ export class AttendanceComponent implements OnInit {
     month: [],
     year: [],
     note: [],
+    ngayNghi: [],
   });
 
   constructor(
@@ -226,6 +227,7 @@ export class AttendanceComponent implements OnInit {
       month: attendance.month,
       year: attendance.year,
       note: attendance.note,
+      ngayNghi: attendance.note,
     });
   }
 
@@ -277,6 +279,7 @@ export class AttendanceComponent implements OnInit {
       month: this.editForm.get(['month'])!.value,
       year: this.editForm.get(['year'])!.value,
       note: this.editForm.get(['note'])!.value,
+      ngayNghi: this.editForm.get(['ngayNghi'])!.value,
     };
   }
 }

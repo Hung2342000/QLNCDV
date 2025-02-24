@@ -25,32 +25,18 @@
     <table class="table table-hover" aria-describedby="page-heading">
       <thead>
         <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="loadPage()">
-          <th scope="col" style="width: 4%" jhiSortBy="id"><span>STT</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" style="width: 8%" jhiSortBy="codeEmployee"><span>Mã nhân viên</span> <fa-icon icon="sort"></fa-icon></th>
-          <th style="width: 13%" scope="col" jhiSortBy="name"><span>Họ và tên</span> <fa-icon icon="sort"></fa-icon></th>
-          <th scope="col" jhiSortBy="birthday"><span>Ngày sinh</span> <fa-icon icon="sort"></fa-icon></th>
-          <!--          <th scope="col" jhiSortBy="otherId">-->
-          <!--            <span jhiTranslate="qldvApp.employee.otherId">Other Id</span> <fa-icon icon="sort"></fa-icon>-->
-          <!--          </th>-->
-          <th style="width: 7%" scope="col" jhiSortBy="mobilePhone"><span>SĐT cá nhân</span> <fa-icon icon="sort"></fa-icon></th>
-          <!--          <th scope="col" jhiSortBy="address"><span>Địa chỉ</span> <fa-icon icon="sort"></fa-icon></th>-->
-          <!--          <th scope="col" jhiSortBy="privateEmail">-->
-          <!--            <span jhiTranslate="qldvApp.employee.privateEmail">Private Email</span> <fa-icon icon="sort"></fa-icon>-->
-          <!--          </th>-->
-          <!--          <th scope="col" jhiSortBy="workPhone">-->
-          <!--            <span jhiTranslate="qldvApp.employee.workPhone">Work Phone</span> <fa-icon icon="sort"></fa-icon>-->
-          <!--          </th>-->
-          <!--          <th scope="col" jhiSortBy="workEmail">-->
-          <!--            <span jhiTranslate="qldvApp.employee.workEmail">Work Email</span> <fa-icon icon="sort"></fa-icon>-->
-          <!--          </th>-->
-          <th style="width: 10%" scope="col" jhiSortBy="department"><span>Phòng ban</span> <fa-icon icon="sort"></fa-icon></th>
-          <th style="max-width: 100px" scope="col" jhiSortBy="department">
-            <span>Loại hình dịch vụ</span> <fa-icon icon="sort"></fa-icon>
+          <th scope="col" style="width: 4%" jhiSortBy="id"><span>STT</span></th>
+          <th scope="col" style="width: 8%" jhiSortBy="codeEmployee"><span>Mã nhân viên</span></th>
+          <th style="width: 14%" scope="col" jhiSortBy="name"><span>Họ và tên</span></th>
+          <th style="width: 13%" scope="col"><span>Phòng ban</span></th>
+          <th style="width: 10%" scope="col">
+            <span>Loại hình dịch vụ</span>
           </th>
-          <th style="max-width: 100px" scope="col" jhiSortBy="department">
-            <span>Nhóm loại hình dịch vụ</span> <fa-icon icon="sort"></fa-icon>
+          <th style="width: 13%" scope="col">
+            <span>Nhóm loại hình dịch vụ</span>
           </th>
-          <th scope="col" jhiSortBy="startDate"><span>Ngày vào làm việc</span> <fa-icon icon="sort"></fa-icon></th>
+          <th scope="col" jhiSortBy="startDate"><span>Ngày vào làm việc</span></th>
+          <th style="width: 10%" scope="col">Trạng thái</th>
           <th style="width: 6%" class="text-center" scope="col">Thao tác</th>
         </tr>
         <tr style="border-bottom: 1px solid">
@@ -77,16 +63,27 @@
               aria-label="Tìm kiếm"
             />
           </th>
-          <th scope="col"></th>
-          <th scope="col"></th>
-
           <th scope="col">
             <select style="height: 30px; width: 100%" [(ngModel)]="searchDepartment" (change)="loadPageSearch()">
               <option [value]=""></option>
               <option *ngFor="let department of departments" [value]="department.code">{{ department.name }}</option>
             </select>
           </th>
-          <th scope="col"></th>
+          <th scope="col" style="height: 30px; width: 5%">
+            <select style="height: 30px" [(ngModel)]="searchService" (change)="loadPageSearch()">
+              <option [value]=""></option>
+              <option [value]="'HTKD tại cửa hàng Showroom'">HTKD tại cửa hàng Showroom</option>
+              <option [value]="'Lái xe cho VP'">Lái xe cho VP</option>
+              <option [value]="'Nhập liệu, tổng hợp và thống kê số liệu'">Nhập liệu, tổng hợp và thống kê số liệu</option>
+              <option [value]="'HTKD khách hàng doanh nghiệp'">HTKD khách hàng doanh nghiệp</option>
+              <option [value]="'HTKD CNTT, truyền dẫn và băng rộng cố định'">HTKD CNTT, truyền dẫn và băng rộng cố định</option>
+              <option [value]="'HTKD đại lý, điểm bán lẻ và khách hàng cá nhân'">HTKD đại lý, điểm bán lẻ và khách hàng cá nhân</option>
+              <option [value]="'Vệ sinh văn phòng/nấu ăn văn phòng'">Vệ sinh văn phòng/nấu ăn văn phòng</option>
+              <option [value]="'Bảo trì,sửa chữa thiết bị mạng, máy tính hoặc thiết bị viễn thông'">
+                Bảo trì,sửa chữa thiết bị mạng, máy tính hoặc tbvt
+              </option>
+            </select>
+          </th>
           <th scope="col">
             <select style="height: 30px; width: 100%" [(ngModel)]="searchNhom" (change)="loadPageSearch()">
               <option [value]=""></option>
@@ -97,6 +94,27 @@
               <option [value]="'NVBH'">NVBH</option>
             </select>
           </th>
+          <th scope="col">
+            <input
+              style="background-color: #fff; height: 30px"
+              class="form-control border border-dark"
+              type="text"
+              [(ngModel)]="searchStartDate"
+              (ngModelChange)="onDateChange()"
+              mwlFlatpickr
+              [dateFormat]="'d-m-Y'"
+              [convertModelValue]="true"
+            />
+          </th>
+          <th scope="col">
+            <select style="height: 30px; width: 100%" [(ngModel)]="searchStatus" (change)="loadPageSearch()">
+              <option [value]=""></option>
+              <option [value]="'Đang làm việc'">Đang làm việc</option>
+              <option [value]="'Nghỉ thai sản'">Nghỉ thai sản</option>
+              <option [value]="'Nghỉ phép dài hạn'">Nghỉ phép dài hạn</option>
+              <option [value]="'Nghỉ việc'">Nghỉ việc</option>
+            </select>
+          </th>
         </tr>
       </thead>
       <tbody style="border-top: 1px solid">
@@ -104,16 +122,15 @@
           <td>{{ i + 1 }}</td>
           <td>{{ employee.codeEmployee }}</td>
           <td>{{ employee.name }}</td>
-          <td>{{ employee.birthday | formatDateVnPipe }}</td>
-          <td>{{ employee.mobilePhone }}</td>
           <td>{{ departmentName(employee.department) }}</td>
-          <td style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">
+          <td style="width: 5%">
             {{ serviceTypeName(employee.serviceType) }}
           </td>
           <td style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">
             {{ employee.nhom }}
           </td>
           <td>{{ employee.startDate | formatDateVnPipe }}</td>
+          <td>{{ employee.status }}</td>
           <td class="text-end">
             <div class="btn-group">
               <button type="submit" (click)="view(employee)" class="btn btn-info btn-sm" data-cy="entityDetailsButton">

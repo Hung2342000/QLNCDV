@@ -1,5 +1,9 @@
 package com.mycompany.myapp.service;
 
+import static com.mycompany.myapp.security.AuthoritiesConstants.ADMIN;
+import static com.mycompany.myapp.security.AuthoritiesConstants.USER;
+import static com.mycompany.myapp.security.SecurityUtils.getAuthorities;
+
 import com.mycompany.myapp.domain.*;
 import com.mycompany.myapp.repository.*;
 import java.math.BigDecimal;
@@ -7,11 +11,20 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 /**
@@ -52,7 +65,45 @@ public class SalaryService {
         this.departmentRepository = departmentRepository;
     }
 
+    public Page<Salary> pageSalary(Pageable pageable) {
+        Page<Salary> page = new PageImpl<>(Collections.emptyList(), PageRequest.of(0, 10), 0);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username;
+        User user = new User();
+        Object principal = authentication.getPrincipal();
+        UserDetails userDetails = (UserDetails) principal;
+        username = userDetails.getUsername();
+        user = userRepository.findOneByLogin(username).get();
+
+        if (
+            authentication != null &&
+            !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(USER).contains(authority)) &&
+            getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority))
+        ) {
+            page = this.salaryRepository.findAll(pageable);
+        } else if (
+            authentication != null &&
+            !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority)) &&
+            getAuthorities(authentication).anyMatch(authority -> Arrays.asList(USER).contains(authority))
+        ) {
+            page = this.salaryRepository.getSalaryByDepartment(user.getDepartment(), pageable);
+        }
+
+        return page;
+    }
+
     public Salary createSalary(Salary salary) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username;
+        User user = new User();
+        Object principal = authentication.getPrincipal();
+        UserDetails userDetails = (UserDetails) principal;
+        username = userDetails.getUsername();
+        user = userRepository.findOneByLogin(username).get();
+        if (user.getDepartment() != null) {
+            salary.setDepartmentCode(user.getDepartment());
+        }
         Salary salaryCreate = this.salaryRepository.save(salary);
         Attendance attendance = new Attendance();
         List<Employee> employeeList = new ArrayList<>();
@@ -211,7 +262,9 @@ public class SalaryService {
             Department department = departmentRepository.findDepartmentByCode(employee.getDepartment());
             if (department != null) {
                 salaryDetail.setTenDonVi(department.getName());
-                salaryDetail.setDiaBan(department.getName());
+            }
+            if (employee.getDiaBan() != null) {
+                salaryDetail.setDiaBan(employee.getDiaBan());
             }
             salaryDetail.setDichVu(employee.getServiceTypeName() + " cấp " + employee.getRank() + " - vùng " + employee.getRegion());
             AttendanceDetail attendanceDetail = new AttendanceDetail();
@@ -275,6 +328,9 @@ public class SalaryService {
             Department department = departmentRepository.findDepartmentByCode(employee.getDepartment());
             if (department != null) {
                 salaryDetail.setTenDonVi(department.getName());
+            }
+            if (employee.getDiaBan() != null) {
+                salaryDetail.setDiaBan(employee.getDiaBan());
             }
             salaryDetail.setDichVu(employee.getServiceTypeName() + " Vùng " + employee.getRegion());
             salaryDetail.setHtc("1");
@@ -346,7 +402,9 @@ public class SalaryService {
             Department department = departmentRepository.findDepartmentByCode(employee.getDepartment());
             if (department != null) {
                 salaryDetail.setTenDonVi(department.getName());
-                salaryDetail.setDiaBan(department.getName());
+            }
+            if (employee.getDiaBan() != null) {
+                salaryDetail.setDiaBan(employee.getDiaBan());
             }
             salaryDetail.setDichVu(employee.getServiceTypeName() + " Vùng " + employee.getRegion());
             AttendanceDetail attendanceDetail = new AttendanceDetail();

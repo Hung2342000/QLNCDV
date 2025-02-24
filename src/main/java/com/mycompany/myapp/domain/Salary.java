@@ -60,6 +60,9 @@ public class Salary implements Serializable {
     @Column(name = "search_department")
     private String searchDepartment;
 
+    @Column(name = "department_code")
+    private String departmentCode;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -156,6 +159,14 @@ public class Salary implements Serializable {
 
     public void setSearchDepartment(String searchDepartment) {
         this.searchDepartment = searchDepartment;
+    }
+
+    public String getDepartmentCode() {
+        return departmentCode;
+    }
+
+    public void setDepartmentCode(String departmentCode) {
+        this.departmentCode = departmentCode;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

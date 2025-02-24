@@ -201,10 +201,22 @@ public class EmployeeResource {
         String searchCode,
         String searchName,
         String searchDepartment,
-        String searchNhom
+        String searchNhom,
+        String searchStatus,
+        String searchService,
+        String searchStartDate
     ) {
         log.debug("REST request to get a page of Employees");
-        Page<Employee> page = employeeService.getAllEmployees(pageable, searchCode, searchName, searchDepartment, searchNhom);
+        Page<Employee> page = employeeService.getAllEmployees(
+            pageable,
+            searchCode,
+            searchName,
+            searchDepartment,
+            searchNhom,
+            searchStatus,
+            searchService,
+            searchStartDate
+        );
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
@@ -267,9 +279,16 @@ public class EmployeeResource {
     }
 
     @GetMapping("/employees/count-group")
-    public ResponseEntity<List<CountEmployee>> getAllEmployeesCountGroup() {
+    public ResponseEntity<List<CountEmployee>> getAllEmployeesCountGroup(String startDate) {
         log.debug("REST request to get a page of Employees");
-        List<CountEmployee> employeeList = employeeService.getAllCountEmployeeByNhom();
+        List<CountEmployee> employeeList = employeeService.getAllCountEmployeeByNhom(startDate);
+        return ResponseEntity.ok().body(employeeList);
+    }
+
+    @GetMapping("/employees/count-status")
+    public ResponseEntity<List<CountEmployee>> getAllEmployeesCountStatus(String startDate) {
+        log.debug("REST request to get a page of Employees");
+        List<CountEmployee> employeeList = employeeService.getAllCountEmployeeByStatus(startDate);
         return ResponseEntity.ok().body(employeeList);
     }
 

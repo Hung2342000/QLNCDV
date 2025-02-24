@@ -11,6 +11,7 @@ export interface IAttendance {
   count?: number | null;
   note?: string | null;
   numberWork?: number | null;
+  ngayNghi?: string | null;
   searchName?: string | null;
   searchDepartment?: string | null;
   searchNhom?: string | null;
@@ -27,6 +28,7 @@ export class Attendance implements IAttendance {
     public count?: number | null,
     public note?: string | null,
     public numberWork?: number | null,
+    public ngayNghi?: string | null,
     public searchName?: string | null,
     public searchDepartment?: string | null,
     public searchNhom?: string | null

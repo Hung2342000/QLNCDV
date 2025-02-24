@@ -72,8 +72,11 @@ export class EmployeeService {
   queryCountEmployee(): Observable<EntityArrayResponseCountEmployeeType> {
     return this.http.get<ICountEmployee[]>(this.resourceUrl + '/count', { observe: 'response' });
   }
-  queryCountEmployeeByGroup(): Observable<EntityArrayResponseCountEmployeeType> {
-    return this.http.get<ICountEmployee[]>(this.resourceUrl + '/count-group', { observe: 'response' });
+  queryCountEmployeeByGroup(req?: any): Observable<EntityArrayResponseCountEmployeeType> {
+    return this.http.get<ICountEmployee[]>(this.resourceUrl + '/count-group', { params: req, observe: 'response' });
+  }
+  queryCountEmployeeByStatus(req?: any): Observable<EntityArrayResponseCountEmployeeType> {
+    return this.http.get<ICountEmployee[]>(this.resourceUrl + '/count-status', { params: req, observe: 'response' });
   }
   find(id: number): Observable<EntityResponseType> {
     return this.http
@@ -136,6 +139,12 @@ export class EmployeeService {
           : typeof employee.startDate === 'string'
           ? dayjs(employee.startDate, 'DD-MM-YYYY').format(DATE_FORMAT)
           : dayjs(employee.startDate).format(DATE_FORMAT),
+      closeDate:
+        employee.closeDate === undefined
+          ? undefined
+          : typeof employee.closeDate === 'string'
+          ? dayjs(employee.closeDate, 'DD-MM-YYYY').format(DATE_FORMAT)
+          : dayjs(employee.closeDate).format(DATE_FORMAT),
     });
   }
 
@@ -143,6 +152,7 @@ export class EmployeeService {
     if (res.body) {
       res.body.birthday = res.body.birthday ? dayjs(res.body.birthday) : undefined;
       res.body.startDate = res.body.startDate ? dayjs(res.body.startDate) : undefined;
+      res.body.closeDate = res.body.closeDate ? dayjs(res.body.closeDate) : undefined;
     }
     return res;
   }
@@ -152,6 +162,7 @@ export class EmployeeService {
       res.body.forEach((employee: IEmployee) => {
         employee.birthday = employee.birthday ? dayjs(employee.birthday) : undefined;
         employee.startDate = employee.startDate ? dayjs(employee.startDate) : undefined;
+        employee.closeDate = employee.closeDate ? dayjs(employee.closeDate) : undefined;
       });
     }
     return res;
@@ -161,6 +172,7 @@ export class EmployeeService {
     res.forEach((employee: IEmployee) => {
       employee.birthday = employee.birthday ? dayjs(employee.birthday, 'DD/MM/YYYY').add(1, 'day') : undefined;
       employee.startDate = employee.startDate ? dayjs(employee.startDate, 'DD/MM/YYYY').add(1, 'day') : undefined;
+      employee.closeDate = employee.closeDate ? dayjs(employee.closeDate, 'DD/MM/YYYY').add(1, 'day') : undefined;
     });
     return res;
   }

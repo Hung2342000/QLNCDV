@@ -17,23 +17,49 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     @Query(
-        "select a from Employee a where LOWER(a.codeEmployee) LIKE %:searchCode% AND LOWER(a.name) LIKE %:searchName% and a.department LIKE %:searchDepartment% and a.nhom = :searchNhom"
+        "select a from Employee a where LOWER(a.codeEmployee) LIKE %:searchCode% " +
+        "AND LOWER(a.name) LIKE %:searchName% and a.department LIKE %:searchDepartment% " +
+        "and a.nhom = :searchNhom and a.status LIKE %:searchStatus% and a.serviceTypeName LIKE %:searchService% and (a.startDate <= TO_DATE(:searchStartDate, 'YYYY-MM-DD') or a.startDate is null)"
     )
     Page<Employee> listAllEmployees(
         @Param("searchCode") String searchCode,
         @Param("searchName") String searchName,
         @Param("searchDepartment") String searchDepartment,
         @Param("searchNhom") String searchNhom,
+        @Param("searchStatus") String searchStatus,
+        @Param("searchService") String searchService,
+        @Param("searchStartDate") String searchStartDate,
         Pageable pageable
     );
 
     @Query(
-        "select a from Employee a where LOWER(a.codeEmployee) LIKE %:searchCode% AND LOWER(a.name) LIKE %:searchName% and a.department LIKE %:searchDepartment%"
+        "select a from Employee a where LOWER(a.codeEmployee) LIKE %:searchCode% " +
+        "AND LOWER(a.name) LIKE %:searchName% and a.department LIKE %:searchDepartment% and a.status LIKE %:searchStatus% " +
+        "and a.serviceTypeName LIKE %:searchService% and (a.startDate <= TO_DATE(:searchStartDate, 'YYYY-MM-DD') or a.startDate is null)"
     )
     Page<Employee> listAllEmployeesNoNhom(
         @Param("searchCode") String searchCode,
         @Param("searchName") String searchName,
         @Param("searchDepartment") String searchDepartment,
+        @Param("searchStatus") String searchStatus,
+        @Param("searchService") String searchService,
+        @Param("searchStartDate") String searchStartDate,
+        Pageable pageable
+    );
+
+    @Query(
+        "select a from Employee a where LOWER(a.codeEmployee) LIKE %:searchCode% " +
+        "AND LOWER(a.name) LIKE %:searchName% and a.department = :department and a.nhom LIKE %:searchNhom% and a.status LIKE %:searchStatus% and a.serviceTypeName " +
+        "LIKE %:searchService% and (a.startDate <= TO_DATE(:searchStartDate, 'YYYY-MM-DD') or a.startDate is null)"
+    )
+    Page<Employee> listAllEmployeesDepartment(
+        @Param("searchCode") String searchCode,
+        @Param("searchName") String searchName,
+        @Param("department") String department,
+        @Param("searchNhom") String searchNhom,
+        @Param("searchStatus") String searchStatus,
+        @Param("searchService") String searchService,
+        @Param("searchStartDate") String searchStartDate,
         Pageable pageable
     );
 
@@ -82,17 +108,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
         "select a from Employee a where LOWER(a.name) LIKE %:searchName% and a.department LIKE %:searchDepartment% AND a.status = 'Đang làm việc'"
     )
     List<Employee> listAllEmployeesNoNhom(@Param("searchName") String searchName, @Param("searchDepartment") String searchDepartment);
-
-    @Query(
-        "select a from Employee a where LOWER(a.codeEmployee) LIKE %:searchCode% AND LOWER(a.name) LIKE %:searchName% and a.department = :department and a.nhom LIKE %:searchNhom%"
-    )
-    Page<Employee> listAllEmployeesDepartment(
-        @Param("searchCode") String searchCode,
-        @Param("searchName") String searchName,
-        @Param("department") String department,
-        @Param("searchNhom") String searchNhom,
-        Pageable pageable
-    );
 
     @Query("select a from Employee a where a.department = :department")
     List<Employee> listAllEmployeesDepartmentNoPage(@Param("department") String department);

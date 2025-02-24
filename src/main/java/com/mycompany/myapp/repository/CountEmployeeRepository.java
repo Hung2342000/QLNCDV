@@ -21,8 +21,39 @@ public interface CountEmployeeRepository extends JpaRepository<CountEmployee, Lo
     )
     List<CountEmployee> listAllCountEmployee();
 
-    @Query("SELECT  new CountEmployee ( e.nhom, count(*)) FROM Employee e  group by e.nhom ")
-    List<CountEmployee> listAllCountEmployeeByNhom();
+    @Query(
+        "SELECT  new CountEmployee ( e.nhom, count(*)) FROM Employee e where e.startDate <= TO_DATE(:startDate, 'YYYY-MM-DD') and ( e.closeDate <= TO_DATE(:endDate, 'YYYY-MM-DD') or e.closeDate is NULL) and e.department like %:department%  group by e.nhom  "
+    )
+    List<CountEmployee> listAllCountEmployeeByNhomDate(
+        @Param("startDate") String startDate,
+        @Param("endDate") String endDate,
+        @Param("department") String department
+    );
+
+    @Query(
+        "SELECT  new CountEmployee ( e.nhom, count(*)) FROM Employee e where e.startDate <= TO_DATE(:startDate, 'YYYY-MM-DD') or  e.startDate is null  and e.department like %:department%  group by e.nhom  "
+    )
+    List<CountEmployee> listAllCountEmployeeByNhomStartDate(@Param("startDate") String startDate, @Param("department") String department);
+
+    @Query("SELECT  new CountEmployee ( e.nhom, count(*)) FROM Employee e where e.department like %:department% group by e.nhom  ")
+    List<CountEmployee> listAllCountEmployeeByNhom(@Param("department") String department);
+
+    @Query(
+        "SELECT  new CountEmployee ( e.status, count(*)) FROM Employee e where e.startDate <= TO_DATE(:startDate, 'YYYY-MM-DD') and ( e.closeDate <= TO_DATE(:endDate, 'YYYY-MM-DD') or e.closeDate is NULL) and e.department like %:department% group by e.status"
+    )
+    List<CountEmployee> listAllCountEmployeeByStatusDate(
+        @Param("startDate") String startDate,
+        @Param("endDate") String endDate,
+        @Param("department") String department
+    );
+
+    @Query(
+        "SELECT  new CountEmployee ( e.status, count(*)) FROM Employee e where e.startDate <= TO_DATE(:startDate, 'YYYY-MM-DD') or  e.startDate is null and e.department like %:department%  group by e.status"
+    )
+    List<CountEmployee> listAllCountEmployeeByStatusStartDate(@Param("startDate") String startDate, @Param("department") String department);
+
+    @Query("SELECT  new CountEmployee ( e.status, count(*)) FROM Employee e where e.department like %:department% group by e.status")
+    List<CountEmployee> listAllCountEmployeeByStatus(@Param("department") String department);
 
     @Query("SELECT  new CountEmployee ( e.nhom, count(*)) FROM Employee e where e.department = :department group by e.nhom  ")
     List<CountEmployee> listAllCountEmployeeByNhomAnDDepartment(@Param("department") String department);

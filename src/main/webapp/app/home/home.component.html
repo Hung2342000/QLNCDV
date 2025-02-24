@@ -19,17 +19,54 @@
   </div>
 </div>
 <div style="margin-top: 100px" class="row">
-  <div class="col-md-6">
+  <div class="col-md-3">
     <div style="display: block; height: 450px" class="card-3d">
-      <div><span class="title">Phân loại nhóm</span></div>
-      <div style="position: relative; height: 350px; width: 650px">
+      <div><span class="title">Phân loại nhân viên theo nhóm</span></div>
+      <div style="display: flex; align-items: center">
+        <label style="width: 150px" class="form-label">Chọn thời gian</label>
+        <input
+          [(ngModel)]="searchTime"
+          (ngModelChange)="onDateChange()"
+          style="background-color: #fff"
+          class="form-control"
+          type="text"
+          mwlFlatpickr
+          [dateFormat]="'d-m-Y'"
+          [convertModelValue]="true"
+        />
+      </div>
+
+      <div style="position: relative; margin-top: 40px">
         <canvas baseChart [data]="lineChartDataByGroup" [options]="lineChartOptionsGroup" [type]="'doughnut'"> </canvas>
       </div>
     </div>
   </div>
-  <div class="col-md-6">
+  <div class="col-md-3">
     <div style="display: block; height: 450px" class="card-3d">
-      <div><span class="title">Phân loại theo đơn vị</span></div>
+      <div><span class="title">Phân loại nhân viên theo trạng thái </span></div>
+
+      <div style="display: flex; align-items: center">
+        <label style="width: 150px" class="form-label">Chọn thời gian</label>
+        <input
+          [(ngModel)]="searchTimeStatus"
+          (ngModelChange)="onDateChangeStatus()"
+          style="background-color: #fff"
+          class="form-control"
+          type="text"
+          mwlFlatpickr
+          [dateFormat]="'d-m-Y'"
+          [convertModelValue]="true"
+        />
+      </div>
+
+      <div style="position: relative; margin-top: 40px">
+        <canvas baseChart [data]="lineChartDataByStatus" [options]="lineChartOptionsGroup" [type]="'doughnut'"> </canvas>
+      </div>
+    </div>
+  </div>
+  <div *jhiHasAnyAuthority="'ROLE_ADMIN'" class="col-md-6">
+    <div style="display: block; height: 450px" class="card-3d">
+      <div><span class="title">Phân loại nhân viên theo đơn vị</span></div>
       <div>
         <canvas baseChart [data]="lineChartData" [options]="lineChartOptions" [type]="'bar'"> </canvas>
       </div>
