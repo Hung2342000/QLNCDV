@@ -96,6 +96,10 @@ export class AttendanceUpdateComponent implements OnInit {
   close(): void {
     this.router.navigate([`/attendance`]);
   }
+
+  trackId(_index: number, item: IAttendanceDetail): number {
+    return item.id!;
+  }
   getDaysInMonth(month: number, year: number): number {
     // Tháng là 1-based (1: Tháng 1, 2: Tháng 2, ...)
     // Kiểm tra nếu tháng không hợp lệ

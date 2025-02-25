@@ -31,7 +31,7 @@ public interface CountEmployeeRepository extends JpaRepository<CountEmployee, Lo
     );
 
     @Query(
-        "SELECT  new CountEmployee ( e.nhom, count(*)) FROM Employee e where e.startDate <= TO_DATE(:startDate, 'YYYY-MM-DD') or  e.startDate is null  and e.department like %:department%  group by e.nhom  "
+        "SELECT  new CountEmployee ( e.nhom, count(*)) FROM Employee e where (e.startDate <= TO_DATE(:startDate, 'YYYY-MM-DD') or  e.startDate is null)  and e.department like %:department%  group by e.nhom  "
     )
     List<CountEmployee> listAllCountEmployeeByNhomStartDate(@Param("startDate") String startDate, @Param("department") String department);
 
@@ -48,7 +48,7 @@ public interface CountEmployeeRepository extends JpaRepository<CountEmployee, Lo
     );
 
     @Query(
-        "SELECT  new CountEmployee ( e.status, count(*)) FROM Employee e where e.startDate <= TO_DATE(:startDate, 'YYYY-MM-DD') or  e.startDate is null and e.department like %:department%  group by e.status"
+        "SELECT  new CountEmployee ( e.status, count(*)) FROM Employee e where (e.startDate <= TO_DATE(:startDate, 'YYYY-MM-DD') or  e.startDate is null) and e.department like %:department%  group by e.status"
     )
     List<CountEmployee> listAllCountEmployeeByStatusStartDate(@Param("startDate") String startDate, @Param("department") String department);
 

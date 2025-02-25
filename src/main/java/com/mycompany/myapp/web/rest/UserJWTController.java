@@ -87,7 +87,10 @@ public class UserJWTController {
         HttpEntity<String> request = new HttpEntity<>(jsonString, headers);
         String apiUrl = "http://10.14.36.104:9000/api/loginLdap"; // Điều chỉnh URL của API của bạn ở đây
         String response = restTemplate.postForObject(apiUrl, request, String.class);
-        if (response.equals("0") || response == null || response.equals("")) throw new AuthenticationException();
+        String checkMobifone = ".mobifone.vn";
+        if (loginVM.getUsername().contains(checkMobifone)) {
+            if (response.equals("0") || response == null || response.equals("")) throw new AuthenticationException();
+        }
         //Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         Authentication authentication = (Authentication) authenticationToken;
         SecurityContextHolder.getContext().setAuthentication(authentication);

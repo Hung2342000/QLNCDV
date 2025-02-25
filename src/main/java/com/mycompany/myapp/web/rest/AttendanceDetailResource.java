@@ -111,7 +111,7 @@ public class AttendanceDetailResource {
             id,
             searchCode.toLowerCase(),
             searchName.toLowerCase(),
-            searchDepartment.toUpperCase()
+            searchDepartment
         );
         return ResponseEntity.ok().body(attendancDetailList);
     }

@@ -111,8 +111,48 @@ public class SalaryService {
             attendance = this.attendanceRepository.findById(salary.getAttendanceId()).get();
             employeeList = attendance.getEmployees();
         } else {
-            employeeList =
-                employeeRepository.listAllEmployees(salary.getSearchName(), salary.getSearchDepartment(), salary.getSearchNhom());
+            if (attendance.getSearchNhom() == null || attendance.getSearchNhom().equals("")) {
+                if (
+                    authentication != null && getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority))
+                ) {
+                    employeeList =
+                        this.employeeRepository.listAllEmployeesNoNhom(
+                                attendance.getSearchName() != null ? attendance.getSearchName().toLowerCase() : "",
+                                attendance.getSearchDepartment() != null ? attendance.getSearchDepartment() : ""
+                            );
+                } else if (
+                    (
+                        authentication != null &&
+                        getAuthorities(authentication).anyMatch(authority -> Arrays.asList(USER).contains(authority))
+                    )
+                ) {
+                    employeeList =
+                        this.employeeRepository.listAllEmployeesNoNhom(
+                                attendance.getSearchName() != null ? attendance.getSearchName().toLowerCase() : "",
+                                user.getDepartment()
+                            );
+                }
+            } else {
+                if (
+                    authentication != null && getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority))
+                ) {
+                    employeeList =
+                        this.employeeRepository.listAllEmployees(
+                                attendance.getSearchName() != null ? attendance.getSearchName().toLowerCase() : "",
+                                attendance.getSearchDepartment() != null ? attendance.getSearchDepartment() : "",
+                                attendance.getSearchNhom() != null ? attendance.getSearchNhom() : ""
+                            );
+                } else if (
+                    authentication != null && getAuthorities(authentication).anyMatch(authority -> Arrays.asList(USER).contains(authority))
+                ) {
+                    employeeList =
+                        this.employeeRepository.listAllEmployees(
+                                attendance.getSearchName() != null ? attendance.getSearchName().toLowerCase() : "",
+                                user.getDepartment(),
+                                attendance.getSearchNhom() != null ? attendance.getSearchNhom() : ""
+                            );
+                }
+            }
         }
         List<Employee> employeeListAm = new ArrayList<>();
         List<Employee> employeeListHTVP = new ArrayList<>();
@@ -154,7 +194,10 @@ public class SalaryService {
                     }
                 }
             } else {
-                if (salary.getYear() != null && salary.getMonth() != null) {
+                if (salary.getNumberWork() != null) {
+                    salaryDetail.setNumberWorking(salary.getNumberWork());
+                    salaryDetail.setNumberWorkInMonth(salary.getNumberWork());
+                } else if (salary.getYear() != null && salary.getMonth() != null) {
                     int numberWorking = countWorkingInMonth(salary.getYear().intValue(), salary.getMonth().intValue());
                     salaryDetail.setNumberWorking(BigDecimal.valueOf(numberWorking));
                     salaryDetail.setNumberWorkInMonth(BigDecimal.valueOf(numberWorking));
@@ -284,7 +327,10 @@ public class SalaryService {
                     }
                 }
             } else {
-                if (salary.getYear() != null && salary.getMonth() != null) {
+                if (salary.getNumberWork() != null) {
+                    salaryDetail.setNumberWorking(salary.getNumberWork());
+                    salaryDetail.setNumberWorkInMonth(salary.getNumberWork());
+                } else if (salary.getYear() != null && salary.getMonth() != null) {
                     int numberWorking = countWorkingInMonth(salary.getYear().intValue(), salary.getMonth().intValue());
                     salaryDetail.setNumberWorking(BigDecimal.valueOf(numberWorking));
                     salaryDetail.setNumberWorkInMonth(BigDecimal.valueOf(numberWorking));

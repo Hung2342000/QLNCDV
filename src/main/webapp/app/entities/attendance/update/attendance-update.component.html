@@ -119,7 +119,7 @@
         </tr>
       </thead>
       <tbody formArrayName="details">
-        <tr *ngFor="let detail of details.value; let i = index" [formGroupName]="i">
+        <tr *ngFor="let detail of details.value; let i = index; trackBy: trackId" [formGroupName]="i">
           <td style="position: sticky; left: 0; z-index: 2; background: white">{{ i + 1 }}</td>
 
           <td style="background: white">
@@ -137,9 +137,9 @@
             <span>{{ detail.serviceTypeName }}</span>
           </td>
 
-          <td [ngStyle]="{ 'background-color': detail.day1 === 'weekend' ? '#e84e3d' : '' }">
+          <td [ngStyle]="{ 'background-color': detail.day1 === 'off' ? '#e84e3d' : '' }">
             <select
-              [ngStyle]="{ 'background-color': detail.day1 === 'weekend' ? '#e84e3d' : '' }"
+              [ngStyle]="{ 'background-color': detail.day1 === 'off' ? '#e84e3d' : '' }"
               [ngStyle]="{ 'pointer-events': !isEdit ? 'none' : '' }"
               style="border: none"
               class="form-select"
@@ -150,12 +150,13 @@
             >
               <option [value]="'+'">+</option>
               <option [value]="'-'">-</option>
+              <option [value]="'L'">L</option>
             </select>
           </td>
 
-          <td [ngStyle]="{ 'background-color': detail.day2 === 'weekend' ? '#e84e3d' : '' }">
+          <td [ngStyle]="{ 'background-color': detail.day2 === 'off' ? '#e84e3d' : '' }">
             <select
-              [ngStyle]="{ 'background-color': detail.day2 === 'weekend' ? '#e84e3d' : '' }"
+              [ngStyle]="{ 'background-color': detail.day2 === 'off' ? '#e84e3d' : '' }"
               [ngStyle]="{ 'pointer-events': !isEdit ? 'none' : '' }"
               style="border: none"
               class="form-select"
@@ -166,12 +167,13 @@
             >
               <option [value]="'+'">+</option>
               <option [value]="'-'">-</option>
+              <option [value]="'L'">L</option>
             </select>
           </td>
 
-          <td [ngStyle]="{ 'background-color': detail.day3 === 'weekend' ? '#e84e3d' : '' }">
+          <td [ngStyle]="{ 'background-color': detail.day3 === 'off' ? '#e84e3d' : '' }">
             <select
-              [ngStyle]="{ 'background-color': detail.day3 === 'weekend' ? '#e84e3d' : '' }"
+              [ngStyle]="{ 'background-color': detail.day3 === 'off' ? '#e84e3d' : '' }"
               [ngStyle]="{ 'pointer-events': !isEdit ? 'none' : '' }"
               style="border: none"
               class="form-select"
@@ -182,12 +184,13 @@
             >
               <option [value]="'+'">+</option>
               <option [value]="'-'">-</option>
+              <option [value]="'L'">L</option>
             </select>
           </td>
 
-          <td [ngStyle]="{ 'background-color': detail.day4 === 'weekend' ? '#e84e3d' : '' }">
+          <td [ngStyle]="{ 'background-color': detail.day4 === 'off' ? '#e84e3d' : '' }">
             <select
-              [ngStyle]="{ 'background-color': detail.day4 === 'weekend' ? '#e84e3d' : '' }"
+              [ngStyle]="{ 'background-color': detail.day4 === 'off' ? '#e84e3d' : '' }"
               [ngStyle]="{ 'pointer-events': !isEdit ? 'none' : '' }"
               style="border: none"
               class="form-select"
@@ -198,12 +201,13 @@
             >
               <option [value]="'+'">+</option>
               <option [value]="'-'">-</option>
+              <option [value]="'L'">L</option>
             </select>
           </td>
 
-          <td [ngStyle]="{ 'background-color': detail.day5 === 'weekend' ? '#e84e3d' : '' }">
+          <td [ngStyle]="{ 'background-color': detail.day5 === 'off' ? '#e84e3d' : '' }">
             <select
-              [ngStyle]="{ 'background-color': detail.day5 === 'weekend' ? '#e84e3d' : '' }"
+              [ngStyle]="{ 'background-color': detail.day5 === 'off' ? '#e84e3d' : '' }"
               [ngStyle]="{ 'pointer-events': !isEdit ? 'none' : '' }"
               style="border: none"
               class="form-select"
@@ -214,12 +218,13 @@
             >
               <option [value]="'+'">+</option>
               <option [value]="'-'">-</option>
+              <option [value]="'L'">L</option>
             </select>
           </td>
 
-          <td [ngStyle]="{ 'background-color': detail.day6 === 'weekend' ? '#e84e3d' : '' }">
+          <td [ngStyle]="{ 'background-color': detail.day6 === 'off' ? '#e84e3d' : '' }">
             <select
-              [ngStyle]="{ 'background-color': detail.day6 === 'weekend' ? '#e84e3d' : '' }"
+              [ngStyle]="{ 'background-color': detail.day6 === 'off' ? '#e84e3d' : '' }"
               [ngStyle]="{ 'pointer-events': !isEdit ? 'none' : '' }"
               style="border: none"
               class="form-select"
@@ -230,13 +235,14 @@
             >
               <option [value]="'+'">+</option>
               <option [value]="'-'">-</option>
+              <option [value]="'L'">L</option>
             </select>
           </td>
 
-          <td [ngStyle]="{ 'background-color': detail.day7 === 'weekend' ? '#e84e3d' : '' }">
+          <td [ngStyle]="{ 'background-color': detail.day7 === 'off' ? '#e84e3d' : '' }">
             <select
               style="border: none"
-              [ngStyle]="{ 'background-color': detail.day7 === 'weekend' ? '#e84e3d' : '' }"
+              [ngStyle]="{ 'background-color': detail.day7 === 'off' ? '#e84e3d' : '' }"
               [ngStyle]="{ 'pointer-events': !isEdit ? 'none' : '' }"
               class="form-select"
               id="field_day7"
@@ -246,13 +252,14 @@
             >
               <option [value]="'+'">+</option>
               <option [value]="'-'">-</option>
+              <option [value]="'L'">L</option>
             </select>
           </td>
 
-          <td [ngStyle]="{ 'background-color': detail.day8 === 'weekend' ? '#e84e3d' : '' }">
+          <td [ngStyle]="{ 'background-color': detail.day8 === 'off' ? '#e84e3d' : '' }">
             <select
               style="border: none"
-              [ngStyle]="{ 'background-color': detail.day8 === 'weekend' ? '#e84e3d' : '' }"
+              [ngStyle]="{ 'background-color': detail.day8 === 'off' ? '#e84e3d' : '' }"
               [ngStyle]="{ 'pointer-events': !isEdit ? 'none' : '' }"
               class="form-select"
               id="field_day8"
@@ -262,13 +269,14 @@
             >
               <option [value]="'+'">+</option>
               <option [value]="'-'">-</option>
+              <option [value]="'L'">L</option>
             </select>
           </td>
 
-          <td [ngStyle]="{ 'background-color': detail.day9 === 'weekend' ? '#e84e3d' : '' }">
+          <td [ngStyle]="{ 'background-color': detail.day9 === 'off' ? '#e84e3d' : '' }">
             <select
               style="border: none"
-              [ngStyle]="{ 'background-color': detail.day9 === 'weekend' ? '#e84e3d' : '' }"
+              [ngStyle]="{ 'background-color': detail.day9 === 'off' ? '#e84e3d' : '' }"
               [ngStyle]="{ 'pointer-events': !isEdit ? 'none' : '' }"
               class="form-select"
               id="field_day9"
@@ -278,13 +286,14 @@
             >
               <option [value]="'+'">+</option>
               <option [value]="'-'">-</option>
+              <option [value]="'L'">L</option>
             </select>
           </td>
 
-          <td [ngStyle]="{ 'background-color': detail.day10 === 'weekend' ? '#e84e3d' : '' }">
+          <td [ngStyle]="{ 'background-color': detail.day10 === 'off' ? '#e84e3d' : '' }">
             <select
               style="border: none"
-              [ngStyle]="{ 'background-color': detail.day10 === 'weekend' ? '#e84e3d' : '' }"
+              [ngStyle]="{ 'background-color': detail.day10 === 'off' ? '#e84e3d' : '' }"
               [ngStyle]="{ 'pointer-events': !isEdit ? 'none' : '' }"
               class="form-select"
               id="field_day10"
@@ -294,13 +303,14 @@
             >
               <option [value]="'+'">+</option>
               <option [value]="'-'">-</option>
+              <option [value]="'L'">L</option>
             </select>
           </td>
 
-          <td [ngStyle]="{ 'background-color': detail.day11 === 'weekend' ? '#e84e3d' : '' }">
+          <td [ngStyle]="{ 'background-color': detail.day11 === 'off' ? '#e84e3d' : '' }">
             <select
               style="border: none"
-              [ngStyle]="{ 'background-color': detail.day11 === 'weekend' ? '#e84e3d' : '' }"
+              [ngStyle]="{ 'background-color': detail.day11 === 'off' ? '#e84e3d' : '' }"
               [ngStyle]="{ 'pointer-events': !isEdit ? 'none' : '' }"
               class="form-select"
               id="field_day11"
@@ -310,13 +320,14 @@
             >
               <option [value]="'+'">+</option>
               <option [value]="'-'">-</option>
+              <option [value]="'L'">L</option>
             </select>
           </td>
 
-          <td [ngStyle]="{ 'background-color': detail.day12 === 'weekend' ? '#e84e3d' : '' }">
+          <td [ngStyle]="{ 'background-color': detail.day12 === 'off' ? '#e84e3d' : '' }">
             <select
               style="border: none"
-              [ngStyle]="{ 'background-color': detail.day12 === 'weekend' ? '#e84e3d' : '' }"
+              [ngStyle]="{ 'background-color': detail.day12 === 'off' ? '#e84e3d' : '' }"
               [ngStyle]="{ 'pointer-events': !isEdit ? 'none' : '' }"
               class="form-select"
               id="field_day12"
@@ -326,13 +337,14 @@
             >
               <option [value]="'+'">+</option>
               <option [value]="'-'">-</option>
+              <option [value]="'L'">L</option>
             </select>
           </td>
 
-          <td [ngStyle]="{ 'background-color': detail.day13 === 'weekend' ? '#e84e3d' : '' }">
+          <td [ngStyle]="{ 'background-color': detail.day13 === 'off' ? '#e84e3d' : '' }">
             <select
               style="border: none"
-              [ngStyle]="{ 'background-color': detail.day13 === 'weekend' ? '#e84e3d' : '' }"
+              [ngStyle]="{ 'background-color': detail.day13 === 'off' ? '#e84e3d' : '' }"
               [ngStyle]="{ 'pointer-events': !isEdit ? 'none' : '' }"
               class="form-select"
               id="field_day13"
@@ -342,13 +354,14 @@
             >
               <option [value]="'+'">+</option>
               <option [value]="'-'">-</option>
+              <option [value]="'L'">L</option>
             </select>
           </td>
 
-          <td [ngStyle]="{ 'background-color': detail.day14 === 'weekend' ? '#e84e3d' : '' }">
+          <td [ngStyle]="{ 'background-color': detail.day14 === 'off' ? '#e84e3d' : '' }">
             <select
               style="border: none"
-              [ngStyle]="{ 'background-color': detail.day14 === 'weekend' ? '#e84e3d' : '' }"
+              [ngStyle]="{ 'background-color': detail.day14 === 'off' ? '#e84e3d' : '' }"
               [ngStyle]="{ 'pointer-events': !isEdit ? 'none' : '' }"
               class="form-select"
               id="field_day14"
@@ -358,13 +371,14 @@
             >
               <option [value]="'+'">+</option>
               <option [value]="'-'">-</option>
+              <option [value]="'L'">L</option>
             </select>
           </td>
 
-          <td [ngStyle]="{ 'background-color': detail.day15 === 'weekend' ? '#e84e3d' : '' }">
+          <td [ngStyle]="{ 'background-color': detail.day15 === 'off' ? '#e84e3d' : '' }">
             <select
               style="border: none"
-              [ngStyle]="{ 'background-color': detail.day15 === 'weekend' ? '#e84e3d' : '' }"
+              [ngStyle]="{ 'background-color': detail.day15 === 'off' ? '#e84e3d' : '' }"
               [ngStyle]="{ 'pointer-events': !isEdit ? 'none' : '' }"
               class="form-select"
               id="field_day15"
@@ -374,13 +388,14 @@
             >
               <option [value]="'+'">+</option>
               <option [value]="'-'">-</option>
+              <option [value]="'L'">L</option>
             </select>
           </td>
 
-          <td [ngStyle]="{ 'background-color': detail.day16 === 'weekend' ? '#e84e3d' : '' }">
+          <td [ngStyle]="{ 'background-color': detail.day16 === 'off' ? '#e84e3d' : '' }">
             <select
               style="border: none"
-              [ngStyle]="{ 'background-color': detail.day16 === 'weekend' ? '#e84e3d' : '' }"
+              [ngStyle]="{ 'background-color': detail.day16 === 'off' ? '#e84e3d' : '' }"
               [ngStyle]="{ 'pointer-events': !isEdit ? 'none' : '' }"
               class="form-select"
               id="field_day16"
@@ -390,13 +405,14 @@
             >
               <option [value]="'+'">+</option>
               <option [value]="'-'">-</option>
+              <option [value]="'L'">L</option>
             </select>
           </td>
 
-          <td [ngStyle]="{ 'background-color': detail.day17 === 'weekend' ? '#e84e3d' : '' }">
+          <td [ngStyle]="{ 'background-color': detail.day17 === 'off' ? '#e84e3d' : '' }">
             <select
               style="border: none"
-              [ngStyle]="{ 'background-color': detail.day17 === 'weekend' ? '#e84e3d' : '' }"
+              [ngStyle]="{ 'background-color': detail.day17 === 'off' ? '#e84e3d' : '' }"
               [ngStyle]="{ 'pointer-events': !isEdit ? 'none' : '' }"
               class="form-select"
               id="field_day17"
@@ -406,13 +422,14 @@
             >
               <option [value]="'+'">+</option>
               <option [value]="'-'">-</option>
+              <option [value]="'L'">L</option>
             </select>
           </td>
 
-          <td [ngStyle]="{ 'background-color': detail.day18 === 'weekend' ? '#e84e3d' : '' }">
+          <td [ngStyle]="{ 'background-color': detail.day18 === 'off' ? '#e84e3d' : '' }">
             <select
               style="border: none"
-              [ngStyle]="{ 'background-color': detail.day18 === 'weekend' ? '#e84e3d' : '' }"
+              [ngStyle]="{ 'background-color': detail.day18 === 'off' ? '#e84e3d' : '' }"
               [ngStyle]="{ 'pointer-events': !isEdit ? 'none' : '' }"
               class="form-select"
               id="field_day18"
@@ -422,13 +439,14 @@
             >
               <option [value]="'+'">+</option>
               <option [value]="'-'">-</option>
+              <option [value]="'L'">L</option>
             </select>
           </td>
 
-          <td [ngStyle]="{ 'background-color': detail.day19 === 'weekend' ? '#e84e3d' : '' }">
+          <td [ngStyle]="{ 'background-color': detail.day19 === 'off' ? '#e84e3d' : '' }">
             <select
               style="border: none"
-              [ngStyle]="{ 'background-color': detail.day19 === 'weekend' ? '#e84e3d' : '' }"
+              [ngStyle]="{ 'background-color': detail.day19 === 'off' ? '#e84e3d' : '' }"
               [ngStyle]="{ 'pointer-events': !isEdit ? 'none' : '' }"
               class="form-select"
               id="field_day19"
@@ -438,13 +456,14 @@
             >
               <option [value]="'+'">+</option>
               <option [value]="'-'">-</option>
+              <option [value]="'L'">L</option>
             </select>
           </td>
 
-          <td [ngStyle]="{ 'background-color': detail.day20 === 'weekend' ? '#e84e3d' : '' }">
+          <td [ngStyle]="{ 'background-color': detail.day20 === 'off' ? '#e84e3d' : '' }">
             <select
               style="border: none"
-              [ngStyle]="{ 'background-color': detail.day20 === 'weekend' ? '#e84e3d' : '' }"
+              [ngStyle]="{ 'background-color': detail.day20 === 'off' ? '#e84e3d' : '' }"
               [ngStyle]="{ 'pointer-events': !isEdit ? 'none' : '' }"
               class="form-select"
               id="field_day20"
@@ -454,13 +473,14 @@
             >
               <option [value]="'+'">+</option>
               <option [value]="'-'">-</option>
+              <option [value]="'L'">L</option>
             </select>
           </td>
 
-          <td [ngStyle]="{ 'background-color': detail.day21 === 'weekend' ? '#e84e3d' : '' }">
+          <td [ngStyle]="{ 'background-color': detail.day21 === 'off' ? '#e84e3d' : '' }">
             <select
               style="border: none"
-              [ngStyle]="{ 'background-color': detail.day21 === 'weekend' ? '#e84e3d' : '' }"
+              [ngStyle]="{ 'background-color': detail.day21 === 'off' ? '#e84e3d' : '' }"
               [ngStyle]="{ 'pointer-events': !isEdit ? 'none' : '' }"
               class="form-select"
               id="field_day21"
@@ -470,13 +490,14 @@
             >
               <option [value]="'+'">+</option>
               <option [value]="'-'">-</option>
+              <option [value]="'L'">L</option>
             </select>
           </td>
 
-          <td [ngStyle]="{ 'background-color': detail.day22 === 'weekend' ? '#e84e3d' : '' }">
+          <td [ngStyle]="{ 'background-color': detail.day22 === 'off' ? '#e84e3d' : '' }">
             <select
               style="border: none"
-              [ngStyle]="{ 'background-color': detail.day22 === 'weekend' ? '#e84e3d' : '' }"
+              [ngStyle]="{ 'background-color': detail.day22 === 'off' ? '#e84e3d' : '' }"
               [ngStyle]="{ 'pointer-events': !isEdit ? 'none' : '' }"
               class="form-select"
               id="field_day22"
@@ -486,12 +507,13 @@
             >
               <option [value]="'+'">+</option>
               <option [value]="'-'">-</option>
+              <option [value]="'L'">L</option>
             </select>
           </td>
-          <td [ngStyle]="{ 'background-color': detail.day23 === 'weekend' ? '#e84e3d' : '' }">
+          <td [ngStyle]="{ 'background-color': detail.day23 === 'off' ? '#e84e3d' : '' }">
             <select
               style="border: none"
-              [ngStyle]="{ 'background-color': detail.day23 === 'weekend' ? '#e84e3d' : '' }"
+              [ngStyle]="{ 'background-color': detail.day23 === 'off' ? '#e84e3d' : '' }"
               [ngStyle]="{ 'pointer-events': !isEdit ? 'none' : '' }"
               class="form-select"
               id="field_day23"
@@ -501,13 +523,14 @@
             >
               <option [value]="'+'">+</option>
               <option [value]="'-'">-</option>
+              <option [value]="'L'">L</option>
             </select>
           </td>
 
-          <td [ngStyle]="{ 'background-color': detail.day24 === 'weekend' ? '#e84e3d' : '' }">
+          <td [ngStyle]="{ 'background-color': detail.day24 === 'off' ? '#e84e3d' : '' }">
             <select
               style="border: none"
-              [ngStyle]="{ 'background-color': detail.day24 === 'weekend' ? '#e84e3d' : '' }"
+              [ngStyle]="{ 'background-color': detail.day24 === 'off' ? '#e84e3d' : '' }"
               [ngStyle]="{ 'pointer-events': !isEdit ? 'none' : '' }"
               class="form-select"
               id="field_day24"
@@ -517,13 +540,14 @@
             >
               <option [value]="'+'">+</option>
               <option [value]="'-'">-</option>
+              <option [value]="'L'">L</option>
             </select>
           </td>
 
-          <td [ngStyle]="{ 'background-color': detail.day25 === 'weekend' ? '#e84e3d' : '' }">
+          <td [ngStyle]="{ 'background-color': detail.day25 === 'off' ? '#e84e3d' : '' }">
             <select
               style="border: none"
-              [ngStyle]="{ 'background-color': detail.day25 === 'weekend' ? '#e84e3d' : '' }"
+              [ngStyle]="{ 'background-color': detail.day25 === 'off' ? '#e84e3d' : '' }"
               [ngStyle]="{ 'pointer-events': !isEdit ? 'none' : '' }"
               class="form-select"
               id="field_day25"
@@ -533,13 +557,14 @@
             >
               <option [value]="'+'">+</option>
               <option [value]="'-'">-</option>
+              <option [value]="'L'">L</option>
             </select>
           </td>
 
-          <td [ngStyle]="{ 'background-color': detail.day26 === 'weekend' ? '#e84e3d' : '' }">
+          <td [ngStyle]="{ 'background-color': detail.day26 === 'off' ? '#e84e3d' : '' }">
             <select
               style="border: none"
-              [ngStyle]="{ 'background-color': detail.day26 === 'weekend' ? '#e84e3d' : '' }"
+              [ngStyle]="{ 'background-color': detail.day26 === 'off' ? '#e84e3d' : '' }"
               [ngStyle]="{ 'pointer-events': !isEdit ? 'none' : '' }"
               class="form-select"
               id="field_day26"
@@ -549,13 +574,14 @@
             >
               <option [value]="'+'">+</option>
               <option [value]="'-'">-</option>
+              <option [value]="'L'">L</option>
             </select>
           </td>
 
-          <td [ngStyle]="{ 'background-color': detail.day27 === 'weekend' ? '#e84e3d' : '' }">
+          <td [ngStyle]="{ 'background-color': detail.day27 === 'off' ? '#e84e3d' : '' }">
             <select
               style="border: none"
-              [ngStyle]="{ 'background-color': detail.day27 === 'weekend' ? '#e84e3d' : '' }"
+              [ngStyle]="{ 'background-color': detail.day27 === 'off' ? '#e84e3d' : '' }"
               [ngStyle]="{ 'pointer-events': !isEdit ? 'none' : '' }"
               class="form-select"
               id="field_day27"
@@ -565,13 +591,14 @@
             >
               <option [value]="'+'">+</option>
               <option [value]="'-'">-</option>
+              <option [value]="'L'">L</option>
             </select>
           </td>
 
-          <td [ngStyle]="{ 'background-color': detail.day28 === 'weekend' ? '#e84e3d' : '' }">
+          <td [ngStyle]="{ 'background-color': detail.day28 === 'off' ? '#e84e3d' : '' }">
             <select
               style="border: none"
-              [ngStyle]="{ 'background-color': detail.day28 === 'weekend' ? '#e84e3d' : '' }"
+              [ngStyle]="{ 'background-color': detail.day28 === 'off' ? '#e84e3d' : '' }"
               [ngStyle]="{ 'pointer-events': !isEdit ? 'none' : '' }"
               class="form-select"
               id="field_day28"
@@ -581,16 +608,17 @@
             >
               <option [value]="'+'">+</option>
               <option [value]="'-'">-</option>
+              <option [value]="'L'">L</option>
             </select>
           </td>
 
           <td
             *ngIf="checkMonth === 31 || checkMonth === 30 || checkMonth === 29"
-            [ngStyle]="{ 'background-color': detail.day29 === 'weekend' ? '#e84e3d' : '' }"
+            [ngStyle]="{ 'background-color': detail.day29 === 'off' ? '#e84e3d' : '' }"
           >
             <select
               style="border: none"
-              [ngStyle]="{ 'background-color': detail.day29 === 'weekend' ? '#e84e3d' : '' }"
+              [ngStyle]="{ 'background-color': detail.day29 === 'off' ? '#e84e3d' : '' }"
               [ngStyle]="{ 'pointer-events': !isEdit ? 'none' : '' }"
               class="form-select"
               id="field_day29"
@@ -600,16 +628,14 @@
             >
               <option [value]="'+'">+</option>
               <option [value]="'-'">-</option>
+              <option [value]="'L'">L</option>
             </select>
           </td>
 
-          <td
-            *ngIf="checkMonth === 31 || checkMonth === 30"
-            [ngStyle]="{ 'background-color': detail.day30 === 'weekend' ? '#e84e3d' : '' }"
-          >
+          <td *ngIf="checkMonth === 31 || checkMonth === 30" [ngStyle]="{ 'background-color': detail.day30 === 'off' ? '#e84e3d' : '' }">
             <select
               style="border: none"
-              [ngStyle]="{ 'background-color': detail.day30 === 'weekend' ? '#e84e3d' : '' }"
+              [ngStyle]="{ 'background-color': detail.day30 === 'off' ? '#e84e3d' : '' }"
               [ngStyle]="{ 'pointer-events': !isEdit ? 'none' : '' }"
               class="form-select"
               id="field_day30"
@@ -619,13 +645,14 @@
             >
               <option [value]="'+'">+</option>
               <option [value]="'-'">-</option>
+              <option [value]="'L'">L</option>
             </select>
           </td>
 
-          <td *ngIf="checkMonth === 31" [ngStyle]="{ 'background-color': detail.day31 === 'weekend' ? '#e84e3d' : '' }">
+          <td *ngIf="checkMonth === 31" [ngStyle]="{ 'background-color': detail.day31 === 'off' ? '#e84e3d' : '' }">
             <select
               style="border: none"
-              [ngStyle]="{ 'background-color': detail.day31 === 'weekend' ? '#e84e3d' : '' }"
+              [ngStyle]="{ 'background-color': detail.day31 === 'off' ? '#e84e3d' : '' }"
               [ngStyle]="{ 'pointer-events': !isEdit ? 'none' : '' }"
               class="form-select"
               id="field_day31"
@@ -635,6 +662,7 @@
             >
               <option [value]="'+'">+</option>
               <option [value]="'-'">-</option>
+              <option [value]="'L'">L</option>
             </select>
           </td>
 
