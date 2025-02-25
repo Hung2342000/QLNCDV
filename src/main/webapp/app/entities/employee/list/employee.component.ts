@@ -207,6 +207,7 @@ export class EmployeeComponent implements OnInit {
             resultObject.serviceTypeName = this.employeesImportCheck[i][11];
             resultObject.region = this.employeesImportCheck[i][12];
             resultObject.rank = this.employeesImportCheck[i][13];
+            resultObject.diaBan = this.employeesImportCheck[i][14];
             this.employeesImport.push(resultObject);
           }
         }
