@@ -407,7 +407,9 @@ public class EmployeeService {
             cell14.setCellStyle(detailStyle);
 
             Cell cell15 = row.createCell(15);
-            cell15.setCellValue(rowData.getBasicSalary() != null ? rowData.getBasicSalary().doubleValue() : null);
+            if (rowData.getBasicSalary() != null) {
+                cell15.setCellValue(rowData.getBasicSalary().doubleValue());
+            } else cell15.setCellValue("");
             cell15.setCellStyle(detailStyle);
 
             Cell cell16 = row.createCell(16);

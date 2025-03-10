@@ -1046,9 +1046,12 @@ public class SalaryDetailService {
                     cell.setCellStyle(detailStyleTieuDe);
                 } else if (i == 13) {
                     Cell cell = tongCong.createCell(i);
-                    cell.setCellValue(
-                        phiCoDinhThanhToanThucTeTongCong != BigDecimal.ZERO ? phiCoDinhThanhToanThucTeTongCong.toString() : ""
-                    );
+                    if (phiCoDinhThanhToanThucTeTongCong != null && phiCoDinhThanhToanThucTeTongCong != BigDecimal.ZERO) {
+                        cell.setCellValue(phiCoDinhThanhToanThucTeTongCong.doubleValue());
+                    } else cell.setCellValue("");
+                    //                    cell.setCellValue(
+                    //                        phiCoDinhThanhToanThucTeTongCong != BigDecimal.ZERO ? phiCoDinhThanhToanThucTeTongCong.toString() : ""
+                    //                    );
                     cell.setCellStyle(detailStyleTieuDe);
                 } else if (i == 14) {
                     Cell cell = tongCong.createCell(i);

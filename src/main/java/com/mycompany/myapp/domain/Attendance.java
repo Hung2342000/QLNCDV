@@ -61,6 +61,30 @@ public class Attendance implements Serializable {
     @Column(name = "ngay_nghi")
     private String ngayNghi;
 
+    public Attendance() {}
+
+    public Attendance(
+        Long id,
+        String name,
+        LocalDate createDate,
+        Long month,
+        Long year,
+        String note,
+        String departmentCode,
+        BigDecimal numberWork,
+        String ngayNghi
+    ) {
+        this.id = id;
+        this.name = name;
+        this.createDate = createDate;
+        this.month = month;
+        this.year = year;
+        this.note = note;
+        this.departmentCode = departmentCode;
+        this.numberWork = numberWork;
+        this.ngayNghi = ngayNghi;
+    }
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {

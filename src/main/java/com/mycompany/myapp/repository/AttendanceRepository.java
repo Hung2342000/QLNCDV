@@ -15,12 +15,26 @@ import org.springframework.stereotype.Repository;
 @SuppressWarnings("unused")
 @Repository
 public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
-    @Query("select a from Attendance a where a.month = :month and a.year = :year")
+    @Query("select a from Attendance a where a.month = :month and a.year = :year ")
     Attendance getAttendanceByMonthEndYear(@Param("month") Long month, @Param("year") Long year);
 
-    @Query("select a from Attendance a where a.departmentCode = :departmentCode")
+    @Query(
+        "select new Attendance (a.id, a.name, a.createDate, a.month, a.year, a.note, a.departmentCode,a.numberWork, a.ngayNghi) from Attendance a where a.departmentCode = :departmentCode "
+    )
     List<Attendance> getAttendanceByDepartment(@Param("departmentCode") String departmentCode);
 
-    @Query("select a from Attendance a where a.departmentCode = :departmentCode")
+    @Query(
+        "select new Attendance (a.id, a.name, a.createDate, a.month, a.year, a.note, a.departmentCode,a.numberWork, a.ngayNghi) from Attendance a "
+    )
+    List<Attendance> getAllAttendanceNoPage();
+
+    @Query(
+        "select new Attendance (a.id, a.name, a.createDate, a.month, a.year, a.note, a.departmentCode,a.numberWork, a.ngayNghi) from Attendance a where a.departmentCode = :departmentCode "
+    )
     Page<Attendance> getAttendanceByDepartment(@Param("departmentCode") String departmentCode, Pageable pageable);
+
+    @Query(
+        "select new Attendance (a.id, a.name, a.createDate, a.month, a.year, a.note, a.departmentCode,a.numberWork, a.ngayNghi) from Attendance a "
+    )
+    Page<Attendance> getAllAttendancePage(Pageable pageable);
 }

@@ -248,7 +248,7 @@ public class AttendanceService {
             !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(USER).contains(authority)) &&
             getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority))
         ) {
-            page = this.attendanceRepository.findAll(pageable);
+            page = this.attendanceRepository.getAllAttendancePage(pageable);
         } else if (
             authentication != null &&
             !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority)) &&
@@ -269,7 +269,7 @@ public class AttendanceService {
         user = userRepository.findOneByLogin(username).get();
         List<Attendance> list = new ArrayList<>();
         if (authentication != null && getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority))) {
-            list = this.attendanceRepository.findAll();
+            list = this.attendanceRepository.getAllAttendanceNoPage();
         } else if (
             authentication != null && !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority))
         ) {

@@ -19,7 +19,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     @Query(
         "select a from Employee a where LOWER(a.codeEmployee) LIKE %:searchCode% " +
         "AND LOWER(a.name) LIKE %:searchName% and a.department LIKE %:searchDepartment% " +
-        "and a.nhom = :searchNhom and a.status LIKE %:searchStatus% and a.serviceTypeName LIKE %:searchService% and (a.startDate <= TO_DATE(:searchStartDate, 'YYYY-MM-DD') or a.startDate is null)"
+        "and a.nhom = :searchNhom and a.status LIKE %:searchStatus% and a.serviceTypeName LIKE %:searchService% and (a.startDate <= TO_DATE(:searchStartDate, 'YYYY-MM-DD') or a.startDate is null )"
     )
     Page<Employee> listAllEmployees(
         @Param("searchCode") String searchCode,
@@ -35,7 +35,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     @Query(
         "select a from Employee a where LOWER(a.codeEmployee) LIKE %:searchCode% " +
         "AND LOWER(a.name) LIKE %:searchName% and a.department LIKE %:searchDepartment% and a.status LIKE %:searchStatus% " +
-        "and a.serviceTypeName LIKE %:searchService% and (a.startDate <= TO_DATE(:searchStartDate, 'YYYY-MM-DD') or a.startDate is null)"
+        "and a.serviceTypeName LIKE %:searchService% and (a.startDate <= TO_DATE(:searchStartDate, 'YYYY-MM-DD') or a.startDate is null )"
     )
     Page<Employee> listAllEmployeesNoNhom(
         @Param("searchCode") String searchCode,
@@ -50,7 +50,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     @Query(
         "select a from Employee a where LOWER(a.codeEmployee) LIKE %:searchCode% " +
         "AND LOWER(a.name) LIKE %:searchName% and a.department = :department and a.nhom LIKE %:searchNhom% and a.status LIKE %:searchStatus% and a.serviceTypeName " +
-        "LIKE %:searchService% and (a.startDate <= TO_DATE(:searchStartDate, 'YYYY-MM-DD') or a.startDate is null)"
+        "LIKE %:searchService% and (a.startDate <= TO_DATE(:searchStartDate, 'YYYY-MM-DD') or a.startDate is null )"
     )
     Page<Employee> listAllEmployeesDepartment(
         @Param("searchCode") String searchCode,

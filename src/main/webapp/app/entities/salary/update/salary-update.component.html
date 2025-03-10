@@ -360,7 +360,6 @@
             <th style="min-width: 240px !important; position: sticky; left: 45px; z-index: 2; background: #3b3e66">
               <span>Nhân viên</span>
             </th>
-            <th style="min-width: 90px !important">Địa bàn</th>
             <th style="min-width: 90px !important">Vùng</th>
             <th style="min-width: 90px !important">Mức lương cố định</th>
             <th style="min-width: 90px !important">Kpis</th>
@@ -391,20 +390,6 @@
               >
                 <option *ngFor="let employee of employeeList" [value]="employee.id">{{ employee.name }}</option>
               </select>
-            </td>
-
-            <td>
-              <div class="input-group">
-                <input
-                  [readOnly]="!isEdit"
-                  style="border: none; outline: none; background: white"
-                  type="text"
-                  class="form-control"
-                  name="diaBan"
-                  data-cy="diaBan"
-                  formControlName="diaBan"
-                />
-              </div>
             </td>
 
             <td>
@@ -1245,7 +1230,7 @@
             <th style="min-width: 240px !important; position: sticky; left: 45px; z-index: 2; background: #3b3e66">
               <span>Nhân viên</span>
             </th>
-            <th style="min-width: 90px !important">Địa bàn</th>
+            <th style="min-width: 190px !important">Địa bàn</th>
             <th style="min-width: 90px !important">Vùng</th>
             <th style="min-width: 90px !important">Đơn giá thuê dịch vụ</th>
             <th style="min-width: 90px !important">Mức chi trả tối thiểu</th>

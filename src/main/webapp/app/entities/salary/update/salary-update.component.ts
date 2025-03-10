@@ -145,7 +145,6 @@ export class SalaryUpdateComponent implements OnInit {
       id: [itemAm.id],
       salaryId: [itemAm.salaryId],
       employeeId: [itemAm.employeeId],
-      diaBan: [itemAm.diaBan],
       vung: [itemAm.vung],
       mucChiToiThieu: [itemAm.mucChiToiThieu],
       kpis: [itemAm.kpis],

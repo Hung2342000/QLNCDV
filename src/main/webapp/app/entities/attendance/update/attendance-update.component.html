@@ -77,10 +77,10 @@
       <thead style="background-color: #3b3e66; color: white; position: sticky; top: 0; z-index: 1000">
         <tr>
           <th style="width: 50px; position: sticky; left: 0; z-index: 2; background: #3b3e66"><span>STT</span></th>
+          <th style="min-width: 240px !important; position: sticky; left: 45px; z-index: 2; background: #3b3e66"><span>Nhân viên</span></th>
           <th style="width: 140px !important; background: #3b3e66">
             <span>Mã nhân viên</span>
           </th>
-          <th style="min-width: 240px !important; position: sticky; left: 45px; z-index: 2; background: #3b3e66"><span>Nhân viên</span></th>
           <th style="min-width: 140px !important"><span>Đơn vị</span></th>
           <th style="min-width: 240px !important"><span>Loại hình</span></th>
           <th style="min-width: 90px !important">Ngày 1</th>
@@ -122,12 +122,11 @@
         <tr *ngFor="let detail of details.value; let i = index; trackBy: trackId" [formGroupName]="i">
           <td style="position: sticky; left: 0; z-index: 2; background: white">{{ i + 1 }}</td>
 
-          <td style="background: white">
-            <span>{{ detail.employeeCode }}</span>
-          </td>
-
           <td style="position: sticky; left: 45px; z-index: 2; background: white">
             <span>{{ detail.employeeName }}</span>
+          </td>
+          <td style="background: white">
+            <span>{{ detail.employeeCode }}</span>
           </td>
           <td style="background: white">
             <span>{{ detail.department }}</span>
