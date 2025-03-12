@@ -85,6 +85,15 @@ public class Employee implements Serializable {
     @Column(name = "status")
     private String status;
 
+    @Column(name = "note")
+    private String note;
+
+    @Column(name = "ngay_nghi_sinh")
+    private LocalDate ngayNghiSinh;
+
+    @Column(name = "ngay_dieu_chuyen")
+    private LocalDate ngayDieuChuyen;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -321,6 +330,30 @@ public class Employee implements Serializable {
 
     public void setDiaBan(String diaBan) {
         this.diaBan = diaBan;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    public LocalDate getNgayNghiSinh() {
+        return ngayNghiSinh;
+    }
+
+    public void setNgayNghiSinh(LocalDate ngayNghiSinh) {
+        this.ngayNghiSinh = ngayNghiSinh;
+    }
+
+    public LocalDate getNgayDieuChuyen() {
+        return ngayDieuChuyen;
+    }
+
+    public void setNgayDieuChuyen(LocalDate ngayDieuChuyen) {
+        this.ngayDieuChuyen = ngayDieuChuyen;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

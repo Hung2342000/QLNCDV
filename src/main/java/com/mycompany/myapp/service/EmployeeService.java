@@ -8,6 +8,7 @@ import com.mycompany.myapp.repository.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -204,6 +205,33 @@ public class EmployeeService {
                 employee.setStatus("Đang làm việc");
             }
         }
+
+        Employee employeeCheck = new Employee();
+        if (employee.getId() != null) {
+            employeeCheck = employeeRepository.findById(employee.getId()).get();
+        }
+        String note = "Từ ngày ";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate today = LocalDate.now();
+
+        String formattedDate = today.format(formatter);
+        if (employee.getNgayDieuChuyen() != null) {
+            note = note + employee.getNgayDieuChuyen().format(formatter) + " ";
+        } else note = note + formattedDate + " ";
+        if (employeeCheck != null) {
+            employee.setNote(employeeCheck.getNote());
+            if (!employeeCheck.getDepartment().equals(employee.getDepartment())) {
+                String nameDepartmentCheck = departmentRepository.getDepartmentName(employeeCheck.getDepartment());
+                String nameDepartment = departmentRepository.getDepartmentName(employee.getDepartment());
+                note = note + " Điều chuyển " + nameDepartmentCheck + " đến " + nameDepartment + ".";
+                employee.setNote(employee.getNote() != null ? employee.getNote() + " " + note : note);
+            }
+            if (!employeeCheck.getServiceTypeName().equals(employee.getServiceTypeName())) {
+                note = note + " Điều chuyển " + employeeCheck.getServiceTypeName() + " thành " + employee.getServiceTypeName() + ".";
+                employee.setNote(employee.getNote() != null ? employee.getNote() + " " + note : note);
+            }
+        }
+
         employeeRepository.save(employee);
         return employee;
     }
@@ -232,7 +260,8 @@ public class EmployeeService {
         return employeeList;
     }
 
-    public byte[] export(String searchCode, String searchName, String searchDepartment, String searchNhom) throws IOException {
+    public byte[] export(String searchCode, String searchName, String searchDepartment, String searchNhom, String searchStartDate)
+        throws IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username;
         User user = new User();
@@ -240,6 +269,9 @@ public class EmployeeService {
         UserDetails userDetails = (UserDetails) principal;
         username = userDetails.getUsername();
         user = userRepository.findOneByLogin(username).get();
+        if (searchStartDate.equals("")) {
+            searchStartDate = "2200-12-01";
+        }
         List<Employee> employeeList = new ArrayList<>();
         if (
             authentication != null &&
@@ -247,11 +279,18 @@ public class EmployeeService {
             getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority))
         ) {
             employeeList =
-                employeeRepository.listAllEmployeesExport(searchCode.toLowerCase(), searchName.toLowerCase(), searchDepartment, searchNhom);
+                employeeRepository.listAllEmployeesExport(
+                    searchCode.toLowerCase(),
+                    searchName.toLowerCase(),
+                    searchDepartment,
+                    searchNhom,
+                    searchStartDate
+                );
         } else if (
             authentication != null && !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority))
         ) {
-            employeeList = employeeRepository.listAllEmployeesExport(searchCode, searchName, user.getDepartment(), searchNhom);
+            employeeList =
+                employeeRepository.listAllEmployeesExport(searchCode, searchName, user.getDepartment(), searchNhom, searchStartDate);
         }
 
         XSSFWorkbook workbook = new XSSFWorkbook();
@@ -318,13 +357,25 @@ public class EmployeeService {
 
         Row rowTableName = sheet.createRow(3);
         Cell cellTableName = rowTableName.createCell(0);
-        cellTableName.setCellValue("DANH SÁCH NHÂN VIÊN");
+        cellTableName.setCellValue("Danh sách lao động dịch vụ hỗ trợ sản xuất kinh doanh Công ty Dịch vụ MobiFone Khu vực 4");
         cellTableName.setCellStyle(tableName);
         sheet.addMergedRegion(new CellRangeAddress(3, 3, 0, 10));
-
+        LocalDate today = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String formattedDate = today.format(formatter);
 
-        int rowNum = 7;
+        Row rowNgayXuat = sheet.createRow(4);
+        Cell cellNgayXuat = rowNgayXuat.createCell(0);
+        if (!searchStartDate.equals("2200-12-01") && searchStartDate != null) {
+            LocalDate localDate = LocalDate.parse(searchStartDate);
+
+            cellNgayXuat.setCellValue("Thời điểm thống kê: " + localDate.format(formatter));
+        } else cellNgayXuat.setCellValue("Thời điểm thống kê: " + formattedDate);
+
+        cellNgayXuat.setCellStyle(tableName);
+        sheet.addMergedRegion(new CellRangeAddress(4, 4, 0, 10));
+
+        int rowNum = 8;
         Row headerRow = sheet.createRow(rowNum++);
 
         for (int i = 0; i < headers.length; i++) {
@@ -415,6 +466,7 @@ public class EmployeeService {
             Cell cell16 = row.createCell(16);
             cell16.setCellValue(rowData.getStatus() != null ? rowData.getStatus() : "");
             cell16.setCellStyle(detailStyle);
+            stt++;
         }
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         workbook.write(bos);

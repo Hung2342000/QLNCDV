@@ -125,21 +125,23 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     List<CountEmployee> listAllEmployeesDepartmentNoPage();
 
     @Query(
-        "select a from Employee a where LOWER(a.codeEmployee) LIKE %:searchCode% AND LOWER(a.name) LIKE %:searchName% and a.department LIKE %:searchDepartment% and a.nhom  LIKE %:searchNhom%"
+        "select a from Employee a where LOWER(a.codeEmployee) LIKE %:searchCode% AND LOWER(a.name) LIKE %:searchName% and a.department LIKE %:searchDepartment% and a.nhom  LIKE %:searchNhom% and (a.startDate <= TO_DATE(:searchStartDate, 'YYYY-MM-DD') or a.startDate is null)"
     )
     List<Employee> listAllEmployeesExport(
         @Param("searchCode") String searchCode,
         @Param("searchName") String searchName,
         @Param("searchDepartment") String searchDepartment,
-        @Param("searchNhom") String searchNhom
+        @Param("searchNhom") String searchNhom,
+        @Param("searchStartDate") String searchStartDate
     );
 
     @Query(
-        "select a from Employee a where LOWER(a.codeEmployee) LIKE %:searchCode% AND LOWER(a.name) LIKE %:searchName% and a.nhom = :searchNhom"
+        "select a from Employee a where LOWER(a.codeEmployee) LIKE %:searchCode% AND LOWER(a.name) LIKE %:searchName% and a.nhom = :searchNhom and (a.startDate <= TO_DATE(:searchStartDate, 'YYYY-MM-DD') or a.startDate is null) "
     )
     List<Employee> listAllEmployeesExporUser(
         @Param("searchCode") String searchCode,
         @Param("searchName") String searchName,
-        @Param("searchNhom") String searchNhom
+        @Param("searchNhom") String searchNhom,
+        @Param("searchStartDate") String searchStartDate
     );
 }

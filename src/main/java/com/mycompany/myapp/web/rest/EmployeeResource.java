@@ -3,6 +3,7 @@ package com.mycompany.myapp.web.rest;
 import com.mycompany.myapp.domain.CountEmployee;
 import com.mycompany.myapp.domain.Employee;
 import com.mycompany.myapp.repository.CountEmployeeRepository;
+import com.mycompany.myapp.repository.DepartmentRepository;
 import com.mycompany.myapp.repository.EmployeeRepository;
 import com.mycompany.myapp.service.EmployeeService;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
@@ -46,15 +47,18 @@ public class EmployeeResource {
     private String applicationName;
 
     private final EmployeeRepository employeeRepository;
+    private final DepartmentRepository departmentRepository;
     private final CountEmployeeRepository countEmployeeRepository;
     private final EmployeeService employeeService;
 
     public EmployeeResource(
         EmployeeRepository employeeRepository,
+        DepartmentRepository departmentRepository,
         CountEmployeeRepository countEmployeeRepository,
         EmployeeService employeeService
     ) {
         this.employeeRepository = employeeRepository;
+        this.departmentRepository = departmentRepository;
         this.countEmployeeRepository = countEmployeeRepository;
         this.employeeService = employeeService;
     }
@@ -106,7 +110,6 @@ public class EmployeeResource {
         if (!employeeRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-
         Employee result = employeeService.saveEmployee(employee);
         return ResponseEntity
             .ok()
@@ -300,10 +303,15 @@ public class EmployeeResource {
     }
 
     @GetMapping("/employees/export")
-    public ResponseEntity<byte[]> getAllEmployeesExport(String searchCode, String searchName, String searchDepartment, String searchNhom)
-        throws IOException {
+    public ResponseEntity<byte[]> getAllEmployeesExport(
+        String searchCode,
+        String searchName,
+        String searchDepartment,
+        String searchNhom,
+        String searchStartDate
+    ) throws IOException {
         log.debug("REST request to get a page of Employees");
-        byte[] excelBytes = employeeService.export(searchCode, searchName, searchDepartment, searchNhom);
+        byte[] excelBytes = employeeService.export(searchCode, searchName, searchDepartment, searchNhom, searchStartDate);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
         headers.setContentDispositionFormData("attachment", "bangchamcong.xlsx");

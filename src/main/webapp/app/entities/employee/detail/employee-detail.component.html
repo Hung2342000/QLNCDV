@@ -25,6 +25,10 @@
             <span style="margin-right: 10px; font-weight: bold">Trạng thái</span>
             <span>{{ employee.status }}</span>
           </div>
+          <div style="display: flex; margin-bottom: 15px; flex-wrap: wrap">
+            <span style="margin-right: 10px; font-weight: bold">Ghi chú</span>
+            <span>{{ employee.note }}</span>
+          </div>
         </div>
 
         <div class="col-md-4">
@@ -49,12 +53,12 @@
             <span style="margin-right: 10px; font-weight: bold">Địa chỉ</span>
             <span>{{ employee.address }}</span>
           </div>
-        </div>
-        <div class="col-md-4">
           <div style="display: flex; margin-bottom: 15px; flex-wrap: wrap">
             <span style="margin-right: 10px; font-weight: bold">Ngày vào làm việc</span>
             <span>{{ employee.startDate | formatDateVnPipe }}</span>
           </div>
+        </div>
+        <div class="col-md-4">
           <div style="display: flex; margin-bottom: 15px; flex-wrap: wrap">
             <span style="margin-right: 10px; font-weight: bold">Phòng ban</span>
             <span>{{ departmentName(employee.department) }}</span>

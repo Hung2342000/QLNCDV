@@ -145,6 +145,18 @@ export class EmployeeService {
           : typeof employee.closeDate === 'string'
           ? dayjs(employee.closeDate, 'DD-MM-YYYY').format(DATE_FORMAT)
           : dayjs(employee.closeDate).format(DATE_FORMAT),
+      ngayNghiSinh:
+        employee.ngayNghiSinh === undefined
+          ? undefined
+          : typeof employee.ngayNghiSinh === 'string'
+          ? dayjs(employee.ngayNghiSinh, 'DD-MM-YYYY').format(DATE_FORMAT)
+          : dayjs(employee.ngayNghiSinh).format(DATE_FORMAT),
+      ngayDieuChuyen:
+        employee.ngayDieuChuyen === undefined
+          ? undefined
+          : typeof employee.ngayDieuChuyen === 'string'
+          ? dayjs(employee.ngayDieuChuyen, 'DD-MM-YYYY').format(DATE_FORMAT)
+          : dayjs(employee.ngayDieuChuyen).format(DATE_FORMAT),
     });
   }
 
@@ -153,6 +165,8 @@ export class EmployeeService {
       res.body.birthday = res.body.birthday ? dayjs(res.body.birthday) : undefined;
       res.body.startDate = res.body.startDate ? dayjs(res.body.startDate) : undefined;
       res.body.closeDate = res.body.closeDate ? dayjs(res.body.closeDate) : undefined;
+      res.body.ngayNghiSinh = res.body.ngayNghiSinh ? dayjs(res.body.ngayNghiSinh) : undefined;
+      res.body.ngayDieuChuyen = res.body.ngayDieuChuyen ? dayjs(res.body.ngayDieuChuyen) : undefined;
     }
     return res;
   }
@@ -163,6 +177,8 @@ export class EmployeeService {
         employee.birthday = employee.birthday ? dayjs(employee.birthday) : undefined;
         employee.startDate = employee.startDate ? dayjs(employee.startDate) : undefined;
         employee.closeDate = employee.closeDate ? dayjs(employee.closeDate) : undefined;
+        employee.ngayNghiSinh = employee.ngayNghiSinh ? dayjs(employee.ngayNghiSinh) : undefined;
+        employee.ngayDieuChuyen = employee.ngayDieuChuyen ? dayjs(employee.ngayDieuChuyen) : undefined;
       });
     }
     return res;
@@ -173,6 +189,7 @@ export class EmployeeService {
       employee.birthday = employee.birthday ? dayjs(employee.birthday, 'DD/MM/YYYY').add(1, 'day') : undefined;
       employee.startDate = employee.startDate ? dayjs(employee.startDate, 'DD/MM/YYYY').add(1, 'day') : undefined;
       employee.closeDate = employee.closeDate ? dayjs(employee.closeDate, 'DD/MM/YYYY').add(1, 'day') : undefined;
+      employee.ngayNghiSinh = employee.ngayNghiSinh ? dayjs(employee.ngayNghiSinh, 'DD/MM/YYYY').add(1, 'day') : undefined;
     });
     return res;
   }

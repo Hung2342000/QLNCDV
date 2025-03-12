@@ -23,6 +23,9 @@ export interface IEmployee {
   nhom?: string | null;
   diaBan?: string | null;
   status?: string | null;
+  note?: string | null;
+  ngayNghiSinh?: dayjs.Dayjs | null;
+  ngayDieuChuyen?: dayjs.Dayjs | null;
 }
 
 export class Employee implements IEmployee {
@@ -48,7 +51,10 @@ export class Employee implements IEmployee {
     public rank?: string | null,
     public nhom?: string | null,
     public diaBan?: string | null,
-    public status?: string | null
+    public status?: string | null,
+    public note?: string | null,
+    public ngayNghiSinh?: dayjs.Dayjs | null,
+    public ngayDieuChuyen?: dayjs.Dayjs | null
   ) {}
 }
 

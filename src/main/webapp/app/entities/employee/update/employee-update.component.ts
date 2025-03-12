@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -10,6 +10,8 @@ import { EmployeeService } from '../service/employee.service';
 import { IDepartment } from '../department.model';
 import { DATE_FORMAT_CUSTOM } from '../../../config/input.constants';
 import { IServiceType } from '../service-type.model';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ToastComponent } from '../../../layouts/toast/toast.component';
 
 @Component({
   selector: 'jhi-employee-update',
@@ -17,6 +19,8 @@ import { IServiceType } from '../service-type.model';
   styleUrls: ['./employee-update.component.scss'],
 })
 export class EmployeeUpdateComponent implements OnInit {
+  @ViewChild('dieuchuyen') dieuchuyen: TemplateRef<any> | undefined;
+  @ViewChild('toast') toast!: ToastComponent;
   isSaving = false;
   departments?: IDepartment[] | any;
   serviceTypes?: IServiceType[] | any;
@@ -41,9 +45,16 @@ export class EmployeeUpdateComponent implements OnInit {
     rank: [],
     status: [],
     diaBan: [],
+    ngayNghiSinh: [],
+    ngayDieuChuyen: [],
   });
 
-  constructor(protected employeeService: EmployeeService, protected activatedRoute: ActivatedRoute, protected fb: FormBuilder) {}
+  constructor(
+    protected employeeService: EmployeeService,
+    protected modalService: NgbModal,
+    protected activatedRoute: ActivatedRoute,
+    protected fb: FormBuilder
+  ) {}
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ employee }) => {
@@ -64,6 +75,12 @@ export class EmployeeUpdateComponent implements OnInit {
   previousState(): void {
     window.history.back();
   }
+  closeModal(): void {
+    this.modalService.dismissAll();
+  }
+  dieuChuyenSave(): void {
+    const modalRef = this.modalService.open(this.dieuchuyen, { size: 'lg', backdrop: 'static' });
+  }
   save(): void {
     this.isSaving = true;
     const employee = this.createFromForm();
@@ -74,6 +91,16 @@ export class EmployeeUpdateComponent implements OnInit {
     }
   }
 
+  saveDieuChuyen(): void {
+    this.isSaving = true;
+    const employee = this.createFromForm();
+    if (employee.id !== undefined) {
+      this.subscribeToSaveResponseDieuChuyen(this.employeeService.update(employee));
+    } else {
+      this.subscribeToSaveResponseDieuChuyen(this.employeeService.create(employee));
+    }
+  }
+
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IEmployee>>): void {
     result.pipe(finalize(() => this.onSaveFinalize())).subscribe({
       next: () => this.onSaveSuccess(),
@@ -81,8 +108,18 @@ export class EmployeeUpdateComponent implements OnInit {
     });
   }
 
+  protected subscribeToSaveResponseDieuChuyen(result: Observable<HttpResponse<IEmployee>>): void {
+    result.pipe(finalize(() => this.onSaveFinalize())).subscribe({
+      next: () => {
+        this.toast.showToast('Lưu thành công');
+        this.closeModal();
+      },
+      error: () => this.onSaveError(),
+    });
+  }
+
   protected onSaveSuccess(): void {
-    this.previousState();
+    this.toast.showToast('Lưu thành công');
   }
 
   protected onSaveError(): void {
@@ -113,6 +150,8 @@ export class EmployeeUpdateComponent implements OnInit {
       rank: employee.rank,
       status: employee.status,
       diaBan: employee.diaBan,
+      ngayNghiSinh: employee.ngayNghiSinh?.format(DATE_FORMAT_CUSTOM),
+      ngayDieuChuyen: employee.ngayDieuChuyen?.format(DATE_FORMAT_CUSTOM),
     });
   }
 
@@ -137,6 +176,8 @@ export class EmployeeUpdateComponent implements OnInit {
       rank: this.editForm.get(['rank'])!.value,
       status: this.editForm.get(['status'])!.value,
       diaBan: this.editForm.get(['diaBan'])!.value,
+      ngayNghiSinh: this.editForm.get(['ngayNghiSinh'])!.value,
+      ngayDieuChuyen: this.editForm.get(['ngayDieuChuyen'])!.value,
     };
   }
 }

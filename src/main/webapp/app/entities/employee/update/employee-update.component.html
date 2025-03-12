@@ -110,12 +110,12 @@
         <div class="col-md-1"></div>
         <!-- Cột 3 -->
         <div class="col-md-3">
-          <div class="row mb-3">
-            <label class="form-label" jhiTranslate="qldvApp.employee.department" for="field_department">Phòng ban</label>
-            <select class="form-select" id="field_department" formControlName="department" data-cy="department" name="department">
-              <option *ngFor="let department of departments" [value]="department.code">{{ department.name }}</option>
-            </select>
-          </div>
+          <!--          <div class="row mb-3">-->
+          <!--            <label class="form-label" jhiTranslate="qldvApp.employee.department" for="field_department">Phòng ban</label>-->
+          <!--            <select class="form-select" id="field_department" formControlName="department" data-cy="department" name="department">-->
+          <!--              <option *ngFor="let department of departments" [value]="department.code">{{ department.name }}</option>-->
+          <!--            </select>-->
+          <!--          </div>-->
           <div class="row mb-3">
             <label class="form-label" jhiTranslate="qldvApp.employee.startDate" for="field_startDate">Ngày vào làm việc</label>
             <input
@@ -153,6 +153,22 @@
             <input type="text" class="form-control" name="address" id="field_address" data-cy="address" formControlName="address" />
           </div>
 
+          <div *ngIf="editForm.get('status')?.value === 'Đang '" class="row mb-3">
+            <label class="form-label" for="field_ngayNghiSinh">Ngày nghỉ sinh</label>
+            <input
+              style="background-color: #fff"
+              class="form-control"
+              type="text"
+              mwlFlatpickr
+              data-cy="ngayNghiSinh"
+              id="field_ngayNghiSinh"
+              name="ngayNghiSinh"
+              formControlName="ngayNghiSinh"
+              [dateFormat]="'d-m-Y'"
+              [convertModelValue]="true"
+            />
+          </div>
+
           <!--          <div class="row mb-3">-->
           <!--            <label class="form-label">Loại hình dịch vụ</label>-->
           <!--            <ng-select-->
@@ -178,33 +194,33 @@
           <!--          </div>-->
         </div>
       </div>
-      <div class="row">
-        <div style="margin-left: 4%" class="col-md-7">
-          <div class="row mb-3">
-            <label class="form-label">Loại hình dịch vụ</label>
-            <ng-select
-              id="field_serviceType"
-              formControlName="serviceType"
-              data-cy="serviceType"
-              name="serviceType"
-              class="form-select custom-ng-select"
-              [items]="serviceTypesCustom"
-              bindLabel="serviceName"
-              bindValue="id"
-              [searchable]="true"
-            >
-              <ng-template ng-option-tmp let-item="item">
-                <div class="option-row">
-                  <div class="column">{{ item.serviceName }}</div>
-                  <div class="column">{{ item.region }}</div>
-                  <div class="column">{{ item.rank }}</div>
-                  <div class="column">{{ item.basicSalary }}</div>
-                </div>
-              </ng-template>
-            </ng-select>
-          </div>
-        </div>
-      </div>
+      <!--      <div class="row">-->
+      <!--        <div style="margin-left: 4%" class="col-md-7">-->
+      <!--          <div class="row mb-3">-->
+      <!--            <label class="form-label">Loại hình dịch vụ</label>-->
+      <!--            <ng-select-->
+      <!--              id="field_serviceType"-->
+      <!--              formControlName="serviceType"-->
+      <!--              data-cy="serviceType"-->
+      <!--              name="serviceType"-->
+      <!--              class="form-select custom-ng-select"-->
+      <!--              [items]="serviceTypesCustom"-->
+      <!--              bindLabel="serviceName"-->
+      <!--              bindValue="id"-->
+      <!--              [searchable]="true"-->
+      <!--            >-->
+      <!--              <ng-template ng-option-tmp let-item="item">-->
+      <!--                <div class="option-row">-->
+      <!--                  <div class="column">{{ item.serviceName }}</div>-->
+      <!--                  <div class="column">{{ item.region }}</div>-->
+      <!--                  <div class="column">{{ item.rank }}</div>-->
+      <!--                  <div class="column">{{ item.basicSalary }}</div>-->
+      <!--                </div>-->
+      <!--              </ng-template>-->
+      <!--            </ng-select>-->
+      <!--          </div>-->
+      <!--        </div>-->
+      <!--      </div>-->
 
       <div class="text-end" style="margin-bottom: 30px; margin-top: 20px">
         <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-info btn-sm" (click)="previousState()">
@@ -213,7 +229,82 @@
         <button type="submit" id="save-entity" data-cy="entityCreateSaveButton" class="btn btn-primary btn-sm">
           <span>Lưu</span>
         </button>
+        <button type="button" data-cy="entityCreateSaveButton" (click)="dieuChuyenSave()" class="btn btn-primary btn-sm">
+          <span>Điều chuyển</span>
+        </button>
       </div>
     </form>
   </div>
 </div>
+
+<ng-template #dieuchuyen let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" data-cy="toolDeleteDialogHeading">Điều chuyển</h4>
+    <button type="button" class="btn-close" data-dismiss="modal" aria-hidden="true" (click)="closeModal()"></button>
+  </div>
+  <div class="modal-body">
+    <form
+      name="editForm"
+      role="form"
+      novalidate
+      (ngSubmit)="saveDieuChuyen()"
+      [formGroup]="editForm"
+      (keydown.enter)="$event.preventDefault()"
+    >
+      <div class="row" style="margin-left: 1%">
+        <div class="row mb-3">
+          <label class="form-label" jhiTranslate="qldvApp.employee.department" for="field_department">Phòng ban</label>
+          <select class="form-select" id="field_department" formControlName="department" data-cy="department" name="department">
+            <option *ngFor="let department of departments" [value]="department.code">{{ department.name }}</option>
+          </select>
+        </div>
+        <div class="row mb-3">
+          <label class="form-label">Loại hình dịch vụ</label>
+          <ng-select
+            id="field_serviceType"
+            formControlName="serviceType"
+            data-cy="serviceType"
+            name="serviceType"
+            class="form-select custom-ng-select"
+            [items]="serviceTypesCustom"
+            bindLabel="serviceName"
+            bindValue="id"
+            [searchable]="true"
+          >
+            <ng-template ng-option-tmp let-item="item">
+              <div class="option-row">
+                <div class="column">{{ item.serviceName }}</div>
+                <div class="column">{{ item.region }}</div>
+                <div class="column">{{ item.rank }}</div>
+                <div class="column">{{ item.basicSalary }}</div>
+              </div>
+            </ng-template>
+          </ng-select>
+        </div>
+        <div class="row mb-3">
+          <label class="form-label" for="field_ngayDieuChuyen">Ngày điều chuyển</label>
+          <input
+            style="background-color: #fff"
+            class="form-control"
+            type="text"
+            mwlFlatpickr
+            data-cy="ngayDieuChuyen"
+            id="field_ngayDieuChuyen"
+            name="ngayDieuChuyen"
+            formControlName="ngayDieuChuyen"
+            [dateFormat]="'d-m-Y'"
+            [convertModelValue]="true"
+          />
+        </div>
+      </div>
+      <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal" (click)="closeModal()">
+        <span>Đóng</span>
+      </button>
+      <button type="submit" class="btn btn-primary btn-sm" data-dismiss="modal">
+        <span>Lưu</span>
+      </button>
+    </form>
+  </div>
+  <div class="modal-footer"></div>
+</ng-template>
+<jhi-toast #toast></jhi-toast>

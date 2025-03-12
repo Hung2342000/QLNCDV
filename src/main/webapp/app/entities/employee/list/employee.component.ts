@@ -270,12 +270,18 @@ export class EmployeeComponent implements OnInit {
     }
   }
   exportToExcel(): void {
+    if (this.searchStartDate && this.searchStartDate !== '') {
+      this.searchStartCheck = dayjs(this.searchStartDate).format('YYYY-MM-DD');
+    } else {
+      this.searchStartCheck = '';
+    }
     this.employeeService
       .exportToExcel({
         searchCode: this.searchCode,
         searchName: this.searchName,
         searchDepartment: this.searchDepartment,
         searchNhom: this.searchNhom,
+        searchStartDate: this.searchStartCheck,
       })
       .subscribe(response => {
         const blob = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
