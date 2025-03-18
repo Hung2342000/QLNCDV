@@ -110,12 +110,12 @@
         <div class="col-md-1"></div>
         <!-- Cột 3 -->
         <div class="col-md-3">
-          <!--          <div class="row mb-3">-->
-          <!--            <label class="form-label" jhiTranslate="qldvApp.employee.department" for="field_department">Phòng ban</label>-->
-          <!--            <select class="form-select" id="field_department" formControlName="department" data-cy="department" name="department">-->
-          <!--              <option *ngFor="let department of departments" [value]="department.code">{{ department.name }}</option>-->
-          <!--            </select>-->
-          <!--          </div>-->
+          <div class="row mb-3">
+            <label class="form-label" jhiTranslate="qldvApp.employee.department" for="field_department">Phòng ban</label>
+            <select class="form-select" formControlName="department" data-cy="department" name="department">
+              <option *ngFor="let department of departments" [value]="department.code">{{ department.name }}</option>
+            </select>
+          </div>
           <div class="row mb-3">
             <label class="form-label" jhiTranslate="qldvApp.employee.startDate" for="field_startDate">Ngày vào làm việc</label>
             <input
@@ -153,7 +153,7 @@
             <input type="text" class="form-control" name="address" id="field_address" data-cy="address" formControlName="address" />
           </div>
 
-          <div *ngIf="editForm.get('status')?.value === 'Đang '" class="row mb-3">
+          <div *ngIf="editForm.get('status')?.value === 'Nghỉ thai sản'" class="row mb-3">
             <label class="form-label" for="field_ngayNghiSinh">Ngày nghỉ sinh</label>
             <input
               style="background-color: #fff"
@@ -169,58 +169,57 @@
             />
           </div>
 
-          <!--          <div class="row mb-3">-->
-          <!--            <label class="form-label">Loại hình dịch vụ</label>-->
-          <!--            <ng-select-->
-          <!--              id="field_serviceType"-->
-          <!--              formControlName="serviceType"-->
-          <!--              data-cy="serviceType"-->
-          <!--              name="serviceType"-->
-          <!--              class="form-select custom-ng-select"-->
-          <!--              [items]="serviceTypesCustom"-->
-          <!--              bindLabel="serviceName"-->
-          <!--              bindValue="id"-->
-          <!--              [searchable]="true"-->
-          <!--            >-->
-          <!--              <ng-template ng-option-tmp let-item="item">-->
-          <!--                <div class="option-row">-->
-          <!--                  <div class="column">{{ item.serviceName }}</div>-->
-          <!--                  <div class="column">{{ item.region }}</div>-->
-          <!--                  <div class="column">{{ item.rank }}</div>-->
-          <!--                  <div class="column">{{ item.basicSalary }}</div>-->
-          <!--                </div>-->
-          <!--              </ng-template>-->
-          <!--            </ng-select>-->
-          <!--          </div>-->
+          <!--                    <div class="row mb-3">-->
+          <!--                      <label class="form-label">Loại hình dịch vụ</label>-->
+          <!--                      <ng-select-->
+          <!--                        id="field_serviceType"-->
+          <!--                        formControlName="serviceType"-->
+          <!--                        data-cy="serviceType"-->
+          <!--                        name="serviceType"-->
+          <!--                        class="form-select custom-ng-select"-->
+          <!--                        [items]="serviceTypesCustom"-->
+          <!--                        bindLabel="serviceName"-->
+          <!--                        bindValue="id"-->
+          <!--                        [searchable]="true"-->
+          <!--                      >-->
+          <!--                        <ng-template ng-option-tmp let-item="item">-->
+          <!--                          <div class="option-row">-->
+          <!--                            <div class="column">{{ item.serviceName }}</div>-->
+          <!--                            <div class="column">{{ item.region }}</div>-->
+          <!--                            <div class="column">{{ item.rank }}</div>-->
+          <!--                            <div class="column">{{ item.basicSalary }}</div>-->
+          <!--                          </div>-->
+          <!--                        </ng-template>-->
+          <!--                      </ng-select>-->
+          <!--                    </div>-->
         </div>
       </div>
-      <!--      <div class="row">-->
-      <!--        <div style="margin-left: 4%" class="col-md-7">-->
-      <!--          <div class="row mb-3">-->
-      <!--            <label class="form-label">Loại hình dịch vụ</label>-->
-      <!--            <ng-select-->
-      <!--              id="field_serviceType"-->
-      <!--              formControlName="serviceType"-->
-      <!--              data-cy="serviceType"-->
-      <!--              name="serviceType"-->
-      <!--              class="form-select custom-ng-select"-->
-      <!--              [items]="serviceTypesCustom"-->
-      <!--              bindLabel="serviceName"-->
-      <!--              bindValue="id"-->
-      <!--              [searchable]="true"-->
-      <!--            >-->
-      <!--              <ng-template ng-option-tmp let-item="item">-->
-      <!--                <div class="option-row">-->
-      <!--                  <div class="column">{{ item.serviceName }}</div>-->
-      <!--                  <div class="column">{{ item.region }}</div>-->
-      <!--                  <div class="column">{{ item.rank }}</div>-->
-      <!--                  <div class="column">{{ item.basicSalary }}</div>-->
-      <!--                </div>-->
-      <!--              </ng-template>-->
-      <!--            </ng-select>-->
-      <!--          </div>-->
-      <!--        </div>-->
-      <!--      </div>-->
+      <div class="row">
+        <div style="margin-left: 4%" class="col-md-7">
+          <div class="row mb-3">
+            <label class="form-label">Loại hình dịch vụ</label>
+            <ng-select
+              formControlName="serviceType"
+              data-cy="serviceType"
+              name="serviceType"
+              class="form-select custom-ng-select"
+              [items]="serviceTypesCustom"
+              bindLabel="serviceName"
+              bindValue="id"
+              [searchable]="true"
+            >
+              <ng-template ng-option-tmp let-item="item">
+                <div class="option-row">
+                  <div class="column">{{ item.serviceName }}</div>
+                  <div class="column">{{ item.region }}</div>
+                  <div class="column">{{ item.rank }}</div>
+                  <div class="column">{{ item.basicSalary }}</div>
+                </div>
+              </ng-template>
+            </ng-select>
+          </div>
+        </div>
+      </div>
 
       <div class="text-end" style="margin-bottom: 30px; margin-top: 20px">
         <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-info btn-sm" (click)="previousState()">

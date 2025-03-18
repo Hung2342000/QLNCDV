@@ -205,6 +205,9 @@ public class EmployeeService {
                 employee.setStatus("Đang làm việc");
             }
         }
+        if (employee.getCloseDate() != null) {
+            employee.setStatus("Nghỉ việc");
+        }
 
         Employee employeeCheck = new Employee();
         if (employee.getId() != null) {
