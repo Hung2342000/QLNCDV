@@ -281,6 +281,8 @@ export class EmployeeComponent implements OnInit {
         searchName: this.searchName,
         searchDepartment: this.searchDepartment,
         searchNhom: this.searchNhom,
+        searchStatus: this.searchStatus,
+        searchService: this.searchService,
         searchStartDate: this.searchStartCheck,
       })
       .subscribe(response => {

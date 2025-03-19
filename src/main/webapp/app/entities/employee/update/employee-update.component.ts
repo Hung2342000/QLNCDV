@@ -12,6 +12,7 @@ import { DATE_FORMAT_CUSTOM } from '../../../config/input.constants';
 import { IServiceType } from '../service-type.model';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastComponent } from '../../../layouts/toast/toast.component';
+import { ITransfer, Transfer } from '../transfer.model';
 
 @Component({
   selector: 'jhi-employee-update',
@@ -23,6 +24,7 @@ export class EmployeeUpdateComponent implements OnInit {
   @ViewChild('toast') toast!: ToastComponent;
   isSaving = false;
   departments?: IDepartment[] | any;
+  transfer?: ITransfer;
   serviceTypes?: IServiceType[] | any;
   serviceTypesCustom?: IServiceType[] | any;
   editForm = this.fb.group({
@@ -49,6 +51,15 @@ export class EmployeeUpdateComponent implements OnInit {
     ngayDieuChuyen: [],
   });
 
+  // editFormTransfer = this.fb.group({
+  //   id: [null, [Validators.required]],
+  //   employeeTd: [null, [Validators.required]],
+  //   startDate: [],
+  //   serviceType: [],
+  //   department: [],
+  //   status: [],
+  //
+  // });
   constructor(
     protected employeeService: EmployeeService,
     protected modalService: NgbModal,
@@ -92,13 +103,10 @@ export class EmployeeUpdateComponent implements OnInit {
   }
 
   saveDieuChuyen(): void {
-    this.isSaving = true;
+    const transfer = this.createFromTransfer();
     const employee = this.createFromForm();
-    if (employee.id !== undefined) {
-      this.subscribeToSaveResponseDieuChuyen(this.employeeService.update(employee));
-    } else {
-      this.subscribeToSaveResponseDieuChuyen(this.employeeService.create(employee));
-    }
+    transfer.employeeId = employee.id;
+    this.subscribeToSaveResponseDieuChuyen(this.employeeService.createTransfer(transfer));
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IEmployee>>): void {
@@ -108,7 +116,7 @@ export class EmployeeUpdateComponent implements OnInit {
     });
   }
 
-  protected subscribeToSaveResponseDieuChuyen(result: Observable<HttpResponse<IEmployee>>): void {
+  protected subscribeToSaveResponseDieuChuyen(result: Observable<HttpResponse<ITransfer>>): void {
     result.pipe(finalize(() => this.onSaveFinalize())).subscribe({
       next: () => {
         this.toast.showToast('Lưu thành công');
@@ -178,6 +186,15 @@ export class EmployeeUpdateComponent implements OnInit {
       diaBan: this.editForm.get(['diaBan'])!.value,
       ngayNghiSinh: this.editForm.get(['ngayNghiSinh'])!.value,
       ngayDieuChuyen: this.editForm.get(['ngayDieuChuyen'])!.value,
+    };
+  }
+  protected createFromTransfer(): ITransfer {
+    return {
+      ...new Transfer(),
+      startDate: this.editForm.get(['ngayDieuChuyen'])!.value,
+      serviceType: this.editForm.get(['serviceType'])!.value,
+      status: this.editForm.get(['status'])!.value,
+      department: this.editForm.get(['department'])!.value,
     };
   }
 }

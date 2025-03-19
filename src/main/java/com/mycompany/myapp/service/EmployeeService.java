@@ -7,14 +7,13 @@ import com.mycompany.myapp.domain.*;
 import com.mycompany.myapp.repository.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import javax.swing.text.DateFormatter;
+import java.util.stream.Collectors;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -44,19 +43,22 @@ public class EmployeeService {
     private CountEmployeeRepository countEmployeeRepository;
     private DepartmentRepository departmentRepository;
     private ServiceTypeRepository serviceTypeRepository;
+    private TransferRepository transferRepository;
 
     public EmployeeService(
         UserRepository userRepository,
         EmployeeRepository employeeRepository,
         CountEmployeeRepository countEmployeeRepository,
         DepartmentRepository departmentRepository,
-        ServiceTypeRepository serviceTypeRepository
+        ServiceTypeRepository serviceTypeRepository,
+        TransferRepository transferRepository
     ) {
         this.userRepository = userRepository;
         this.employeeRepository = employeeRepository;
         this.countEmployeeRepository = countEmployeeRepository;
         this.departmentRepository = departmentRepository;
         this.serviceTypeRepository = serviceTypeRepository;
+        this.transferRepository = transferRepository;
     }
 
     public Page<Employee> getAllEmployees(
@@ -111,8 +113,19 @@ public class EmployeeService {
         } else if (
             authentication != null && !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority))
         ) {
-            page =
-                employeeRepository.listAllEmployeesDepartment(
+            if (searchNhom.equals("") || searchNhom == null) {
+                page =
+                    employeeRepository.listAllEmployeesNoNhom(
+                        searchCode.toLowerCase(),
+                        searchName.toLowerCase(),
+                        user.getDepartment(),
+                        searchStatus,
+                        searchService,
+                        searchStartDate,
+                        pageable
+                    );
+            } else page =
+                employeeRepository.listAllEmployees(
                     searchCode.toLowerCase(),
                     searchName.toLowerCase(),
                     user.getDepartment(),
@@ -178,11 +191,104 @@ public class EmployeeService {
     }
 
     public Employee saveEmployee(Employee employee) {
+        Transfer transfer = new Transfer();
         ServiceType serviceType = new ServiceType();
         if (employee.getServiceType() != null) {
             serviceType = serviceTypeRepository.findById(employee.getServiceType()).get();
         }
         if (serviceType != null) {
+            transfer.setServiceType(serviceType.getId());
+            transfer.setServiceTypeName(serviceType.getServiceName());
+            transfer.setNhom(serviceType.getNhom());
+            if (serviceType.getMucChiTraToiThieu() != null) {
+                employee.setMucChiTraToiThieu(serviceType.getMucChiTraToiThieu());
+            }
+            if (serviceType.getBasicSalary() != null) {
+                employee.setBasicSalary(serviceType.getBasicSalary());
+            }
+            if (serviceType.getRank() != null) {
+                employee.setRank(serviceType.getRank());
+            }
+            if (serviceType.getRegion() != null) {
+                employee.setRegion(serviceType.getRegion());
+            }
+            if (serviceType.getNhom() != null) {
+                employee.setNhom(serviceType.getNhom());
+            }
+            if (serviceType.getServiceName() != null) {
+                employee.setServiceTypeName(serviceType.getServiceName());
+            }
+            if (employee.getStatus() == null) {
+                employee.setStatus("Đang làm việc");
+            }
+        }
+        if (employee.getCloseDate() != null) {
+            employee.setStatus("Nghỉ việc");
+        }
+        LocalDate closeDate = LocalDate.of(2200, 12, 12);
+        transfer.setCloseDate(closeDate);
+        Employee employeeSave = employeeRepository.save(employee);
+        if (employeeSave.getId() != null) {
+            transfer.setEmployeeId(employeeSave.getId());
+        }
+        if (employee.getStatus() != null) {
+            transfer.setStatus(employee.getStatus());
+        }
+        if (employee.getDepartment() != null) {
+            transfer.setDepartment(employee.getDepartment());
+        }
+        if (employee.getStartDate() != null) {
+            transfer.setStartDate(employee.getStartDate());
+        }
+        transferRepository.save(transfer);
+        return employeeSave;
+    }
+
+    public Employee saveEmployeePut(Employee employee) {
+        ServiceType serviceType = new ServiceType();
+        if (employee.getServiceType() != null) {
+            serviceType = serviceTypeRepository.findById(employee.getServiceType()).get();
+        }
+
+        Employee employeeCheck = new Employee();
+        employeeCheck = employeeRepository.findById(employee.getId()).get();
+        Transfer transferCheck = transferRepository.transferByCloseDateAndEmployeeId(employee.getId(), "2200-12-12");
+        if (transferCheck != null) {
+            if (
+                employeeCheck != null &&
+                (
+                    !employeeCheck.getDepartment().equals(employee.getDepartment()) ||
+                    !employeeCheck.getServiceType().equals(employee.getServiceType()) ||
+                    !employeeCheck.getStatus().equals(employee.getStatus()) ||
+                    !employeeCheck.getStartDate().equals(employee.getStartDate())
+                )
+            ) {
+                if (employee.getStatus() != null) {
+                    transferCheck.setStatus(employee.getStatus());
+                }
+                if (employee.getDepartment() != null) {
+                    transferCheck.setDepartment(employee.getDepartment());
+                }
+                if (serviceType != null) {
+                    if (serviceType.getId() != null) {
+                        transferCheck.setServiceType(serviceType.getId());
+                    }
+                    if (serviceType.getNhom() != null) {
+                        transferCheck.setNhom(serviceType.getNhom());
+                    }
+                    if (serviceType.getServiceName() != null) {
+                        transferCheck.setServiceTypeName(serviceType.getServiceName());
+                    }
+                }
+
+                transferCheck.setStartDate(employee.getStartDate());
+                transferCheck.setServiceType(employee.getServiceType());
+                transferRepository.save(transferCheck);
+            }
+        }
+
+        if (serviceType != null) {
+            transferCheck.setServiceType(serviceType.getId());
             if (serviceType.getMucChiTraToiThieu() != null) {
                 employee.setMucChiTraToiThieu(serviceType.getMucChiTraToiThieu());
             }
@@ -209,34 +315,8 @@ public class EmployeeService {
             employee.setStatus("Nghỉ việc");
         }
 
-        Employee employeeCheck = new Employee();
-        if (employee.getId() != null) {
-            employeeCheck = employeeRepository.findById(employee.getId()).get();
-        }
-        String note = "Từ ngày ";
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        LocalDate today = LocalDate.now();
-
-        String formattedDate = today.format(formatter);
-        if (employee.getNgayDieuChuyen() != null) {
-            note = note + employee.getNgayDieuChuyen().format(formatter) + " ";
-        } else note = note + formattedDate + " ";
-        if (employeeCheck != null) {
-            employee.setNote(employeeCheck.getNote());
-            if (!employeeCheck.getDepartment().equals(employee.getDepartment())) {
-                String nameDepartmentCheck = departmentRepository.getDepartmentName(employeeCheck.getDepartment());
-                String nameDepartment = departmentRepository.getDepartmentName(employee.getDepartment());
-                note = note + " Điều chuyển " + nameDepartmentCheck + " đến " + nameDepartment + ".";
-                employee.setNote(employee.getNote() != null ? employee.getNote() + " " + note : note);
-            }
-            if (!employeeCheck.getServiceTypeName().equals(employee.getServiceTypeName())) {
-                note = note + " Điều chuyển " + employeeCheck.getServiceTypeName() + " thành " + employee.getServiceTypeName() + ".";
-                employee.setNote(employee.getNote() != null ? employee.getNote() + " " + note : note);
-            }
-        }
-
-        employeeRepository.save(employee);
-        return employee;
+        Employee employeeSave = employeeRepository.save(employee);
+        return employeeSave;
     }
 
     public List<Employee> getAllEmployeeNoPage() {
@@ -263,8 +343,15 @@ public class EmployeeService {
         return employeeList;
     }
 
-    public byte[] export(String searchCode, String searchName, String searchDepartment, String searchNhom, String searchStartDate)
-        throws IOException {
+    public byte[] export(
+        String searchCode,
+        String searchName,
+        String searchDepartment,
+        String searchNhom,
+        String searchStatus,
+        String searchService,
+        String searchStartDate
+    ) throws IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username;
         User user = new User();
@@ -281,19 +368,53 @@ public class EmployeeService {
             !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(USER).contains(authority)) &&
             getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority))
         ) {
-            employeeList =
-                employeeRepository.listAllEmployeesExport(
-                    searchCode.toLowerCase(),
-                    searchName.toLowerCase(),
-                    searchDepartment,
-                    searchNhom,
-                    searchStartDate
-                );
+            if (searchNhom.equals("") || searchNhom == null) {
+                employeeList =
+                    employeeRepository.listAllEmployeesExportNoNhom(
+                        searchCode.toLowerCase(),
+                        searchName.toLowerCase(),
+                        searchDepartment,
+                        searchStatus,
+                        searchService,
+                        searchStartDate
+                    );
+            } else {
+                employeeList =
+                    employeeRepository.listAllEmployeesExport(
+                        searchCode.toLowerCase(),
+                        searchName.toLowerCase(),
+                        searchDepartment,
+                        searchNhom,
+                        searchStatus,
+                        searchService,
+                        searchStartDate
+                    );
+            }
         } else if (
             authentication != null && !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority))
         ) {
-            employeeList =
-                employeeRepository.listAllEmployeesExport(searchCode, searchName, user.getDepartment(), searchNhom, searchStartDate);
+            if (searchNhom.equals("") || searchNhom == null) {
+                employeeList =
+                    employeeRepository.listAllEmployeesExportNoNhom(
+                        searchCode.toLowerCase(),
+                        searchName.toLowerCase(),
+                        user.getDepartment(),
+                        searchStatus,
+                        searchService,
+                        searchStartDate
+                    );
+            } else {
+                employeeList =
+                    employeeRepository.listAllEmployeesExport(
+                        searchCode.toLowerCase(),
+                        searchName.toLowerCase(),
+                        user.getDepartment(),
+                        searchNhom,
+                        searchStatus,
+                        searchService,
+                        searchStartDate
+                    );
+            }
         }
 
         XSSFWorkbook workbook = new XSSFWorkbook();
@@ -619,7 +740,42 @@ public class EmployeeService {
                 }
             }
         }
-        employeeRepository.saveAll(employees);
-        return employees;
+        List<Employee> employeeListSave = employeeRepository.saveAll(employees);
+        for (Employee employee : employeeListSave) {
+            Transfer transfer = new Transfer();
+            LocalDate closeDate = LocalDate.of(2200, 12, 12);
+            transfer.setCloseDate(closeDate);
+            if (employee.getId() != null) {
+                transfer.setEmployeeId(employee.getId());
+            }
+            if (employee.getStatus() != null) {
+                transfer.setStatus(employee.getStatus());
+            }
+            if (employee.getDepartment() != null) {
+                transfer.setDepartment(employee.getDepartment());
+            }
+            if (employee.getStartDate() != null) {
+                transfer.setStartDate(employee.getStartDate());
+            }
+            if (employee.getServiceType() != null) {
+                transfer.setServiceType(employee.getServiceType());
+            }
+            if (employee.getNhom() != null) {
+                transfer.setNhom(employee.getNhom());
+            }
+            if (employee.getServiceTypeName() != null) {
+                transfer.setServiceTypeName(employee.getServiceTypeName());
+            }
+            transferRepository.save(transfer);
+        }
+        return employeeListSave;
+    }
+
+    public void deleteEmployee(Long id) {
+        employeeRepository.deleteById(id);
+        List<Transfer> transfers = transferRepository.transferByEmployeeId(id);
+        if (transfers != null && transfers.size() > 0) {
+            transferRepository.deleteAllById(transfers.stream().map(item -> item.getId()).collect(Collectors.toList()));
+        }
     }
 }

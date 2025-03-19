@@ -17,6 +17,9 @@ public interface ServiceTypeRepository extends JpaRepository<ServiceType, Long> 
     @Query("select a from ServiceType a where a.id <= 10")
     List<ServiceType> findAllCustom();
 
+    @Query("select a from ServiceType a where a.id = :id")
+    ServiceType findbyId(@Param("id") Long id);
+
     @Query("select a from ServiceType a where lower(a.serviceName) = :serviceName and a.region = :region")
     ServiceType findServiceTypeByServiceNameAndRegion(@Param("serviceName") String serviceName, @Param("region") String region);
 

@@ -96,6 +96,86 @@ public class Employee implements Serializable {
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
+    public Employee() {}
+
+    public Employee(
+        Long id,
+        String codeEmployee,
+        String name,
+        LocalDate birthday,
+        String otherId,
+        String address,
+        String mobilePhone,
+        String workPhone,
+        String workEmail,
+        String privateEmail,
+        String department,
+        LocalDate startDate,
+        LocalDate closeDate,
+        BigDecimal basicSalary,
+        Long serviceType,
+        String serviceTypeName,
+        String region,
+        String rank,
+        BigDecimal mucChiTraToiThieu,
+        String nhom,
+        String diaBan,
+        String status,
+        String note,
+        LocalDate ngayNghiSinh,
+        LocalDate ngayDieuChuyen
+    ) {
+        this.id = id;
+        this.codeEmployee = codeEmployee;
+        this.name = name;
+        this.birthday = birthday;
+        this.otherId = otherId;
+        this.address = address;
+        this.mobilePhone = mobilePhone;
+        this.workPhone = workPhone;
+        this.workEmail = workEmail;
+        this.privateEmail = privateEmail;
+        this.department = department;
+        this.startDate = startDate;
+        this.closeDate = closeDate;
+        this.basicSalary = basicSalary;
+        this.serviceType = serviceType;
+        this.serviceTypeName = serviceTypeName;
+        this.region = region;
+        this.rank = rank;
+        this.mucChiTraToiThieu = mucChiTraToiThieu;
+        this.nhom = nhom;
+        this.diaBan = diaBan;
+        this.status = status;
+        this.note = note;
+        this.ngayNghiSinh = ngayNghiSinh;
+        this.ngayDieuChuyen = ngayDieuChuyen;
+    }
+
+    public Employee(
+        Long id,
+        String codeEmployee,
+        String name,
+        String department,
+        LocalDate startDate,
+        LocalDate closeDate,
+        Long serviceType,
+        String serviceTypeName,
+        String nhom,
+        String status
+    ) {
+        this.id = id;
+        this.codeEmployee = codeEmployee;
+        this.name = name;
+        this.department = department;
+        this.startDate = startDate;
+        this.closeDate = closeDate;
+        this.serviceType = serviceType;
+        this.serviceTypeName = serviceTypeName;
+        this.nhom = nhom;
+        this.status = status;
+    }
+
     public Long getId() {
         return this.id;
     }

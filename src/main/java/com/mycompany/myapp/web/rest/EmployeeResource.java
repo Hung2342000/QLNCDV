@@ -110,7 +110,7 @@ public class EmployeeResource {
         if (!employeeRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
-        Employee result = employeeService.saveEmployee(employee);
+        Employee result = employeeService.saveEmployeePut(employee);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, employee.getId().toString()))
@@ -267,7 +267,8 @@ public class EmployeeResource {
     @DeleteMapping("/employees/{id}")
     public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
         log.debug("REST request to delete Employee : {}", id);
-        employeeRepository.deleteById(id);
+        employeeService.deleteEmployee(id);
+
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
@@ -308,10 +309,20 @@ public class EmployeeResource {
         String searchName,
         String searchDepartment,
         String searchNhom,
+        String searchStatus,
+        String searchService,
         String searchStartDate
     ) throws IOException {
         log.debug("REST request to get a page of Employees");
-        byte[] excelBytes = employeeService.export(searchCode, searchName, searchDepartment, searchNhom, searchStartDate);
+        byte[] excelBytes = employeeService.export(
+            searchCode,
+            searchName,
+            searchDepartment,
+            searchNhom,
+            searchStatus,
+            searchService,
+            searchStartDate
+        );
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
         headers.setContentDispositionFormData("attachment", "bangchamcong.xlsx");

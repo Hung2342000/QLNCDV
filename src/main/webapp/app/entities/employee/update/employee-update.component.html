@@ -228,7 +228,7 @@
         <button type="submit" id="save-entity" data-cy="entityCreateSaveButton" class="btn btn-primary btn-sm">
           <span>Lưu</span>
         </button>
-        <button type="button" data-cy="entityCreateSaveButton" (click)="dieuChuyenSave()" class="btn btn-primary btn-sm">
+        <button type="button" data-cy="entityCreateSaveButton" (click)="dieuChuyenSave()" class="btn btn-danger btn-sm">
           <span>Điều chuyển</span>
         </button>
       </div>
@@ -251,6 +251,21 @@
       (keydown.enter)="$event.preventDefault()"
     >
       <div class="row" style="margin-left: 1%">
+        <div class="row mb-3">
+          <label class="form-label" for="field_ngayDieuChuyen">Ngày điều chuyển</label>
+          <input
+            style="background-color: #fff"
+            class="form-control"
+            type="text"
+            mwlFlatpickr
+            data-cy="ngayDieuChuyen"
+            id="field_ngayDieuChuyen"
+            name="ngayDieuChuyen"
+            formControlName="ngayDieuChuyen"
+            [dateFormat]="'d-m-Y'"
+            [convertModelValue]="true"
+          />
+        </div>
         <div class="row mb-3">
           <label class="form-label" jhiTranslate="qldvApp.employee.department" for="field_department">Phòng ban</label>
           <select class="form-select" id="field_department" formControlName="department" data-cy="department" name="department">
@@ -281,19 +296,13 @@
           </ng-select>
         </div>
         <div class="row mb-3">
-          <label class="form-label" for="field_ngayDieuChuyen">Ngày điều chuyển</label>
-          <input
-            style="background-color: #fff"
-            class="form-control"
-            type="text"
-            mwlFlatpickr
-            data-cy="ngayDieuChuyen"
-            id="field_ngayDieuChuyen"
-            name="ngayDieuChuyen"
-            formControlName="ngayDieuChuyen"
-            [dateFormat]="'d-m-Y'"
-            [convertModelValue]="true"
-          />
+          <label class="form-label" for="field_status">Trạng thái</label>
+          <select class="form-select" id="field_status" formControlName="status" data-cy="status" name="status">
+            <option [value]="'Đang làm việc'">Đang làm việc</option>
+            <option [value]="'Nghỉ thai sản'">Nghỉ thai sản</option>
+            <option [value]="'Nghỉ phép dài hạn'">Nghỉ phép dài hạn</option>
+            <option [value]="'Nghỉ việc'">Nghỉ việc</option>
+          </select>
         </div>
       </div>
       <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal" (click)="closeModal()">

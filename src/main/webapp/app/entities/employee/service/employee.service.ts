@@ -13,6 +13,7 @@ import { IDepartment } from '../department.model';
 import { ICountEmployee } from '../count-employee.model';
 import { ISalaryDetail } from '../../salary/salaryDetail.model';
 import { IServiceType } from '../service-type.model';
+import { ITransfer } from '../transfer.model';
 
 export type EntityResponseType = HttpResponse<IEmployee>;
 export type EntityArrayResponseType = HttpResponse<IEmployee[]>;
@@ -20,9 +21,12 @@ export type EntityArrayResponseDepartmentType = HttpResponse<IDepartment[]>;
 export type EntityArrayResponseServiceType = HttpResponse<IServiceType[]>;
 export type EntityArrayResponseCountEmployeeType = HttpResponse<ICountEmployee[]>;
 
+export type EntityResponseTypeTransfer = HttpResponse<ITransfer>;
+
 @Injectable({ providedIn: 'root' })
 export class EmployeeService {
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/employees');
+  protected resourceTransferUrl = this.applicationConfigService.getEndpointFor('api/transfer');
   protected resourceUrlDepartment = this.applicationConfigService.getEndpointFor('api/department/all');
   protected resourceUrlServiceType = this.applicationConfigService.getEndpointFor('api/serviceType/all');
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) {}
@@ -32,6 +36,12 @@ export class EmployeeService {
     return this.http
       .post<IEmployee>(this.resourceUrl, copy, { observe: 'response' })
       .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
+  }
+  createTransfer(transfer: ITransfer): Observable<EntityResponseTypeTransfer> {
+    const copy = this.convertDateFromClientTransfer(transfer);
+    return this.http
+      .post<ITransfer>(this.resourceTransferUrl, copy, { observe: 'response' })
+      .pipe(map((res: EntityResponseTypeTransfer) => this.convertDateFromServer(res)));
   }
 
   update(employee: IEmployee): Observable<EntityResponseType> {
@@ -157,6 +167,17 @@ export class EmployeeService {
           : typeof employee.ngayDieuChuyen === 'string'
           ? dayjs(employee.ngayDieuChuyen, 'DD-MM-YYYY').format(DATE_FORMAT)
           : dayjs(employee.ngayDieuChuyen).format(DATE_FORMAT),
+    });
+  }
+
+  protected convertDateFromClientTransfer(transfer: ITransfer): ITransfer {
+    return Object.assign({}, transfer, {
+      startDate:
+        transfer.startDate === undefined
+          ? undefined
+          : typeof transfer.startDate === 'string'
+          ? dayjs(transfer.startDate, 'DD-MM-YYYY').format(DATE_FORMAT)
+          : dayjs(transfer.startDate).format(DATE_FORMAT),
     });
   }
 
