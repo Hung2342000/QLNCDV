@@ -314,7 +314,9 @@ public class EmployeeService {
         if (employee.getCloseDate() != null) {
             employee.setStatus("Nghỉ việc");
         }
-
+        if (employeeCheck != null) {
+            employee.setNote(employeeCheck.getNote());
+        }
         Employee employeeSave = employeeRepository.save(employee);
         return employeeSave;
     }

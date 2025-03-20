@@ -19,7 +19,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     @Query(
         "select new Employee(a.id,a.codeEmployee,a.name,a.birthday, a.otherId, a.address, a.mobilePhone, a.workPhone, a.workEmail, a.privateEmail, t.department, a.startDate, a.closeDate,a.basicSalary, t.serviceType, t.serviceTypeName, a.region, a.rank, a.mucChiTraToiThieu,t.nhom,a.diaBan, t.status, a.note, a.ngayNghiSinh, a.ngayDieuChuyen) from Employee a join Transfer t on a.id = t.employeeId where LOWER(a.codeEmployee) LIKE %:searchCode% " +
         "AND LOWER(a.name) LIKE %:searchName% and a.department LIKE %:searchDepartment% " +
-        "and t.nhom = :searchNhom and t.status LIKE %:searchStatus% and t.serviceTypeName LIKE %:searchService% and (t.startDate <= TO_DATE(:searchStartDate, 'YYYY-MM-DD') or a.startDate is null ) and t.closeDate >= TO_DATE(:searchStartDate, 'YYYY-MM-DD')"
+        "and t.nhom = :searchNhom and t.status LIKE %:searchStatus% and t.serviceTypeName LIKE %:searchService% and (t.startDate <= TO_DATE(:searchStartDate, 'YYYY-MM-DD') or a.startDate is null ) and t.closeDate > TO_DATE(:searchStartDate, 'YYYY-MM-DD')"
     )
     Page<Employee> listAllEmployees(
         @Param("searchCode") String searchCode,
@@ -35,7 +35,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     @Query(
         "select new Employee(a.id,a.codeEmployee,a.name,a.birthday, a.otherId, a.address, a.mobilePhone, a.workPhone, a.workEmail, a.privateEmail, t.department, a.startDate, a.closeDate,a.basicSalary, t.serviceType, t.serviceTypeName, a.region, a.rank, a.mucChiTraToiThieu,t.nhom,a.diaBan, t.status, a.note, a.ngayNghiSinh, a.ngayDieuChuyen) from Employee a join Transfer t on a.id = t.employeeId where LOWER(a.codeEmployee) LIKE %:searchCode% " +
         "AND LOWER(a.name) LIKE %:searchName% and t.department LIKE %:searchDepartment% and t.status LIKE %:searchStatus% " +
-        "and t.serviceTypeName LIKE %:searchService% and ( t.startDate <= TO_DATE(:searchStartDate, 'YYYY-MM-DD') or a.startDate is null ) and t.closeDate >= TO_DATE(:searchStartDate, 'YYYY-MM-DD')"
+        "and t.serviceTypeName LIKE %:searchService% and ( t.startDate <= TO_DATE(:searchStartDate, 'YYYY-MM-DD') or a.startDate is null ) and t.closeDate > TO_DATE(:searchStartDate, 'YYYY-MM-DD')"
     )
     Page<Employee> listAllEmployeesNoNhom(
         @Param("searchCode") String searchCode,
@@ -50,7 +50,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     @Query(
         "select new Employee(a.id,a.codeEmployee,a.name,a.birthday, a.otherId, a.address, a.mobilePhone, a.workPhone, a.workEmail, a.privateEmail, t.department, a.startDate, a.closeDate,a.basicSalary, t.serviceType, t.serviceTypeName, a.region, a.rank, a.mucChiTraToiThieu,t.nhom,a.diaBan, t.status, a.note, a.ngayNghiSinh, a.ngayDieuChuyen) from Employee a join Transfer t on a.id = t.employeeId where LOWER(a.codeEmployee) LIKE %:searchCode% " +
         "AND LOWER(a.name) LIKE %:searchName% and t.department = :department and t.nhom LIKE %:searchNhom% and t.status LIKE %:searchStatus% and a.serviceTypeName " +
-        "LIKE %:searchService% and (t.startDate <= TO_DATE(:searchStartDate, 'YYYY-MM-DD') or a.startDate is null ) and t.closeDate >= TO_DATE(:searchStartDate, 'YYYY-MM-DD')"
+        "LIKE %:searchService% and (t.startDate <= TO_DATE(:searchStartDate, 'YYYY-MM-DD') or a.startDate is null ) and t.closeDate > TO_DATE(:searchStartDate, 'YYYY-MM-DD')"
     )
     Page<Employee> listAllEmployeesDepartment(
         @Param("searchCode") String searchCode,
@@ -127,7 +127,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     @Query(
         "select new Employee(a.id,a.codeEmployee,a.name,a.birthday, a.otherId, a.address, a.mobilePhone, a.workPhone, a.workEmail, a.privateEmail, t.department, a.startDate, a.closeDate,a.basicSalary, t.serviceType, t.serviceTypeName, a.region, a.rank, a.mucChiTraToiThieu,t.nhom,a.diaBan, t.status, a.note, a.ngayNghiSinh, a.ngayDieuChuyen) from Employee a join Transfer t on a.id = t.employeeId where LOWER(a.codeEmployee) LIKE %:searchCode% " +
         "AND LOWER(a.name) LIKE %:searchName% and a.department LIKE %:searchDepartment% " +
-        "and t.nhom = :searchNhom and t.status LIKE %:searchStatus% and t.serviceTypeName LIKE %:searchService% and (t.startDate <= TO_DATE(:searchStartDate, 'YYYY-MM-DD') or a.startDate is null ) and t.closeDate >= TO_DATE(:searchStartDate, 'YYYY-MM-DD')"
+        "and t.nhom = :searchNhom and t.status LIKE %:searchStatus% and t.serviceTypeName LIKE %:searchService% and (t.startDate <= TO_DATE(:searchStartDate, 'YYYY-MM-DD') or a.startDate is null ) and t.closeDate > TO_DATE(:searchStartDate, 'YYYY-MM-DD')"
     )
     List<Employee> listAllEmployeesExport(
         @Param("searchCode") String searchCode,
@@ -142,7 +142,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     @Query(
         "select new Employee(a.id,a.codeEmployee,a.name,a.birthday, a.otherId, a.address, a.mobilePhone, a.workPhone, a.workEmail, a.privateEmail, t.department, a.startDate, a.closeDate,a.basicSalary, t.serviceType, t.serviceTypeName, a.region, a.rank, a.mucChiTraToiThieu,t.nhom,a.diaBan, t.status, a.note, a.ngayNghiSinh, a.ngayDieuChuyen) from Employee a join Transfer t on a.id = t.employeeId where LOWER(a.codeEmployee) LIKE %:searchCode% " +
         "AND LOWER(a.name) LIKE %:searchName% and a.department LIKE %:searchDepartment% " +
-        " and t.status LIKE %:searchStatus% and t.serviceTypeName LIKE %:searchService% and (t.startDate <= TO_DATE(:searchStartDate, 'YYYY-MM-DD') or a.startDate is null ) and t.closeDate >= TO_DATE(:searchStartDate, 'YYYY-MM-DD')"
+        " and t.status LIKE %:searchStatus% and t.serviceTypeName LIKE %:searchService% and (t.startDate <= TO_DATE(:searchStartDate, 'YYYY-MM-DD') or a.startDate is null ) and t.closeDate > TO_DATE(:searchStartDate, 'YYYY-MM-DD')"
     )
     List<Employee> listAllEmployeesExportNoNhom(
         @Param("searchCode") String searchCode,
@@ -156,7 +156,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     @Query(
         "select new Employee(a.id,a.codeEmployee,a.name,t.department, a.startDate, a.closeDate, t.serviceType, t.serviceTypeName,t.nhom, t.status) from Employee a join Transfer t on a.id = t.employeeId where LOWER(a.codeEmployee) LIKE %:searchCode% " +
         "AND LOWER(a.name) LIKE %:searchName% and t.department = :department and t.nhom LIKE %:searchNhom% and t.status LIKE %:searchStatus% and a.serviceTypeName " +
-        "LIKE %:searchService% and (t.startDate <= TO_DATE(:searchStartDate, 'YYYY-MM-DD') or a.startDate is null ) and t.closeDate >= TO_DATE(:searchStartDate, 'YYYY-MM-DD') "
+        "LIKE %:searchService% and (t.startDate <= TO_DATE(:searchStartDate, 'YYYY-MM-DD') or a.startDate is null ) and t.closeDate > TO_DATE(:searchStartDate, 'YYYY-MM-DD') "
     )
     List<Employee> listAllEmployeesExporUser(
         @Param("searchCode") String searchCode,
