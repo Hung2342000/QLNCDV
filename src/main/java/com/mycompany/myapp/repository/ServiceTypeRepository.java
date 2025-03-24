@@ -23,7 +23,9 @@ public interface ServiceTypeRepository extends JpaRepository<ServiceType, Long> 
     @Query("select a from ServiceType a where lower(a.serviceName) = :serviceName and a.region = :region")
     ServiceType findServiceTypeByServiceNameAndRegion(@Param("serviceName") String serviceName, @Param("region") String region);
 
-    @Query("select a from ServiceType a where lower(a.serviceName) = :serviceName and lower(a.region) = :region and lower(a.rank) = :rank")
+    @Query(
+        "select a from ServiceType a where lower(a.serviceName) = :serviceName and lower(a.region) = :region and lower(a.rank) LIKE %:rank%"
+    )
     ServiceType findServiceTypeByServiceNameAndRegionRank(
         @Param("serviceName") String serviceName,
         @Param("region") String region,

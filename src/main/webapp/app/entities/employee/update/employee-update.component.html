@@ -6,7 +6,7 @@
         <!-- Cột 1 -->
         <div style="margin-left: 4%" class="col-md-3">
           <div class="row mb-3">
-            <label class="form-label" jhiTranslate="qldvApp.employee.codeEmployee" for="field_codeEmployee">Code Employee</label>
+            <label class="form-label" for="field_codeEmployee">Mã nhân viên <span style="color: red">*</span> </label>
             <input
               type="text"
               class="form-control"
@@ -37,8 +37,13 @@
             </div>
           </div>
           <div class="row mb-3">
-            <label class="form-label" jhiTranslate="qldvApp.employee.name" for="field_name">Họ và tên</label>
+            <label class="form-label" for="field_name">Họ và tên <span style="color: red">*</span></label>
             <input type="text" class="form-control" name="name" id="field_name" data-cy="name" formControlName="name" />
+            <div *ngIf="editForm.get('name')!.invalid && (editForm.get('name')!.dirty || editForm.get('name')!.touched)">
+              <small class="form-text text-danger" *ngIf="editForm.get('name')?.errors?.required" jhiTranslate="entity.validation.required">
+                This field is required.
+              </small>
+            </div>
           </div>
           <div class="row mb-3">
             <label class="form-label" jhiTranslate="qldvApp.employee.birthday" for="field_birthday">Ngày sinh</label>
@@ -60,61 +65,55 @@
             <input type="text" class="form-control" name="otherId" id="field_otherId" data-cy="otherId" formControlName="otherId" />
           </div>
           <div class="row mb-3">
-            <label class="form-label" for="field_diaBan">Địa bàn</label>
-            <input type="text" class="form-control" name="diaBan" id="field_diaBan" data-cy="diaBan" formControlName="diaBan" />
+            <label class="form-label" for="field_diaBan">Địa bàn <span style="color: red">*</span></label>
+            <ng-select
+              id="field_diaBan"
+              formControlName="diaBan"
+              data-cy="diaBan"
+              name="diaBan"
+              class="form-select custom-ng-select"
+              [items]="diaBans"
+              bindLabel="name"
+              bindValue="name"
+              [searchable]="true"
+            >
+              <ng-template ng-option-tmp let-item="item">
+                <div class="option-row-diaban">
+                  <div class="column">{{ item.name }}</div>
+                  <div class="column">{{ item.tinh }}</div>
+                </div>
+              </ng-template>
+            </ng-select>
+            <div *ngIf="editForm.get('diaBan')!.invalid && (editForm.get('diaBan')!.dirty || editForm.get('diaBan')!.touched)">
+              <small
+                class="form-text text-danger"
+                *ngIf="editForm.get('diaBan')?.errors?.required"
+                jhiTranslate="entity.validation.required"
+              >
+                This field is required.
+              </small>
+            </div>
+            <!--            <input type="text" class="form-control" name="diaBan" id="field_diaBan" data-cy="diaBan" formControlName="diaBan" />-->
           </div>
         </div>
         <div class="col-md-1"></div>
+
         <!-- Cột 2 -->
         <div class="col-md-3">
           <div class="row mb-3">
-            <label class="form-label" jhiTranslate="qldvApp.employee.mobilePhone" for="field_mobilePhone">Số điện thoại cá nhân</label>
-            <input
-              type="text"
-              class="form-control"
-              name="mobilePhone"
-              id="field_mobilePhone"
-              data-cy="mobilePhone"
-              formControlName="mobilePhone"
-            />
-          </div>
-          <div class="row mb-3">
-            <label class="form-label" jhiTranslate="qldvApp.employee.workPhone" for="field_workPhone">Số điện thoại công việc</label>
-            <input type="text" class="form-control" name="workPhone" id="field_workPhone" data-cy="workPhone" formControlName="workPhone" />
-          </div>
-          <div class="row mb-3">
-            <label class="form-label" jhiTranslate="qldvApp.employee.workEmail" for="field_workEmail">Email công việc</label>
-            <input type="text" class="form-control" name="workEmail" id="field_workEmail" data-cy="workEmail" formControlName="workEmail" />
-          </div>
-          <div class="row mb-3">
-            <label class="form-label" jhiTranslate="qldvApp.employee.privateEmail" for="field_privateEmail">Email cá nhân</label>
-            <input
-              type="text"
-              class="form-control"
-              name="privateEmail"
-              id="field_privateEmail"
-              data-cy="privateEmail"
-              formControlName="privateEmail"
-            />
-          </div>
-          <div class="row mb-3">
-            <label class="form-label" for="field_status">Trạng thái</label>
-            <select class="form-select" id="field_status" formControlName="status" data-cy="status" name="status">
-              <option [value]="'Đang làm việc'">Đang làm việc</option>
-              <option [value]="'Nghỉ thai sản'">Nghỉ thai sản</option>
-              <option [value]="'Nghỉ phép dài hạn'">Nghỉ phép dài hạn</option>
-              <option [value]="'Nghỉ việc'">Nghỉ việc</option>
-            </select>
-          </div>
-        </div>
-        <div class="col-md-1"></div>
-        <!-- Cột 3 -->
-        <div class="col-md-3">
-          <div class="row mb-3">
-            <label class="form-label" jhiTranslate="qldvApp.employee.department" for="field_department">Phòng ban</label>
+            <label class="form-label" for="field_department">Phòng ban <span style="color: red">*</span></label>
             <select class="form-select" id="field_department" formControlName="department" data-cy="department" name="department">
               <option *ngFor="let department of departments" [value]="department.code">{{ department.name }}</option>
             </select>
+            <div *ngIf="editForm.get('department')!.invalid && (editForm.get('department')!.dirty || editForm.get('department')!.touched)">
+              <small
+                class="form-text text-danger"
+                *ngIf="editForm.get('department')?.errors?.required"
+                jhiTranslate="entity.validation.required"
+              >
+                This field is required.
+              </small>
+            </div>
           </div>
           <div class="row mb-3">
             <label class="form-label" jhiTranslate="qldvApp.employee.startDate" for="field_startDate">Ngày vào làm việc</label>
@@ -152,6 +151,24 @@
             <label class="form-label" jhiTranslate="qldvApp.employee.address" for="field_address">Địa chỉ</label>
             <input type="text" class="form-control" name="address" id="field_address" data-cy="address" formControlName="address" />
           </div>
+          <div class="row mb-3">
+            <label class="form-label" for="field_status">Trạng thái <span style="color: red">*</span></label>
+            <select class="form-select" id="field_status" formControlName="status" data-cy="status" name="status">
+              <option [value]="'Đang làm việc'">Đang làm việc</option>
+              <option [value]="'Nghỉ thai sản'">Nghỉ thai sản</option>
+              <option [value]="'Nghỉ phép dài hạn'">Nghỉ phép dài hạn</option>
+              <option [value]="'Nghỉ việc'">Nghỉ việc</option>
+            </select>
+            <div *ngIf="editForm.get('status')!.invalid && (editForm.get('status')!.dirty || editForm.get('status')!.touched)">
+              <small
+                class="form-text text-danger"
+                *ngIf="editForm.get('status')?.errors?.required"
+                jhiTranslate="entity.validation.required"
+              >
+                This field is required.
+              </small>
+            </div>
+          </div>
 
           <!--          <div *ngIf="editForm.get('status')?.value === 'Nghỉ thai sản'" class="row mb-3">-->
           <!--            <label class="form-label" for="field_ngayNghiSinh">Ngày nghỉ sinh</label>-->
@@ -169,54 +186,110 @@
           <!--            />-->
           <!--          </div>-->
 
-          <!--                    <div class="row mb-3">-->
-          <!--                      <label class="form-label">Loại hình dịch vụ</label>-->
-          <!--                      <ng-select-->
-          <!--                        id="field_serviceType"-->
-          <!--                        formControlName="serviceType"-->
-          <!--                        data-cy="serviceType"-->
-          <!--                        name="serviceType"-->
-          <!--                        class="form-select custom-ng-select"-->
-          <!--                        [items]="serviceTypesCustom"-->
-          <!--                        bindLabel="serviceName"-->
-          <!--                        bindValue="id"-->
-          <!--                        [searchable]="true"-->
-          <!--                      >-->
-          <!--                        <ng-template ng-option-tmp let-item="item">-->
-          <!--                          <div class="option-row">-->
-          <!--                            <div class="column">{{ item.serviceName }}</div>-->
-          <!--                            <div class="column">{{ item.region }}</div>-->
-          <!--                            <div class="column">{{ item.rank }}</div>-->
-          <!--                            <div class="column">{{ item.basicSalary }}</div>-->
-          <!--                          </div>-->
-          <!--                        </ng-template>-->
-          <!--                      </ng-select>-->
-          <!--                    </div>-->
+          <!--                              <div class="row mb-3">-->
+          <!--                                <label class="form-label">Loại hình dịch vụ</label>-->
+          <!--                                <ng-select-->
+          <!--                                  id="field_serviceType"-->
+          <!--                                  formControlName="serviceType"-->
+          <!--                                  data-cy="serviceType"-->
+          <!--                                  name="serviceType"-->
+          <!--                                  class="form-select custom-ng-select"-->
+          <!--                                  [items]="serviceTypesCustom"-->
+          <!--                                  bindLabel="serviceName"-->
+          <!--                                  bindValue="id"-->
+          <!--                                  [searchable]="true"-->
+          <!--                                >-->
+          <!--                                  <ng-template ng-option-tmp let-item="item">-->
+          <!--                                    <div class="option-row">-->
+          <!--                                      <div class="column">{{ item.serviceName }}</div>-->
+          <!--                                      <div class="column">{{ item.region }}</div>-->
+          <!--                                      <div class="column">{{ item.rank }}</div>-->
+          <!--                                      <div class="column">{{ item.basicSalary }}</div>-->
+          <!--                                    </div>-->
+          <!--                                  </ng-template>-->
+          <!--                                </ng-select>-->
+          <!--                              </div>-->
+        </div>
+        <div class="col-md-1"></div>
+        <!-- Cột 3 -->
+        <div class="col-md-3">
+          <div class="row mb-3">
+            <label class="form-label" jhiTranslate="qldvApp.employee.mobilePhone" for="field_mobilePhone">Số điện thoại cá nhân</label>
+            <input
+              type="text"
+              class="form-control"
+              name="mobilePhone"
+              id="field_mobilePhone"
+              data-cy="mobilePhone"
+              formControlName="mobilePhone"
+            />
+          </div>
+          <div class="row mb-3">
+            <label class="form-label" jhiTranslate="qldvApp.employee.workPhone" for="field_workPhone">Số điện thoại công việc</label>
+            <input type="text" class="form-control" name="workPhone" id="field_workPhone" data-cy="workPhone" formControlName="workPhone" />
+          </div>
+          <div class="row mb-3">
+            <label class="form-label" jhiTranslate="qldvApp.employee.workEmail" for="field_workEmail">Email công việc</label>
+            <input type="text" class="form-control" name="workEmail" id="field_workEmail" data-cy="workEmail" formControlName="workEmail" />
+          </div>
+          <div class="row mb-3">
+            <label class="form-label" jhiTranslate="qldvApp.employee.privateEmail" for="field_privateEmail">Email cá nhân</label>
+            <input
+              type="text"
+              class="form-control"
+              name="privateEmail"
+              id="field_privateEmail"
+              data-cy="privateEmail"
+              formControlName="privateEmail"
+            />
+          </div>
+          <div *ngIf="editForm.get('serviceTypeName')?.value === 'HTKD tại cửa hàng Showroom'" class="row mb-3">
+            <label class="form-label" for="field_rank">Cấp</label>
+            <select class="form-select" id="field_rank" formControlName="rank" data-cy="rank" name="rank">
+              <option [value]="'cấp 1'">cấp 1</option>
+              <option [value]="'sis'">sis</option>
+              <option [value]="'Khác'">Khác</option>
+            </select>
+          </div>
         </div>
       </div>
       <div class="row">
         <div style="margin-left: 4%" class="col-md-7">
           <div class="row mb-3">
-            <label class="form-label">Loại hình dịch vụ</label>
-            <ng-select
-              formControlName="serviceType"
-              data-cy="serviceType"
-              name="serviceType"
-              class="form-select custom-ng-select"
-              [items]="serviceTypesCustom"
-              bindLabel="serviceName"
-              bindValue="id"
-              [searchable]="true"
+            <label class="form-label" for="field_serviceTypeName">Loại hình dịch vụ <span style="color: red">*</span></label>
+            <select
+              class="form-select"
+              id="field_serviceTypeName"
+              formControlName="serviceTypeName"
+              data-cy="serviceTypeName"
+              name="serviceTypeName"
             >
-              <ng-template ng-option-tmp let-item="item">
-                <div class="option-row">
-                  <div class="column">{{ item.serviceName }}</div>
-                  <div class="column">{{ item.region }}</div>
-                  <div class="column">{{ item.rank }}</div>
-                  <div class="column">{{ item.basicSalary }}</div>
-                </div>
-              </ng-template>
-            </ng-select>
+              <option [value]="'Lễ tân'">Lễ tân</option>
+              <option [value]="'Lái xe cho VP'">Lái xe cho VP</option>
+              <option [value]="'Vệ sinh văn phòng/nấu ăn văn phòng'">Vệ sinh văn phòng/nấu ăn văn phòng</option>
+              <option [value]="'Nhập liệu, tổng hợp và thống kê số liệu'">Nhập liệu, tổng hợp và thống kê số liệu</option>
+              <option [value]="'HTKD tại cửa hàng Showroom'">HTKD tại cửa hàng Showroom</option>
+              <option [value]="'HTKD khách hàng doanh nghiệp'">HTKD khách hàng doanh nghiệp</option>
+              <option [value]="'HTKD đại lý, điểm bán lẻ và khách hàng cá nhân'">HTKD đại lý, điểm bán lẻ và khách hàng cá nhân</option>
+              <option [value]="'HTKD CNTT, truyền dẫn và băng rộng cố định'">HTKD CNTT, truyền dẫn và băng rộng cố định</option>
+              <option [value]="'Bảo trì,sửa chữa thiết bị mạng, máy tính hoặc thiết bị viễn thông'">
+                Bảo trì,sửa chữa thiết bị mạng, máy tính hoặc tbvt
+              </option>
+            </select>
+            <div
+              *ngIf="
+                editForm.get('serviceTypeName')!.invalid &&
+                (editForm.get('serviceTypeName')!.dirty || editForm.get('serviceTypeName')!.touched)
+              "
+            >
+              <small
+                class="form-text text-danger"
+                *ngIf="editForm.get('serviceTypeName')?.errors?.required"
+                jhiTranslate="entity.validation.required"
+              >
+                This field is required.
+              </small>
+            </div>
           </div>
         </div>
       </div>
@@ -225,10 +298,29 @@
         <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-info btn-sm" (click)="previousState()">
           <span>Quay lại</span>
         </button>
-        <button type="submit" id="save-entity" data-cy="entityCreateSaveButton" class="btn btn-primary btn-sm">
+        <button
+          [disabled]="
+            !editForm.get('serviceTypeName')?.value ||
+            !editForm.get('codeEmployee')?.value ||
+            !editForm.get('department')?.value ||
+            !editForm.get('name')?.value ||
+            !editForm.get('diaBan')?.value
+          "
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          class="btn btn-primary btn-sm"
+        >
           <span>Lưu</span>
         </button>
-        <button type="button" data-cy="entityCreateSaveButton" (click)="dieuChuyenSave()" class="btn btn-danger btn-sm">
+        <button
+          *jhiHasAnyAuthority="'ROLE_ADMIN'"
+          [disabled]="!isEdit"
+          type="button"
+          data-cy="entityCreateSaveButton"
+          (click)="dieuChuyenSave()"
+          class="btn btn-danger btn-sm"
+        >
           <span>Điều chuyển</span>
         </button>
       </div>
@@ -272,28 +364,33 @@
             <option *ngFor="let department of departments" [value]="department.code">{{ department.name }}</option>
           </select>
         </div>
+
         <div class="row mb-3">
-          <label class="form-label">Loại hình dịch vụ</label>
+          <label class="form-label" for="field_diaBan">Địa bàn <span style="color: red">*</span></label>
           <ng-select
-            id="field_serviceType"
-            formControlName="serviceType"
-            data-cy="serviceType"
-            name="serviceType"
+            id="field_diaBan"
+            formControlName="diaBan"
+            data-cy="diaBan"
+            name="diaBan"
             class="form-select custom-ng-select"
-            [items]="serviceTypesCustom"
-            bindLabel="serviceName"
-            bindValue="id"
+            [items]="diaBans"
+            bindLabel="name"
+            bindValue="name"
             [searchable]="true"
           >
             <ng-template ng-option-tmp let-item="item">
-              <div class="option-row">
-                <div class="column">{{ item.serviceName }}</div>
-                <div class="column">{{ item.region }}</div>
-                <div class="column">{{ item.rank }}</div>
-                <div class="column">{{ item.basicSalary }}</div>
+              <div class="option-row-diaban">
+                <div class="column">{{ item.name }}</div>
+                <div class="column">{{ item.tinh }}</div>
               </div>
             </ng-template>
           </ng-select>
+          <div *ngIf="editForm.get('diaBan')!.invalid && (editForm.get('diaBan')!.dirty || editForm.get('diaBan')!.touched)">
+            <small class="form-text text-danger" *ngIf="editForm.get('diaBan')?.errors?.required" jhiTranslate="entity.validation.required">
+              This field is required.
+            </small>
+          </div>
+          <!--            <input type="text" class="form-control" name="diaBan" id="field_diaBan" data-cy="diaBan" formControlName="diaBan" />-->
         </div>
         <div class="row mb-3">
           <label class="form-label" for="field_status">Trạng thái</label>
@@ -302,6 +399,36 @@
             <option [value]="'Nghỉ thai sản'">Nghỉ thai sản</option>
             <option [value]="'Nghỉ phép dài hạn'">Nghỉ phép dài hạn</option>
             <option [value]="'Nghỉ việc'">Nghỉ việc</option>
+          </select>
+        </div>
+        <div class="row mb-3">
+          <label class="form-label" for="field_serviceTypeName">Loại hình dịch vụ</label>
+          <select
+            class="form-select"
+            id="field_serviceTypeName"
+            formControlName="serviceTypeName"
+            data-cy="serviceTypeName"
+            name="serviceTypeName"
+          >
+            <option [value]="'Lễ tân'">Lễ tân</option>
+            <option [value]="'Lái xe cho VP'">Lái xe cho VP</option>
+            <option [value]="'Vệ sinh văn phòng/nấu ăn văn phòng'">Vệ sinh văn phòng/nấu ăn văn phòng</option>
+            <option [value]="'Nhập liệu, tổng hợp và thống kê số liệu'">Nhập liệu, tổng hợp và thống kê số liệu</option>
+            <option [value]="'HTKD tại cửa hàng Showroom'">HTKD tại cửa hàng Showroom</option>
+            <option [value]="'HTKD khách hàng doanh nghiệp'">HTKD khách hàng doanh nghiệp</option>
+            <option [value]="'HTKD đại lý, điểm bán lẻ và khách hàng cá nhân'">HTKD đại lý, điểm bán lẻ và khách hàng cá nhân</option>
+            <option [value]="'HTKD CNTT, truyền dẫn và băng rộng cố định'">HTKD CNTT, truyền dẫn và băng rộng cố định</option>
+            <option [value]="'Bảo trì,sửa chữa thiết bị mạng, máy tính hoặc thiết bị viễn thông'">
+              Bảo trì,sửa chữa thiết bị mạng, máy tính hoặc tbvt
+            </option>
+          </select>
+        </div>
+        <div *ngIf="editForm.get('serviceTypeName')?.value === 'HTKD tại cửa hàng Showroom'" class="row mb-3">
+          <label class="form-label" for="field_rank">Cấp</label>
+          <select class="form-select" id="field_rank" formControlName="rank" data-cy="rank" name="rank">
+            <option [value]="'cấp 1'">cấp 1</option>
+            <option [value]="'sis'">sis</option>
+            <option [value]="'Khác'">Khác</option>
           </select>
         </div>
       </div>

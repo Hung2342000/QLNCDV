@@ -44,6 +44,7 @@ public class EmployeeService {
     private DepartmentRepository departmentRepository;
     private ServiceTypeRepository serviceTypeRepository;
     private TransferRepository transferRepository;
+    private DiaBanRepository diaBanRepository;
 
     public EmployeeService(
         UserRepository userRepository,
@@ -51,7 +52,8 @@ public class EmployeeService {
         CountEmployeeRepository countEmployeeRepository,
         DepartmentRepository departmentRepository,
         ServiceTypeRepository serviceTypeRepository,
-        TransferRepository transferRepository
+        TransferRepository transferRepository,
+        DiaBanRepository diaBanRepository
     ) {
         this.userRepository = userRepository;
         this.employeeRepository = employeeRepository;
@@ -59,6 +61,7 @@ public class EmployeeService {
         this.departmentRepository = departmentRepository;
         this.serviceTypeRepository = serviceTypeRepository;
         this.transferRepository = transferRepository;
+        this.diaBanRepository = diaBanRepository;
     }
 
     public Page<Employee> getAllEmployees(
@@ -85,7 +88,7 @@ public class EmployeeService {
         }
         if (
             authentication != null &&
-            !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(USER).contains(authority)) &&
+            !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(SUPERUSER).contains(authority)) &&
             getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority))
         ) {
             if (searchNhom.equals("") || searchNhom == null) {
@@ -178,8 +181,16 @@ public class EmployeeService {
         } else if (
             authentication != null && !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority))
         ) {
-            page =
-                employeeRepository.listAllEmployeesDepartmentBox(
+            if (searchNhom.equals("") || searchNhom == null) {
+                page =
+                    employeeRepository.listAllEmployeesNoNhomBox(
+                        searchCode.toLowerCase(),
+                        searchName.toLowerCase(),
+                        user.getDepartment(),
+                        pageable
+                    );
+            } else page =
+                employeeRepository.listAllEmployeesBox(
                     searchCode.toLowerCase(),
                     searchName.toLowerCase(),
                     user.getDepartment(),
@@ -193,13 +204,27 @@ public class EmployeeService {
     public Employee saveEmployee(Employee employee) {
         Transfer transfer = new Transfer();
         ServiceType serviceType = new ServiceType();
-        if (employee.getServiceType() != null) {
-            serviceType = serviceTypeRepository.findById(employee.getServiceType()).get();
+        DiaBan diaBan = new DiaBan();
+        if (employee.getDiaBan() != null) {
+            diaBan = diaBanRepository.findDiaBanByName(employee.getDiaBan());
         }
+        if (employee.getRank() == null || employee.getRank().equals("")) {
+            employee.setRank("trống");
+        }
+
+        if (employee.getRank() != null && employee.getServiceTypeName() != null && diaBan.getVung() != null) {
+            serviceType =
+                serviceTypeRepository.findServiceTypeByServiceNameAndRegionRank(
+                    employee.getServiceTypeName().toLowerCase(),
+                    diaBan.getVung().toLowerCase(),
+                    employee.getRank().toLowerCase()
+                );
+        }
+
         if (serviceType != null) {
             transfer.setServiceType(serviceType.getId());
-            transfer.setServiceTypeName(serviceType.getServiceName());
             transfer.setNhom(serviceType.getNhom());
+            employee.setServiceType(serviceType.getId());
             if (serviceType.getMucChiTraToiThieu() != null) {
                 employee.setMucChiTraToiThieu(serviceType.getMucChiTraToiThieu());
             }
@@ -217,6 +242,7 @@ public class EmployeeService {
             }
             if (serviceType.getServiceName() != null) {
                 employee.setServiceTypeName(serviceType.getServiceName());
+                transfer.setServiceTypeName(serviceType.getServiceName());
             }
             if (employee.getStatus() == null) {
                 employee.setStatus("Đang làm việc");
@@ -240,18 +266,36 @@ public class EmployeeService {
         if (employee.getStartDate() != null) {
             transfer.setStartDate(employee.getStartDate());
         }
+        if (employee.getDiaBan() != null) {
+            transfer.setDiaBan(employee.getDiaBan());
+        }
         transferRepository.save(transfer);
         return employeeSave;
     }
 
     public Employee saveEmployeePut(Employee employee) {
-        ServiceType serviceType = new ServiceType();
-        if (employee.getServiceType() != null) {
-            serviceType = serviceTypeRepository.findById(employee.getServiceType()).get();
-        }
-
         Employee employeeCheck = new Employee();
         employeeCheck = employeeRepository.findById(employee.getId()).get();
+
+        ServiceType serviceType = new ServiceType();
+        DiaBan diaBan = new DiaBan();
+        if (employee.getDiaBan() != null) {
+            diaBan = diaBanRepository.findDiaBanByName(employee.getDiaBan());
+        }
+
+        if (employee.getRank() != null && employee.getServiceTypeName() != null && diaBan.getVung() != null) {
+            serviceType =
+                serviceTypeRepository.findServiceTypeByServiceNameAndRegionRank(
+                    employee.getServiceTypeName().toLowerCase(),
+                    diaBan.getVung().toLowerCase(),
+                    employee.getRank().toLowerCase()
+                );
+        }
+
+        if (serviceType.getId() != null) {
+            employee.setServiceType(serviceType.getId());
+        }
+
         Transfer transferCheck = transferRepository.transferByCloseDateAndEmployeeId(employee.getId(), "2200-12-12");
         if (transferCheck != null) {
             if (
@@ -260,6 +304,7 @@ public class EmployeeService {
                     !employeeCheck.getDepartment().equals(employee.getDepartment()) ||
                     !employeeCheck.getServiceType().equals(employee.getServiceType()) ||
                     !employeeCheck.getStatus().equals(employee.getStatus()) ||
+                    !employeeCheck.getDiaBan().equals(employee.getDiaBan()) ||
                     !employeeCheck.getStartDate().equals(employee.getStartDate())
                 )
             ) {
@@ -270,25 +315,27 @@ public class EmployeeService {
                     transferCheck.setDepartment(employee.getDepartment());
                 }
                 if (serviceType != null) {
-                    if (serviceType.getId() != null) {
-                        transferCheck.setServiceType(serviceType.getId());
-                    }
                     if (serviceType.getNhom() != null) {
                         transferCheck.setNhom(serviceType.getNhom());
                     }
                     if (serviceType.getServiceName() != null) {
                         transferCheck.setServiceTypeName(serviceType.getServiceName());
                     }
+                    if (serviceType.getId() != null) {
+                        transferCheck.setServiceType(serviceType.getId());
+                    }
+                }
+                if (employee.getDiaBan() != null) {
+                    transferCheck.setDiaBan(employee.getDiaBan());
                 }
 
                 transferCheck.setStartDate(employee.getStartDate());
-                transferCheck.setServiceType(employee.getServiceType());
                 transferRepository.save(transferCheck);
             }
         }
 
         if (serviceType != null) {
-            transferCheck.setServiceType(serviceType.getId());
+            transferCheck.setServiceTypeName(serviceType.getServiceName());
             if (serviceType.getMucChiTraToiThieu() != null) {
                 employee.setMucChiTraToiThieu(serviceType.getMucChiTraToiThieu());
             }
@@ -692,8 +739,13 @@ public class EmployeeService {
         List<Employee> employees = new ArrayList<>();
         if (employeeList.size() > 0) {
             for (Employee employee : employeeList) {
+                employee.setRank(employee.getRank() != null ? employee.getRank() : "");
                 ServiceType serviceType = new ServiceType();
                 Department department = new Department();
+                DiaBan diaBan = new DiaBan();
+                if (employee.getDiaBan() != null) {
+                    diaBan = diaBanRepository.findDiaBanByName(employee.getDiaBan());
+                }
                 if (employee.getDepartment() != null) {
                     department = departmentRepository.findDepartmentByName(employee.getDepartment().toLowerCase());
                 }
@@ -702,27 +754,17 @@ public class EmployeeService {
                 } else {
                     employee.setDepartment(" ");
                 }
-                if (
-                    employee.getRank() != null &&
-                    employee.getRank() != "" &&
-                    employee.getServiceTypeName() != null &&
-                    employee.getRegion() != null
-                ) {
+                if (employee.getRank() != null && employee.getServiceTypeName() != null && diaBan.getVung() != null) {
                     serviceType =
                         serviceTypeRepository.findServiceTypeByServiceNameAndRegionRank(
                             employee.getServiceTypeName().toLowerCase(),
-                            employee.getRegion().toLowerCase(),
+                            diaBan.getVung().toLowerCase(),
                             employee.getRank().toLowerCase()
-                        );
-                } else if (employee.getServiceTypeName() != null && employee.getRegion() != null) {
-                    serviceType =
-                        serviceTypeRepository.findServiceTypeByServiceNameAndRegion(
-                            employee.getServiceTypeName().toLowerCase(),
-                            employee.getRegion()
                         );
                 }
                 if (serviceType != null && serviceType.getId() != null) {
                     employee.setNhom(serviceType.getNhom());
+                    employee.setServiceType(serviceType.getId());
                     employee.setRegion(serviceType.getRegion());
                     employee.setServiceType(serviceType.getId());
                     employee.setRank(serviceType.getRank());
@@ -750,6 +792,9 @@ public class EmployeeService {
             if (employee.getId() != null) {
                 transfer.setEmployeeId(employee.getId());
             }
+            if (employee.getServiceType() != null) {
+                transfer.setServiceType(employee.getServiceType());
+            }
             if (employee.getStatus() != null) {
                 transfer.setStatus(employee.getStatus());
             }
@@ -759,14 +804,14 @@ public class EmployeeService {
             if (employee.getStartDate() != null) {
                 transfer.setStartDate(employee.getStartDate());
             }
-            if (employee.getServiceType() != null) {
-                transfer.setServiceType(employee.getServiceType());
-            }
             if (employee.getNhom() != null) {
                 transfer.setNhom(employee.getNhom());
             }
             if (employee.getServiceTypeName() != null) {
                 transfer.setServiceTypeName(employee.getServiceTypeName());
+            }
+            if (employee.getDiaBan() != null) {
+                transfer.setDiaBan(employee.getDiaBan());
             }
             transferRepository.save(transfer);
         }

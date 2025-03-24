@@ -25,17 +25,17 @@ public class Transfer implements Serializable {
     @Column(name = "close_date")
     private LocalDate closeDate;
 
-    @Column(name = "service_type")
-    private Long serviceType;
-
     @Column(name = "service_type_name")
     private String serviceTypeName;
+
+    @Column(name = "service_type")
+    private Long serviceType;
 
     @Column(name = "nhom")
     private String nhom;
 
-    @Column(name = "service_type_old")
-    private Long serviceTypeOld;
+    @Column(name = "service_type_name_old")
+    private String serviceTypeNameOld;
 
     @Column(name = "department")
     private String department;
@@ -48,6 +48,15 @@ public class Transfer implements Serializable {
 
     @Column(name = "status_old")
     private String statusOld;
+
+    @Column(name = "diaBan")
+    private String diaBan;
+
+    @Column(name = "dia_ban_old")
+    private String diaBanOld;
+
+    @Column(name = "rank")
+    private String rank;
 
     public Long getId() {
         return id;
@@ -86,20 +95,12 @@ public class Transfer implements Serializable {
         this.closeDate = closeDate;
     }
 
-    public Long getServiceType() {
-        return serviceType;
+    public String getServiceTypeNameOld() {
+        return serviceTypeNameOld;
     }
 
-    public void setServiceType(Long serviceType) {
-        this.serviceType = serviceType;
-    }
-
-    public Long getServiceTypeOld() {
-        return serviceTypeOld;
-    }
-
-    public void setServiceTypeOld(Long serviceTypeOld) {
-        this.serviceTypeOld = serviceTypeOld;
+    public void setServiceTypeNameOld(String serviceTypeNameOld) {
+        this.serviceTypeNameOld = serviceTypeNameOld;
     }
 
     public String getDepartment() {
@@ -148,6 +149,38 @@ public class Transfer implements Serializable {
 
     public void setNhom(String nhom) {
         this.nhom = nhom;
+    }
+
+    public Long getServiceType() {
+        return serviceType;
+    }
+
+    public void setServiceType(Long serviceType) {
+        this.serviceType = serviceType;
+    }
+
+    public String getDiaBan() {
+        return diaBan;
+    }
+
+    public void setDiaBan(String diaBan) {
+        this.diaBan = diaBan;
+    }
+
+    public String getDiaBanOld() {
+        return diaBanOld;
+    }
+
+    public void setDiaBanOld(String diaBanOld) {
+        this.diaBanOld = diaBanOld;
+    }
+
+    public String getRank() {
+        return rank;
+    }
+
+    public void setRank(String rank) {
+        this.rank = rank;
     }
 
     @Override

@@ -18,7 +18,12 @@
         />
       </th>
       <th style="width: 30%" scope="col">
-        <select style="height: 30px; width: 100%" [(ngModel)]="searchDepartment" (change)="loadPageSearch()">
+        <select
+          *jhiHasAnyAuthority="'ROLE_ADMIN'"
+          style="height: 30px; width: 100%"
+          [(ngModel)]="searchDepartment"
+          (change)="loadPageSearch()"
+        >
           <option [value]=""></option>
           <option *ngFor="let department of departments" [value]="department.code">{{ department.name }}</option>
         </select>

@@ -12,7 +12,13 @@
       >
         <span jhiTranslate="qldvApp.employee.home.createLabel"> Thêm </span>
       </button>
-      <button style="margin-right: 10px" data-cy="entityConfirmDeleteButton" class="btn btn-danger btn-sm" (click)="importExcel()">
+      <button
+        *jhiHasAnyAuthority="'ROLE_ADMIN'"
+        style="margin-right: 10px"
+        data-cy="entityConfirmDeleteButton"
+        class="btn btn-danger btn-sm"
+        (click)="importExcel()"
+      >
         <span>Import</span>
       </button>
       <button (click)="exportToExcel()" class="btn btn-primary btn-sm">
@@ -64,7 +70,12 @@
             />
           </th>
           <th scope="col">
-            <select style="height: 30px; width: 100%" [(ngModel)]="searchDepartment" (change)="loadPageSearch()">
+            <select
+              *jhiHasAnyAuthority="'ROLE_ADMIN'"
+              style="height: 30px; width: 100%"
+              [(ngModel)]="searchDepartment"
+              (change)="loadPageSearch()"
+            >
               <option [value]=""></option>
               <option *ngFor="let department of departments" [value]="department.code">{{ department.name }}</option>
             </select>

@@ -14,10 +14,12 @@ import { ICountEmployee } from '../count-employee.model';
 import { ISalaryDetail } from '../../salary/salaryDetail.model';
 import { IServiceType } from '../service-type.model';
 import { ITransfer } from '../transfer.model';
+import { IDiaBan } from '../diaban.model';
 
 export type EntityResponseType = HttpResponse<IEmployee>;
 export type EntityArrayResponseType = HttpResponse<IEmployee[]>;
 export type EntityArrayResponseDepartmentType = HttpResponse<IDepartment[]>;
+export type EntityArrayResponseDiaBanType = HttpResponse<IDiaBan[]>;
 export type EntityArrayResponseServiceType = HttpResponse<IServiceType[]>;
 export type EntityArrayResponseCountEmployeeType = HttpResponse<ICountEmployee[]>;
 
@@ -28,6 +30,7 @@ export class EmployeeService {
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/employees');
   protected resourceTransferUrl = this.applicationConfigService.getEndpointFor('api/transfer');
   protected resourceUrlDepartment = this.applicationConfigService.getEndpointFor('api/department/all');
+  protected resourceUrlDiaBan = this.applicationConfigService.getEndpointFor('api/diaban/all');
   protected resourceUrlServiceType = this.applicationConfigService.getEndpointFor('api/serviceType/all');
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) {}
 
@@ -67,6 +70,10 @@ export class EmployeeService {
 
   queryDepartment(): Observable<EntityArrayResponseDepartmentType> {
     return this.http.get<IDepartment[]>(this.resourceUrlDepartment, { observe: 'response' });
+  }
+
+  queryDiaBan(): Observable<EntityArrayResponseDiaBanType> {
+    return this.http.get<IDiaBan[]>(this.resourceUrlDiaBan, { observe: 'response' });
   }
   queryServiceType(): Observable<EntityArrayResponseServiceType> {
     return this.http.get<IDepartment[]>(this.resourceUrlServiceType, { observe: 'response' });

@@ -1,27 +1,12 @@
 package com.mycompany.myapp.service;
 
-import static com.mycompany.myapp.security.AuthoritiesConstants.*;
-import static com.mycompany.myapp.security.SecurityUtils.getAuthorities;
-
 import com.mycompany.myapp.domain.*;
 import com.mycompany.myapp.repository.*;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 /**
@@ -39,6 +24,7 @@ public class TransferService {
     private DepartmentRepository departmentRepository;
     private ServiceTypeRepository serviceTypeRepository;
     private TransferRepository transferRepository;
+    private DiaBanRepository diaBanRepository;
 
     public TransferService(
         UserRepository userRepository,
@@ -46,7 +32,8 @@ public class TransferService {
         CountEmployeeRepository countEmployeeRepository,
         DepartmentRepository departmentRepository,
         ServiceTypeRepository serviceTypeRepository,
-        TransferRepository transferRepository
+        TransferRepository transferRepository,
+        DiaBanRepository diaBanRepository
     ) {
         this.userRepository = userRepository;
         this.employeeRepository = employeeRepository;
@@ -54,16 +41,31 @@ public class TransferService {
         this.departmentRepository = departmentRepository;
         this.serviceTypeRepository = serviceTypeRepository;
         this.transferRepository = transferRepository;
+        this.diaBanRepository = diaBanRepository;
     }
 
     public Transfer saveTransfer(Transfer transfer) {
-        ServiceType serviceTypeNew = new ServiceType();
-        serviceTypeNew = serviceTypeRepository.findbyId(transfer.getServiceType());
-
         Employee employeeCheck = new Employee();
         if (transfer.getEmployeeId() != null) {
             employeeCheck = employeeRepository.findById(transfer.getEmployeeId()).get();
         }
+
+        DiaBan diaBan = new DiaBan();
+        if (transfer.getDiaBan() != null) {
+            diaBan = diaBanRepository.findDiaBanByName(transfer.getDiaBan());
+        }
+
+        if (transfer.getRank() == null || transfer.getRank() == "") {
+            transfer.setRank("trống");
+        }
+
+        ServiceType serviceTypeNew = new ServiceType();
+        serviceTypeNew =
+            serviceTypeRepository.findServiceTypeByServiceNameAndRegionRank(
+                transfer.getServiceTypeName().toLowerCase(),
+                diaBan.getVung().toLowerCase(),
+                transfer.getRank().toLowerCase()
+            );
 
         String note = "Từ ngày ";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -73,7 +75,8 @@ public class TransferService {
             employeeCheck != null &&
             (
                 !employeeCheck.getDepartment().equals(transfer.getDepartment()) ||
-                !employeeCheck.getServiceType().equals(transfer.getServiceType()) ||
+                !employeeCheck.getServiceType().equals(transfer.getServiceTypeName()) ||
+                !employeeCheck.getDiaBan().equals(transfer.getDiaBan()) ||
                 !employeeCheck.getStatus().equals(transfer.getStatus())
             )
         ) {
@@ -82,6 +85,7 @@ public class TransferService {
             if (serviceTypeNew != null) {
                 transfer.setNhom(serviceTypeNew.getNhom());
                 transfer.setServiceTypeName(serviceTypeNew.getServiceName());
+                transfer.setServiceType(serviceTypeNew.getId());
             }
 
             Transfer transferCheck = new Transfer();
@@ -89,7 +93,8 @@ public class TransferService {
             if (transferCheck != null) {
                 transferCheck.setCloseDate(transfer.getStartDate());
                 transfer.setDepartmentOld(transferCheck.getDepartment());
-                transfer.setServiceTypeOld(transferCheck.getServiceType());
+                transfer.setServiceTypeNameOld(transferCheck.getServiceTypeName());
+                transfer.setDiaBanOld(transferCheck.getDiaBan());
                 transfer.setStatusOld(transferCheck.getStatus());
                 transferRepository.save(transferCheck);
             }
@@ -108,17 +113,21 @@ public class TransferService {
                 employeeCheck.setDepartment(transfer.getDepartment());
                 employeeCheck.setNote(employeeCheck.getNote() != null ? employeeCheck.getNote() + " " + note : note);
             }
-            if (!employeeCheck.getServiceType().equals(transfer.getServiceType())) {
-                employeeCheck.setServiceType(transfer.getServiceType());
+            if (!employeeCheck.getServiceTypeName().equals(transfer.getServiceTypeName())) {
                 if (serviceTypeNew != null) {
-                    employeeCheck.setServiceTypeName(serviceTypeNew.getServiceName());
                     note = note + " điều chuyển " + employeeCheck.getServiceTypeName() + " thành " + serviceTypeNew.getServiceName() + ".";
+                    employeeCheck.setServiceTypeName(serviceTypeNew.getServiceName());
                 }
                 employeeCheck.setNote(employeeCheck.getNote() != null ? employeeCheck.getNote() + " " + note : note);
             }
             if (!employeeCheck.getStatus().equals(transfer.getStatus())) {
                 note = note + " Điều chuyển trạng thái " + employeeCheck.getStatus() + " thành " + transfer.getStatus() + ".";
                 employeeCheck.setStatus(transfer.getStatus());
+                employeeCheck.setNote(note);
+            }
+            if (!employeeCheck.getDiaBan().equals(transfer.getDiaBan())) {
+                note = note + " Điều chuyển địa bàn " + employeeCheck.getDiaBan() + " thành " + transfer.getDiaBan() + ".";
+                employeeCheck.setDiaBan(transfer.getDiaBan());
                 employeeCheck.setNote(note);
             }
 

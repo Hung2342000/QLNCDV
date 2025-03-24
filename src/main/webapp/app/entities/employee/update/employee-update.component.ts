@@ -13,6 +13,7 @@ import { IServiceType } from '../service-type.model';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ToastComponent } from '../../../layouts/toast/toast.component';
 import { ITransfer, Transfer } from '../transfer.model';
+import { IDiaBan } from '../diaban.model';
 
 @Component({
   selector: 'jhi-employee-update',
@@ -23,14 +24,16 @@ export class EmployeeUpdateComponent implements OnInit {
   @ViewChild('dieuchuyen') dieuchuyen: TemplateRef<any> | undefined;
   @ViewChild('toast') toast!: ToastComponent;
   isSaving = false;
+  isEdit = false;
   departments?: IDepartment[] | any;
+  diaBans?: IDiaBan[] | any;
   transfer?: ITransfer;
   serviceTypes?: IServiceType[] | any;
   serviceTypesCustom?: IServiceType[] | any;
   editForm = this.fb.group({
     id: [null, [Validators.required]],
     codeEmployee: [null, [Validators.required]],
-    name: [],
+    name: [null, [Validators.required]],
     birthday: [],
     otherId: [],
     address: [],
@@ -38,15 +41,14 @@ export class EmployeeUpdateComponent implements OnInit {
     workPhone: [],
     workEmail: [],
     privateEmail: [],
-    department: [],
-    startDate: [],
+    department: [null, [Validators.required]],
+    startDate: [null, [Validators.required]],
     closeDate: [],
-    basicSalary: [],
-    serviceType: [],
+    serviceTypeName: [null, [Validators.required]],
     region: [],
     rank: [],
-    status: [],
-    diaBan: [],
+    status: [null, [Validators.required]],
+    diaBan: [null, [Validators.required]],
     ngayNghiSinh: [],
     ngayDieuChuyen: [],
   });
@@ -69,6 +71,9 @@ export class EmployeeUpdateComponent implements OnInit {
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ employee }) => {
+      if (employee.id) {
+        this.isEdit = true;
+      }
       this.updateForm(employee);
     });
     this.employeeService.queryDepartment().subscribe({
@@ -80,6 +85,12 @@ export class EmployeeUpdateComponent implements OnInit {
     this.employeeService.queryServiceType().subscribe({
       next: (res: HttpResponse<IServiceType[]>) => {
         this.serviceTypesCustom = res.body;
+      },
+    });
+
+    this.employeeService.queryDiaBan().subscribe({
+      next: (res: HttpResponse<IDiaBan[]>) => {
+        this.diaBans = res.body;
       },
     });
   }
@@ -153,7 +164,7 @@ export class EmployeeUpdateComponent implements OnInit {
       department: employee.department,
       startDate: employee.startDate?.format(DATE_FORMAT_CUSTOM),
       closeDate: employee.closeDate?.format(DATE_FORMAT_CUSTOM),
-      serviceType: employee.serviceType,
+      serviceTypeName: employee.serviceTypeName,
       region: employee.region,
       rank: employee.rank,
       status: employee.status,
@@ -179,7 +190,7 @@ export class EmployeeUpdateComponent implements OnInit {
       department: this.editForm.get(['department'])!.value,
       startDate: this.editForm.get(['startDate'])!.value,
       closeDate: this.editForm.get(['closeDate'])!.value,
-      serviceType: this.editForm.get(['serviceType'])!.value,
+      serviceTypeName: this.editForm.get(['serviceTypeName'])!.value,
       region: this.editForm.get(['region'])!.value,
       rank: this.editForm.get(['rank'])!.value,
       status: this.editForm.get(['status'])!.value,
@@ -192,9 +203,11 @@ export class EmployeeUpdateComponent implements OnInit {
     return {
       ...new Transfer(),
       startDate: this.editForm.get(['ngayDieuChuyen'])!.value,
-      serviceType: this.editForm.get(['serviceType'])!.value,
+      serviceTypeName: this.editForm.get(['serviceTypeName'])!.value,
       status: this.editForm.get(['status'])!.value,
       department: this.editForm.get(['department'])!.value,
+      diaBan: this.editForm.get(['diaBan'])!.value,
+      rank: this.editForm.get(['rank'])!.value,
     };
   }
 }
