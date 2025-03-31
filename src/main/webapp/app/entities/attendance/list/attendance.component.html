@@ -1,9 +1,13 @@
 <div>
   <h4 id="page-heading" data-cy="AttendanceHeading">
     <span style="color: rgba(0, 81, 255, 0.85)">Chấm công</span>
+
     <div class="d-flex justify-content-end">
-      <button id="jh-create-entity" data-cy="entityCreateButton" class="btn btn-primary btn-sm" (click)="create()">
+      <button style="margin-right: 10px" data-cy="entityConfirmDeleteButton" class="btn btn-danger btn-sm" (click)="create()">
         <span> Thêm </span>
+      </button>
+      <button *jhiHasAnyAuthority="'ROLE_ADMIN'" (click)="ngayNghiLeListShow()" class="btn btn-primary btn-sm">
+        <span>Ngày nghỉ lễ</span>
       </button>
     </div>
   </h4>
@@ -84,6 +88,9 @@
     <h4 class="modal-title" data-cy="toolDeleteDialogHeading">Thêm mới bảng chấm công</h4>
     <button type="button" class="btn-close" data-dismiss="modal" aria-hidden="true" (click)="closeModal()"></button>
   </div>
+  <div *ngIf="isSaving" class="modal-loading-overlay">
+    <div class="spinner"></div>
+  </div>
   <div class="modal-body">
     <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm" (keydown.enter)="$event.preventDefault()">
       <div class="row">
@@ -92,15 +99,17 @@
             <label class="form-label" for="field_createDate">Ngày tạo</label>
             <div class="input-group">
               <input
-                style="background-color: white"
+                style="background-color: #fff"
+                class="form-control"
                 type="text"
                 mwlFlatpickr
                 data-cy="createDate"
                 id="field_createDate"
                 name="createDate"
                 formControlName="createDate"
+                [dateFormat]="'d-m-Y'"
                 [convertModelValue]="true"
-                class="form-control"
+                [allowInput]="true"
               />
             </div>
           </div>
@@ -159,9 +168,21 @@
         <span>Đóng</span>
       </button>
       <button style="margin-top: 20px" type="submit" class="btn btn-primary btn-sm" data-dismiss="modal">
-        <span>Lưu</span>
+        <span *ngIf="!isSaving">Lưu</span>
+        <span *ngIf="isSaving"> <i class="fa fa-spinner fa-spin"></i> Đang lưu... </span>
       </button>
     </form>
+  </div>
+  <div class="modal-footer"></div>
+</ng-template>
+
+<ng-template #ngayNghiLeList let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" data-cy="toolDeleteDialogHeading">Danh sách ngày nghỉ lễ</h4>
+    <button type="button" class="btn-close" data-dismiss="modal" aria-hidden="true" (click)="closeModal()"></button>
+  </div>
+  <div class="modal-body">
+    <jhi-ngay-nghi-le-box></jhi-ngay-nghi-le-box>
   </div>
   <div class="modal-footer"></div>
 </ng-template>

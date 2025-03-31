@@ -15,14 +15,17 @@ import { ItemCountComponent } from './pagination/item-count.component';
 import { FormatDateVnPipe } from './date/format-date-vn.pipe';
 import { ToastComponent } from '../layouts/toast/toast.component';
 import { EmployeeBoxComponent } from '../entities/box/employee-box/employee-box.component';
+import { NgayNghiLeComponent } from '../entities/ngaynghile/ngay-nghi-le.component';
+import { FlatpickrModule } from 'angularx-flatpickr';
 @NgModule({
-  imports: [SharedLibsModule],
+  imports: [SharedLibsModule, FlatpickrModule],
   declarations: [
     FindLanguageFromKeyPipe,
     TranslateDirective,
     AlertComponent,
     AlertErrorComponent,
     EmployeeBoxComponent,
+    NgayNghiLeComponent,
     ToastComponent,
     HasAnyAuthorityDirective,
     DurationPipe,
@@ -49,6 +52,7 @@ import { EmployeeBoxComponent } from '../entities/box/employee-box/employee-box.
     ItemCountComponent,
     FormatDateVnPipe,
     EmployeeBoxComponent,
+    NgayNghiLeComponent,
   ],
 })
 export class SharedModule {}

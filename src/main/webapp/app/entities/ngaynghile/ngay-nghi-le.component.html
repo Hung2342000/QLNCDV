@@ -1,0 +1,105 @@
+<div class="d-flex justify-content-end">
+  <button (click)="addNgayNghiLe()" class="btn btn-primary btn-sm">
+    <span>Thêm</span>
+  </button>
+</div>
+<table class="table table-hover" aria-describedby="page-heading">
+  <thead>
+    <tr>
+      <th style="width: 45%" scope="col"><span>Ngày nghỉ</span></th>
+      <th style="width: 25%" scope="col"><span>Thông tin</span></th>
+      <th class="text-end" style="width: 25%" scope="col"><span>Thao tác</span></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let ngayNghile of ngayNghiLes; trackBy: trackId; let i = index" data-cy="entityTable">
+      <td>{{ ngayNghile.holidayDate | formatDateVnPipe }}</td>
+      <td>{{ ngayNghile.description }}</td>
+      <td class="text-end">
+        <div class="btn-group">
+          <button type="submit" (click)="deleteNgayNghiLe(ngayNghile.id)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+            <fa-icon icon="times"></fa-icon>
+          </button>
+        </div>
+      </td>
+    </tr>
+    <tr *ngFor="let l of newArr(itemsPerPage - ngayNghiLes.length)">
+      <td class="text-center empty-row">&nbsp;</td>
+      <td class="text-center empty-row">&nbsp;</td>
+      <td class="text-center empty-row">&nbsp;</td>
+    </tr>
+  </tbody>
+</table>
+<div *ngIf="ngayNghiLes && ngayNghiLes.length > 0" class="d-flex justify-content-end">
+  <div class="p-3 d-flex" style="justify-content: space-between">
+    <select style="border-radius: 7%; height: 35px" [(ngModel)]="itemsPerPage" (change)="loadPage()">
+      <option value="10">10</option>
+      <option value="20">20</option>
+      <option value="30">30</option>
+    </select>
+    <div style="font-size: 20px; margin-right: 15px">
+      <span style="width: 170px; padding-left: 20px; font-size: 15px">Tổng số: {{ this.totalItems }} </span>
+    </div>
+    <ngb-pagination
+      [collectionSize]="totalItems"
+      [(page)]="ngbPaginationPage"
+      [pageSize]="itemsPerPage"
+      [maxSize]="5"
+      [rotate]="true"
+      [boundaryLinks]="true"
+      (pageChange)="loadPage($event)"
+      class=""
+    ></ngb-pagination>
+  </div>
+</div>
+<ng-template #add let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" data-cy="toolDeleteDialogHeading">Thêm ngày lễ</h4>
+    <button type="button" class="btn-close" data-dismiss="modal" aria-hidden="true" (click)="closeModalRefAdd()"></button>
+  </div>
+  <div class="modal-body">
+    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm" (keydown.enter)="$event.preventDefault()">
+      <div class="row">
+        <div class="col-md-6">
+          <div>
+            <label class="form-label" for="field_holidayDate">Ngày nghỉ</label>
+            <div class="input-group">
+              <input
+                style="background-color: #fff"
+                class="form-control"
+                type="text"
+                mwlFlatpickr
+                data-cy="holidayDate"
+                id="field_holidayDate"
+                name="holidayDate"
+                formControlName="holidayDate"
+                [dateFormat]="'d-m-Y'"
+                [convertModelValue]="true"
+                [allowInput]="true"
+              />
+            </div>
+          </div>
+          <div style="margin-top: 16px">
+            <label class="form-label" for="field_description">Tên ngày nghỉ lễ</label>
+            <input
+              type="text"
+              class="form-control"
+              name="description"
+              id="field_description"
+              data-cy="description"
+              formControlName="description"
+            />
+          </div>
+        </div>
+      </div>
+      <button style="margin-top: 20px" type="button" class="btn btn-secondary btn-sm" data-dismiss="modal" (click)="closeModalRefAdd()">
+        <span>Đóng</span>
+      </button>
+      <button style="margin-top: 20px" type="submit" class="btn btn-primary btn-sm" data-dismiss="modal">
+        <span>Lưu</span>
+      </button>
+    </form>
+  </div>
+  <div class="modal-footer"></div>
+</ng-template>
+<jhi-toast #toast></jhi-toast>

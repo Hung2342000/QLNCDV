@@ -1,6 +1,6 @@
 <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
   <div class="d-flex justify-content-between align-items-center mb-3">
-    <h3 id="jhi-attendance-heading" data-cy="AttendanceCreateUpdateHeading" class="mb-0">Bảng lương</h3>
+    <h3 id="jhi-attendance-heading" data-cy="AttendanceCreateUpdateHeading" class="mb-0">Bảng chi phi</h3>
     <!--    <button type="submit" id="save-entity" data-cy="entityCreateSaveButton" class="btn btn-primary btn-sm">-->
     <!--      <span>Lưu</span>-->
     <!--    </button>-->
@@ -370,9 +370,9 @@
             <th style="min-width: 90px !important">Phí cố định đã thực hiện</th>
             <th style="min-width: 90px !important">Chi phí giảm trừ</th>
             <th style="min-width: 90px !important">Phí cố định thanh toán thực tế</th>
-            <th style="min-width: 90px !important">Chi phí dịch vụ khoán và khuyến khích</th>
-            <th style="min-width: 90px !important">Chi phí khuyến khích khác</th>
-            <th style="min-width: 90px !important">Tổng chi phí khoán và khuyến khích</th>
+            <th style="min-width: 90px !important" *ngIf="checkKK === true">Chi phí dịch vụ khoán và khuyến khích</th>
+            <th style="min-width: 90px !important" *ngIf="checkKK === true">Chi phí khuyến khích khác</th>
+            <th style="min-width: 90px !important" *ngIf="checkKK === true">Tổng chi phí khoán và khuyến khích</th>
             <th style="min-width: 90px !important">Phí dịch vụ thực tế</th>
             <th style="min-width: 90px !important">Ghi chú</th>
           </tr>
@@ -536,7 +536,7 @@
               </div>
             </td>
 
-            <td>
+            <td *ngIf="checkKK === true">
               <div class="input-group">
                 <input
                   [readOnly]="!isEdit"
@@ -550,7 +550,7 @@
               </div>
             </td>
 
-            <td>
+            <td *ngIf="checkKK === true">
               <div class="input-group">
                 <input
                   [readOnly]="!isEdit"
@@ -563,7 +563,7 @@
                 />
               </div>
             </td>
-            <td>
+            <td *ngIf="checkKK === true">
               <div class="input-group">
                 <input
                   [readOnly]="!isEdit"
@@ -637,9 +637,9 @@
             <th style="min-width: 90px !important">Chi phí giảm trừ</th>
             <th style="min-width: 90px !important">Mức bổ sung lương tối thiểu vùng</th>
             <th style="min-width: 90px !important">Phí cố định thanh toán thực tế</th>
-            <th style="min-width: 90px !important">Chi phí dịch vụ khoán và khuyến khích</th>
-            <th style="min-width: 90px !important">Chi phí khuyến khích khác</th>
-            <th style="min-width: 90px !important">Tổng chi phí khoán và khuyến khích</th>
+            <th style="min-width: 90px !important" *ngIf="checkKK === true">Chi phí dịch vụ khoán và khuyến khích</th>
+            <th style="min-width: 90px !important" *ngIf="checkKK === true">Chi phí khuyến khích khác</th>
+            <th style="min-width: 90px !important" *ngIf="checkKK === true">Tổng chi phí khoán và khuyến khích</th>
             <th style="min-width: 90px !important">Phí dịch vụ thực tế</th>
             <th style="min-width: 90px !important">Ghi chú</th>
           </tr>
@@ -853,7 +853,7 @@
               </div>
             </td>
 
-            <td>
+            <td *ngIf="checkKK === true">
               <div class="input-group">
                 <input
                   [readOnly]="!isEdit"
@@ -868,7 +868,7 @@
               </div>
             </td>
 
-            <td>
+            <td *ngIf="checkKK === true">
               <div class="input-group">
                 <input
                   [readOnly]="!isEdit"
@@ -882,7 +882,7 @@
                 />
               </div>
             </td>
-            <td>
+            <td *ngIf="checkKK === true">
               <div class="input-group">
                 <input
                   [readOnly]="!isEdit"
@@ -959,7 +959,7 @@
             <th style="min-width: 90px !important">Phí cố định đã thực hiện</th>
             <th style="min-width: 90px !important">Chi phí giảm trừ</th>
             <th style="min-width: 90px !important">Phí cố định thanh toán thực tế</th>
-            <th style="min-width: 90px !important">Chi phí dịch vụ khoán và khuyến khích</th>
+            <th style="min-width: 90px !important" *ngIf="checkKK === true">Chi phí dịch vụ khoán và khuyến khích</th>
             <th style="min-width: 90px !important">Phí dịch vụ thực tế</th>
           </tr>
         </thead>
@@ -1182,7 +1182,7 @@
                 />
               </div>
             </td>
-            <td>
+            <td *ngIf="checkKK === true">
               <div class="input-group">
                 <input
                   [readOnly]="!isEdit"
@@ -1240,9 +1240,9 @@
             <th style="min-width: 90px !important">Số ngày thực hiện thực tế</th>
             <th style="min-width: 90px !important">Phí cố định thanh toán thực tế</th>
             <th style="min-width: 90px !important">Mức chi phí cố định thực tế</th>
-            <th style="min-width: 90px !important">Chi phí dịch vụ khoán và khuyến khích</th>
-            <th style="min-width: 90px !important">Chi phí khuyến khích khác</th>
-            <th style="min-width: 90px !important">Tổng chi phí khoán và khuyến khích</th>
+            <th style="min-width: 90px !important" *ngIf="checkKK === true">Chi phí dịch vụ khoán và khuyến khích</th>
+            <th style="min-width: 90px !important" *ngIf="checkKK === true">Chi phí khuyến khích khác</th>
+            <th style="min-width: 90px !important" *ngIf="checkKK === true">Tổng chi phí khoán và khuyến khích</th>
             <th style="min-width: 90px !important">Chi phí bổ sung chi phí tối thiểu vùng</th>
             <th style="min-width: 90px !important">Chi phí thuê dịch vụ</th>
             <th style="min-width: 90px !important">Ghi chú</th>
@@ -1401,7 +1401,7 @@
               </div>
             </td>
 
-            <td>
+            <td *ngIf="checkKK === true">
               <div class="input-group">
                 <input
                   [readOnly]="!isEdit"
@@ -1415,7 +1415,7 @@
               </div>
             </td>
 
-            <td>
+            <td *ngIf="checkKK === true">
               <div class="input-group">
                 <input
                   [readOnly]="!isEdit"
@@ -1428,7 +1428,7 @@
                 />
               </div>
             </td>
-            <td>
+            <td *ngIf="checkKK === true">
               <div class="input-group">
                 <input
                   [readOnly]="!isEdit"

@@ -45,7 +45,8 @@ export class SalaryUpdateComponent implements OnInit {
   ngbPaginationPage = 1;
   isSaving = false;
   employeeList?: IEmployee[] | any;
-  isEdit = true;
+  isEdit = false;
+  checkKK = false;
   isEditAm = true;
   content?: string = '';
   checkUpload = false;
@@ -322,6 +323,7 @@ export class SalaryUpdateComponent implements OnInit {
 
   edit(): void {
     this.isEdit = true;
+    this.checkKK = true;
   }
 
   importExcel(): void {

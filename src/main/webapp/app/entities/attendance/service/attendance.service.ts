@@ -12,15 +12,20 @@ import { IAttendance, getAttendanceIdentifier } from '../attendance.model';
 import { IDepartment } from '../../employee/department.model';
 import { getAttendanceDetailIdentifier, IAttendanceDetail } from '../attendanceDetail.model';
 import { ISalary } from '../../salary/salary.model';
+import { INgayNghiLe } from '../ngay-nghi-le.model';
+import { IEmployee } from '../../employee/employee.model';
 
 export type EntityResponseType = HttpResponse<IAttendance>;
+export type EntityResponseTypeNgayNghiLe = HttpResponse<INgayNghiLe>;
 export type EntityResponseDetailType = HttpResponse<IAttendanceDetail>;
 export type EntityArrayResponseType = HttpResponse<IAttendance[]>;
 export type EntityArrayResponseDetailType = HttpResponse<IAttendanceDetail[]>;
+export type EntityArrayResponseTypeNgayNghiLe = HttpResponse<INgayNghiLe[]>;
 
 @Injectable({ providedIn: 'root' })
 export class AttendanceService {
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/attendances');
+  protected resourceUrlNgayNghiLe = this.applicationConfigService.getEndpointFor('api/ngay-nghi-le');
   protected resourceUrlDetail = this.applicationConfigService.getEndpointFor('api/attendanceDetail');
   constructor(protected http: HttpClient, protected applicationConfigService: ApplicationConfigService) {}
 
@@ -29,6 +34,12 @@ export class AttendanceService {
     return this.http.post<IAttendance>(this.resourceUrl, attendance, { observe: 'response' }).pipe(map((res: EntityResponseType) => res));
   }
 
+  createNgayNghiLe(ngayNghiLe: INgayNghiLe): Observable<EntityResponseTypeNgayNghiLe> {
+    const copy = this.convertDateFromClientNgayNghiLe(ngayNghiLe);
+    return this.http
+      .post<INgayNghiLe>(this.resourceUrlNgayNghiLe, copy, { observe: 'response' })
+      .pipe(map((res: EntityResponseTypeNgayNghiLe) => res));
+  }
   createAllDetail(attendanceDetails: IAttendanceDetail[]): Observable<any> {
     return this.http.post<any>(this.resourceUrlDetail + '/all', attendanceDetails);
   }
@@ -39,6 +50,13 @@ export class AttendanceService {
       .pipe(map((res: EntityResponseType) => res));
   }
 
+  updateNgayNghiLe(ngayNghiLe: INgayNghiLe): Observable<EntityResponseTypeNgayNghiLe> {
+    return this.http
+      .put<INgayNghiLe>(`${this.resourceUrlNgayNghiLe}/${getAttendanceIdentifier(ngayNghiLe) as number}`, ngayNghiLe, {
+        observe: 'response',
+      })
+      .pipe(map((res: EntityResponseTypeNgayNghiLe) => res));
+  }
   partialUpdate(attendance: IAttendance): Observable<EntityResponseType> {
     return this.http
       .patch<IAttendance>(`${this.resourceUrl}/${getAttendanceIdentifier(attendance) as number}`, attendance, { observe: 'response' })
@@ -63,6 +81,13 @@ export class AttendanceService {
       .pipe(map((res: EntityArrayResponseType) => res));
   }
 
+  queryNgayNghiLe(req?: any): Observable<EntityArrayResponseTypeNgayNghiLe> {
+    const options = createRequestOption(req);
+    return this.http
+      .get<INgayNghiLe[]>(this.resourceUrlNgayNghiLe, { params: options, observe: 'response' })
+      .pipe(map((res: EntityArrayResponseTypeNgayNghiLe) => this.convertDateArrayFromServer(res)));
+  }
+
   queryAll(id: number, options?: any): Observable<EntityArrayResponseDetailType> {
     return this.http.get<IAttendanceDetail[]>(`${this.resourceUrlDetail}/all/${id}`, { params: options, observe: 'response' });
   }
@@ -71,6 +96,9 @@ export class AttendanceService {
   }
   delete(id: number): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
+  }
+  deleteNgayNghiLe(id: number): Observable<HttpResponse<{}>> {
+    return this.http.delete(`${this.resourceUrlNgayNghiLe}/${id}`, { observe: 'response' });
   }
   deleteDetail(id: number): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrlDetail}/${id}`, { observe: 'response' });
@@ -102,7 +130,32 @@ export class AttendanceService {
 
   protected convertDateFromClient(attendance: IAttendance): ISalary {
     return Object.assign({}, attendance, {
-      createDate: attendance.createDate ? dayjs(attendance.createDate).format(DATE_FORMAT) : undefined,
+      createDate:
+        attendance.createDate === undefined
+          ? undefined
+          : typeof attendance.createDate === 'string'
+          ? dayjs(attendance.createDate, 'DD-MM-YYYY').format(DATE_FORMAT)
+          : dayjs(attendance.createDate).format(DATE_FORMAT),
     });
+  }
+
+  protected convertDateFromClientNgayNghiLe(ngayNghiLe: INgayNghiLe): INgayNghiLe {
+    return Object.assign({}, ngayNghiLe, {
+      holidayDate:
+        ngayNghiLe.holidayDate === undefined
+          ? undefined
+          : typeof ngayNghiLe.holidayDate === 'string'
+          ? dayjs(ngayNghiLe.holidayDate, 'DD-MM-YYYY').format(DATE_FORMAT)
+          : dayjs(ngayNghiLe.holidayDate).format(DATE_FORMAT),
+    });
+  }
+
+  protected convertDateArrayFromServer(res: EntityArrayResponseTypeNgayNghiLe): EntityArrayResponseTypeNgayNghiLe {
+    if (res.body) {
+      res.body.forEach((ngayNghiLe: INgayNghiLe) => {
+        ngayNghiLe.holidayDate = ngayNghiLe.holidayDate ? dayjs(ngayNghiLe.holidayDate) : undefined;
+      });
+    }
+    return res;
   }
 }

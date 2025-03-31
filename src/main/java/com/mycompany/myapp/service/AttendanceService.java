@@ -45,19 +45,22 @@ public class AttendanceService {
     private AttendanceRepository attendanceRepository;
     private AttendanceDetailRepository attendanceDetailRepository;
     private DepartmentRepository departmentRepository;
+    private final NgayNghiLeRepository ngayNghiLeRepository;
 
     public AttendanceService(
         UserRepository userRepository,
         EmployeeRepository employeeRepository,
         AttendanceRepository attendanceRepository,
         AttendanceDetailRepository attendanceDetailRepository,
-        DepartmentRepository departmentRepository
+        DepartmentRepository departmentRepository,
+        NgayNghiLeRepository ngayNghiLeRepository
     ) {
         this.userRepository = userRepository;
         this.employeeRepository = employeeRepository;
         this.attendanceRepository = attendanceRepository;
         this.attendanceDetailRepository = attendanceDetailRepository;
         this.departmentRepository = departmentRepository;
+        this.ngayNghiLeRepository = ngayNghiLeRepository;
     }
 
     public Attendance createAttendance(Attendance attendance) {
@@ -78,7 +81,10 @@ public class AttendanceService {
                             attendance.getSearchDepartment() != null ? attendance.getSearchDepartment() : ""
                         );
             } else if (
-                (authentication != null && getAuthorities(authentication).anyMatch(authority -> Arrays.asList(USER).contains(authority)))
+                (
+                    authentication != null &&
+                    getAuthorities(authentication).anyMatch(authority -> Arrays.asList(SUPERUSER).contains(authority))
+                )
             ) {
                 listEmployee =
                     this.employeeRepository.listAllEmployeesNoNhom(
@@ -95,7 +101,7 @@ public class AttendanceService {
                             attendance.getSearchNhom() != null ? attendance.getSearchNhom() : ""
                         );
             } else if (
-                authentication != null && getAuthorities(authentication).anyMatch(authority -> Arrays.asList(USER).contains(authority))
+                authentication != null && getAuthorities(authentication).anyMatch(authority -> Arrays.asList(SUPERUSER).contains(authority))
             ) {
                 listEmployee =
                     this.employeeRepository.listAllEmployees(
@@ -117,6 +123,7 @@ public class AttendanceService {
             ngayNghiCheck.addAll(Arrays.asList(ngayNghi.split("[,;\\s]+")));
         }
         Attendance attendanceCreate = this.attendanceRepository.save(attendance);
+        List<AttendanceDetail> attendanceDetailList = new ArrayList<>();
         for (Employee employee : listEmployee) {
             AttendanceDetail attendanceDetail = new AttendanceDetail();
             attendanceDetail.setAttendanceId(attendance.getId());
@@ -148,9 +155,12 @@ public class AttendanceService {
                                 Integer.parseInt(daycheck)
                             );
                             Boolean check = isWeekend(date);
+                            Boolean checkHoliday = isHoliday(date);
                             if (check) {
                                 field.set(attendanceDetail, "off");
                             } else if (ngayNghiCheck.contains(daycheck)) {
+                                field.set(attendanceDetail, "L");
+                            } else if (checkHoliday) {
                                 field.set(attendanceDetail, "L");
                             } else {
                                 field.set(attendanceDetail, "+");
@@ -166,9 +176,12 @@ public class AttendanceService {
                                     Integer.parseInt(daycheck)
                                 );
                                 Boolean check = isWeekend(date);
+                                Boolean checkHoliday = isHoliday(date);
                                 if (check) {
                                     field.set(attendanceDetail, "off");
                                 } else if (ngayNghiCheck.contains(daycheck)) {
+                                    field.set(attendanceDetail, "L");
+                                } else if (checkHoliday) {
                                     field.set(attendanceDetail, "L");
                                 } else {
                                     field.set(attendanceDetail, "+");
@@ -185,9 +198,12 @@ public class AttendanceService {
                                         Integer.parseInt(daycheck)
                                     );
                                     Boolean check = isWeekend(date);
+                                    Boolean checkHoliday = isHoliday(date);
                                     if (check) {
                                         field.set(attendanceDetail, "off");
                                     } else if (ngayNghiCheck.contains(daycheck)) {
+                                        field.set(attendanceDetail, "L");
+                                    } else if (checkHoliday) {
                                         field.set(attendanceDetail, "L");
                                     } else {
                                         field.set(attendanceDetail, "+");
@@ -202,9 +218,12 @@ public class AttendanceService {
                                         Integer.parseInt(daycheck)
                                     );
                                     Boolean check = isWeekend(date);
+                                    Boolean checkHoliday = isHoliday(date);
                                     if (check) {
                                         field.set(attendanceDetail, "off");
                                     } else if (ngayNghiCheck.contains(daycheck)) {
+                                        field.set(attendanceDetail, "L");
+                                    } else if (checkHoliday) {
                                         field.set(attendanceDetail, "L");
                                     } else {
                                         field.set(attendanceDetail, "+");
@@ -224,14 +243,24 @@ public class AttendanceService {
             } else {
                 attendanceDetail.setNumberWork(countDay);
             }
-            attendanceDetailRepository.save(attendanceDetail);
+            attendanceDetailList.add(attendanceDetail);
         }
+        attendanceDetailRepository.saveAll(attendanceDetailList);
         return attendanceCreate;
     }
 
     public static boolean isWeekend(LocalDate date) {
         DayOfWeek dayOfWeek = date.getDayOfWeek();
         return dayOfWeek == DayOfWeek.SUNDAY;
+    }
+
+    public boolean isHoliday(LocalDate date) {
+        List<NgayNghiLe> list = new ArrayList<>();
+        list = ngayNghiLeRepository.getNgayNghiLeByHolidayDate(date);
+        if (list.size() > 0) {
+            return true;
+        }
+        return false;
     }
 
     public Page<Attendance> getAllByDepartment(Pageable pageable) {
@@ -245,14 +274,14 @@ public class AttendanceService {
         Page<Attendance> page = new PageImpl<>(Collections.emptyList(), PageRequest.of(0, 10), 0);
         if (
             authentication != null &&
-            !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(USER).contains(authority)) &&
+            !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(SUPERUSER).contains(authority)) &&
             getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority))
         ) {
             page = this.attendanceRepository.getAllAttendancePage(pageable);
         } else if (
             authentication != null &&
             !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority)) &&
-            getAuthorities(authentication).anyMatch(authority -> Arrays.asList(USER).contains(authority))
+            getAuthorities(authentication).anyMatch(authority -> Arrays.asList(SUPERUSER).contains(authority))
         ) {
             page = this.attendanceRepository.getAttendanceByDepartment(user.getDepartment(), pageable);
         }

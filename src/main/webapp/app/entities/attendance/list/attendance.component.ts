@@ -20,9 +20,11 @@ import { IDepartment } from '../../employee/department.model';
 @Component({
   selector: 'jhi-attendance',
   templateUrl: './attendance.component.html',
+  styleUrls: ['./attendance.component.scss'],
 })
 export class AttendanceComponent implements OnInit {
   @ViewChild('add') add: TemplateRef<any> | undefined;
+  @ViewChild('ngayNghiLeList') ngayNghiLeList: TemplateRef<any> | undefined;
   @ViewChild('toast') toast!: ToastComponent;
 
   attendances?: IAttendance[] | any;
@@ -95,6 +97,7 @@ export class AttendanceComponent implements OnInit {
   }
 
   success(): void {
+    this.isSaving = false;
     this.closeModal();
     this.editForm.reset();
     this.toast.showToast('Thành công');
@@ -152,6 +155,10 @@ export class AttendanceComponent implements OnInit {
       },
     });
     const modalRef = this.modalService.open(this.add, { size: 'lg', backdrop: 'static' });
+  }
+
+  ngayNghiLeListShow(): void {
+    const modalRef = this.modalService.open(this.ngayNghiLeList, { size: 'lg', backdrop: 'static' });
   }
   trackId(_index: number, item: IAttendance): number {
     return item.id!;
@@ -266,6 +273,7 @@ export class AttendanceComponent implements OnInit {
     this.isSaving = false;
   }
   protected onSaveError(): void {
+    this.isSaving = false;
     // Api for inheritance.
   }
   protected createFrom(): IAttendance {
