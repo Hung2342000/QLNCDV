@@ -1,4 +1,4 @@
-package com.mycompany.myapp.service.dto;
+package com.mycompany.myapp.repository;
 
 /**
  * A DTO representing a user, with his authorities.
@@ -12,10 +12,10 @@ public class NhanVienDTO {
     private String region;
     private String rank;
     private String nhom;
-    private Long thang;
-    private Long nam;
-    private String kpi;
-    private String hct;
+    private Long month;
+    private Long year;
+    private String kpis;
+    private String htc;
 
     public NhanVienDTO() {
         // Empty constructor needed for Jackson.
@@ -29,10 +29,10 @@ public class NhanVienDTO {
         String region,
         String rank,
         String nhom,
-        Long thang,
-        Long nam,
-        String kpi,
-        String hct
+        Long month,
+        Long year,
+        String kpis,
+        String htc
     ) {
         this.idEmployee = idEmployee;
         this.codeEmployee = codeEmployee;
@@ -41,10 +41,10 @@ public class NhanVienDTO {
         this.region = region;
         this.rank = rank;
         this.nhom = nhom;
-        this.thang = thang;
-        this.nam = nam;
-        this.kpi = kpi;
-        this.hct = hct;
+        this.month = month;
+        this.year = year;
+        this.kpis = kpis;
+        this.htc = htc;
     }
 
     public Long getIdEmployee() {
@@ -103,35 +103,35 @@ public class NhanVienDTO {
         this.nhom = nhom;
     }
 
-    public Long getThang() {
-        return thang;
+    public Long getMonth() {
+        return month;
     }
 
-    public void setThang(Long thang) {
-        this.thang = thang;
+    public void setMonth(Long month) {
+        this.month = month;
     }
 
-    public Long getNam() {
-        return nam;
+    public Long getYear() {
+        return year;
     }
 
-    public void setNam(Long nam) {
-        this.nam = nam;
+    public void setYear(Long year) {
+        this.year = year;
     }
 
-    public String getKpi() {
-        return kpi;
+    public String getKpis() {
+        return kpis;
     }
 
-    public void setKpi(String kpi) {
-        this.kpi = kpi;
+    public void setKpis(String kpis) {
+        this.kpis = kpis;
     }
 
-    public String getHct() {
-        return hct;
+    public String getHtc() {
+        return htc;
     }
 
-    public void setHct(String hct) {
-        this.hct = hct;
+    public void setHtc(String htc) {
+        this.htc = htc;
     }
 }

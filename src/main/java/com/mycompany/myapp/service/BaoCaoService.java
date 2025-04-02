@@ -3,20 +3,11 @@ package com.mycompany.myapp.service;
 import com.mycompany.myapp.domain.BaoCao;
 import com.mycompany.myapp.domain.Employee;
 import com.mycompany.myapp.repository.*;
-import com.mycompany.myapp.service.dto.NhanVienDTO;
 import java.lang.reflect.Field;
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -68,13 +59,13 @@ public class BaoCaoService {
                 baoCao.setNameEmployee(nhanVienDTOList.get(0).getNameEmployee());
                 baoCao.setServiceTypeName(nhanVienDTOList.get(0).getServiceTypeName());
                 baoCao.setNhom(nhanVienDTOList.get(0).getNhom());
-                baoCao.setNam(nhanVienDTOList.get(0).getNam());
+                baoCao.setNam(nhanVienDTOList.get(0).getYear());
                 baoCao.setIdEmployee(nhanVienDTOList.get(0).getIdEmployee());
                 double trungBinh = 0;
                 for (NhanVienDTO nhanVienDTO : nhanVienDTOList) {
                     if (searchNhom.equals("KAM")) {
-                        trungBinh = trungBinh + Double.parseDouble(nhanVienDTO.getHct()) / nhanVienDTOList.size();
-                    } else trungBinh = trungBinh + Double.parseDouble(nhanVienDTO.getKpi()) / nhanVienDTOList.size();
+                        trungBinh = trungBinh + Double.parseDouble(nhanVienDTO.getHtc()) / nhanVienDTOList.size();
+                    } else trungBinh = trungBinh + Double.parseDouble(nhanVienDTO.getKpis()) / nhanVienDTOList.size();
                 }
                 baoCao.setKpiTrungBinh(Double.toString(trungBinh));
                 Field[] fields = baoCao.getClass().getDeclaredFields();
@@ -85,11 +76,11 @@ public class BaoCaoService {
                         if (field.getName().contains("thang")) {
                             String thangcheck = field.getName().replaceAll("thang", "");
                             for (NhanVienDTO nhanVienDTO : nhanVienDTOList) {
-                                if (nhanVienDTO.getThang().toString().equals(thangcheck)) {
+                                if (nhanVienDTO.getMonth().toString().equals(thangcheck)) {
                                     if (searchNhom.equals("KAM")) {
-                                        field.set(baoCao, nhanVienDTO.getHct());
+                                        field.set(baoCao, nhanVienDTO.getHtc());
                                     } else {
-                                        field.set(baoCao, nhanVienDTO.getKpi());
+                                        field.set(baoCao, nhanVienDTO.getKpis());
                                     }
                                 }
                             }
