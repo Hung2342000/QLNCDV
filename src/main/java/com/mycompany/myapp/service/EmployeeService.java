@@ -755,6 +755,7 @@ public class EmployeeService {
                     employee.setDepartment(" ");
                 }
                 if (employee.getRank() != null && employee.getServiceTypeName() != null && diaBan.getVung() != null) {
+                    log.debug("loiiiii : {}", employee.getDiaBan());
                     serviceType =
                         serviceTypeRepository.findServiceTypeByServiceNameAndRegionRank(
                             employee.getServiceTypeName().toLowerCase(),

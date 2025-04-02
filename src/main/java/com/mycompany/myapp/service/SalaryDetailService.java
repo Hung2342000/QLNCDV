@@ -1701,9 +1701,14 @@ public class SalaryDetailService {
                     chiPhiBoSung =
                         chiPhiBoSung.add(salaryDetail.getMucChiToiThieu()).subtract(mucChiPhiCoDinhThucTe).subtract(tongChiPhiKVKK);
                 }
-                if (chiPhiBoSung.compareTo(BigDecimal.ZERO) == 1 && salaryDetail.getHtc() != null && salaryDetail.getHtc() != "") {
+                if (
+                    chiPhiBoSung.compareTo(BigDecimal.ZERO) == 1 &&
+                    salaryDetail.getHtc() != null &&
+                    salaryDetail.getHtc() != "" &&
+                    chiPhiBoSung.compareTo(BigDecimal.ZERO) == 1
+                ) {
                     salaryDetail.setChiPhiBoSungCPTTV(chiPhiBoSung);
-                }
+                } else salaryDetail.setChiPhiBoSungCPTTV(BigDecimal.ZERO);
 
                 BigDecimal phiDichVuThucTe = BigDecimal.ZERO;
                 if (salaryDetail.getPhiCoDinhThanhToanThucTe() != null) {
@@ -1737,9 +1742,9 @@ public class SalaryDetailService {
                     if (kpi.contains(",")) {
                         kpi = kpi.replace(",", ".");
                     }
-                    if (Double.parseDouble(kpi) >= 0.7) {
+                    if (Double.parseDouble(kpi) >= 70) {
                         salaryDetail.setHtc("1");
-                    } else if (Double.parseDouble(kpi) < 0.7) {
+                    } else if (Double.parseDouble(kpi) < 70) {
                         salaryDetail.setHtc("0");
                     }
                 }
@@ -1821,7 +1826,9 @@ public class SalaryDetailService {
                     if (salaryDetail.getTongChiPhiKVKK() != null) {
                         mucBSLuongToiThieuVung = mucBSLuongToiThieuVung.subtract(salaryDetail.getTongChiPhiKVKK());
                     }
-                    salaryDetail.setMucBSLuongToiThieuVung(mucBSLuongToiThieuVung);
+                    if (mucBSLuongToiThieuVung.compareTo(BigDecimal.ZERO) == 1) {
+                        salaryDetail.setMucBSLuongToiThieuVung(mucBSLuongToiThieuVung);
+                    } else salaryDetail.setMucBSLuongToiThieuVung(BigDecimal.ZERO);
                 }
 
                 BigDecimal phiDichVuThucTe = BigDecimal.ZERO;
@@ -1980,7 +1987,7 @@ public class SalaryDetailService {
                             .getNumberWorking()
                             .divide(salaryDetail.getNumberWorkInMonth(), 15, RoundingMode.HALF_UP)
                             .multiply(salaryDetail.getMucChiToiThieu())
-                            .multiply(BigDecimal.ONE.subtract(new BigDecimal(salaryDetail.getKpis())))
+                            .multiply(BigDecimal.ONE.subtract(new BigDecimal(salaryDetail.getKpis()).divide(new BigDecimal(100))))
                             .setScale(0, RoundingMode.HALF_UP);
                 }
 

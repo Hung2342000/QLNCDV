@@ -34,8 +34,8 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
     #url: jdbc:oracle:thin:@10.1.178.12:1521:dbcty4
     url: jdbc:oracle:thin:@10.14.36.105:1521:orcl
-    username: CTY4_HRM_TEST
-    password: CTY4_HRM_TEST
+    username: CTY4_HRM
+    password: CTY4_HRM
     hikari:
       poolName: Hikari
       auto-commit: false

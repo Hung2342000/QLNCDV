@@ -40,3 +40,16 @@
 .navbar-vertical .nav-link:hover {
   color: #008cff; /* Màu chữ khi hover */
 }
+
+.dropdown-menu {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+.dropdown-menu.show {
+  background-color: #010b3a;
+  max-height: 150px; /* Điều chỉnh nếu cần */
+  opacity: 1;
+}

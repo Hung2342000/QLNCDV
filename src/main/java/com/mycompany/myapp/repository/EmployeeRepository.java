@@ -167,4 +167,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
         @Param("searchService") String searchService,
         @Param("searchStartDate") String searchStartDate
     );
+
+    @Query("select a from Employee a where  a.nhom = :searchNhom")
+    List<Employee> listAllEmployeesNhom(@Param("searchNhom") String searchNhom);
 }

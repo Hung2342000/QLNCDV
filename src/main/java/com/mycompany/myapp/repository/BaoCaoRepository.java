@@ -1,6 +1,6 @@
 package com.mycompany.myapp.repository;
 
-import com.mycompany.myapp.domain.Department;
+import com.mycompany.myapp.domain.BaoCao;
 import com.mycompany.myapp.domain.DiaBan;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,7 +13,4 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface DiaBanRepository extends JpaRepository<DiaBan, Long> {
-    @Query("select a from DiaBan a where a.name = :name ")
-    DiaBan findDiaBanByName(@Param("name") String name);
-}
+public interface BaoCaoRepository extends JpaRepository<BaoCao, Long> {}

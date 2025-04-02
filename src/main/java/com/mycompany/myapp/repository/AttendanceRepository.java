@@ -1,6 +1,7 @@
 package com.mycompany.myapp.repository;
 
 import com.mycompany.myapp.domain.Attendance;
+import com.mycompany.myapp.service.dto.NhanVienDTO;
 import java.math.BigDecimal;
 import java.util.List;
 import org.springframework.data.domain.Page;
