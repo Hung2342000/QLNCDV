@@ -1,0 +1,679 @@
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3 id="jhi-attendance-heading" data-cy="AttendanceCreateUpdateHeading" class="mb-0">Bảng lương đợt 1</h3>
+</div>
+<div class="row">
+  <div class="col-md-3">
+    <label style="font-weight: bold; color: black">Tên bảng lương</label>
+    <div style="font-size: 13px">{{ luong.nameSalary }}</div>
+  </div>
+  <div class="col-md-3">
+    <div class="row">
+      <div class="col-md-6">
+        <label style="font-weight: bold; color: black" class="form-label">Tháng</label>
+        <div style="font-size: 13px">{{ luong.month }}</div>
+      </div>
+      <div class="col-md-6">
+        <label style="font-weight: bold; color: black" class="form-label">Năm</label>
+        <div style="font-size: 13px">{{ luong.year }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex justify-content-end" *ngIf="isEdit === true">
+  <button style="" (click)="close()" class="btn btn-dark btn-sm">
+    <span>Đóng</span>
+  </button>
+</div>
+<div class="tabs">
+  <div *ngFor="let tab of tabs; let i = index" (click)="selectTab(i)" [class.active]="selectedTabIndex === i">
+    {{ tab.label }}
+  </div>
+</div>
+
+<div class="tab-content">
+  <div *ngIf="selectedTabIndex === 0">
+    <div>
+      <div class="d-flex justify-content-between">
+        <span style="margin-top: 20px; margin-bottom: 20px; font-weight: bold; font-size: 17px"
+          >BẢNG LƯƠNG DỊCH VỤ KINH DOANH CNTT,TRUYỀN DẪN VÀ BĂNG THÔNG CỐ ĐỊNH</span
+        >
+      </div>
+      <div style="max-height: 650px; width: 100%; overflow-x: auto; overflow-y: auto; white-space: nowrap">
+        <table class="table lh-table-column--bytes table-bordered">
+          <thead style="background-color: #3b3e66; color: white; position: sticky; top: 0; z-index: 1000">
+            <tr>
+              <th style="width: 50px; position: sticky; left: 0; z-index: 2; background: #3b3e66"><span>STT</span></th>
+
+              <th style="min-width: 240px !important; position: sticky; left: 45px; z-index: 2; background: #3b3e66">
+                <span>Nhân viên</span>
+              </th>
+              <th>
+                <span>Mã nhân viên</span>
+              </th>
+              <th>
+                <span>Đơn vị</span>
+              </th>
+              <th style="min-width: 190px !important">MST cá nhân</th>
+              <th style="min-width: 90px !important">CMT</th>
+              <th style="min-width: 90px !important">Chức danh</th>
+              <th style="min-width: 90px !important">Địa bàn</th>
+              <th style="min-width: 90px !important">Số lượng thực tế HĐ</th>
+              <th style="min-width: 90px !important">Áp dụng mức lương cố định</th>
+              <th style="min-width: 90px !important">Vùng</th>
+              <th style="min-width: 90px !important">Hệ số chức vụ</th>
+              <th style="min-width: 90px !important">Hct</th>
+              <th style="min-width: 90px !important">Số ngày thực hiện tiêu chuẩn</th>
+              <th style="min-width: 90px !important">Số ngày thực hiện thực tế</th>
+              <th style="min-width: 90px !important">Phụ cấp ăn ca</th>
+              <th style="min-width: 90px !important">Hỗ trợ di chuyển</th>
+              <th style="min-width: 90px !important">Hỗ trợ điện thoại</th>
+              <th style="min-width: 90px !important">Mức đóng BHXH</th>
+              <th style="min-width: 90px !important">Lương cố định</th>
+              <th style="min-width: 90px !important">Tổng cộng</th>
+              <th style="min-width: 90px !important">BHXH</th>
+              <th style="min-width: 90px !important">BHYT</th>
+              <th style="min-width: 90px !important">BHTN</th>
+              <th style="min-width: 90px !important">Tổng BHXH, YT, TN NLĐ nộp</th>
+              <th style="min-width: 90px !important">Tổng lương chịu thuế</th>
+              <th style="min-width: 90px !important">Số người phụ thuộc</th>
+              <th style="min-width: 90px !important">Mức giảm trừ thuế TNCN</th>
+              <th style="min-width: 90px !important">Thu nhập chịu thuế TNCN</th>
+              <th style="min-width: 90px !important">Thuế TNCN tháng trước</th>
+              <th style="min-width: 90px !important">Truy thu/hoàn thuế</th>
+              <th style="min-width: 90px !important">1% CĐ phí</th>
+              <th style="min-width: 90px !important">Truy thu/chi bổ sung</th>
+              <th style="min-width: 90px !important">Tổng lĩnh</th>
+              <th style="min-width: 90px !important">Tạm ứng lần 1</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let detail of luongDetailKAM; let j = index">
+              <td style="position: sticky; left: 0; z-index: 2; background: white">{{ j + 1 }}</td>
+              <td style="position: sticky; left: 45px; z-index: 2; background: white">
+                {{ detail.employeeName }}
+              </td>
+              <td>
+                {{ detail.employeeCode }}
+              </td>
+              <td>
+                {{ detail.phongBan }}
+              </td>
+              <td>
+                {{ detail.mst }}
+              </td>
+              <td>
+                {{ detail.cccd }}
+              </td>
+              <td>
+                {{ detail.chucDanh }}
+              </td>
+              <td>
+                {{ detail.diaban }}
+              </td>
+              <td>
+                {{ detail.soLuongHopDong }}
+              </td>
+              <td>
+                {{ detail.apDungMucLuongCoDinh }}
+              </td>
+              <td>
+                {{ detail.vung }}
+              </td>
+              <td>
+                {{ detail.heSoChucVu }}
+              </td>
+              <td>
+                {{ detail.hct }}
+              </td>
+
+              <td>
+                {{ detail.numberWorking }}
+              </td>
+              <td>
+                {{ detail.numberWorkInMonth }}
+              </td>
+
+              <td>
+                {{ detail.phuCapAnCa }}
+              </td>
+
+              <td>
+                {{ detail.hoTroDiChuyen }}
+              </td>
+              <td>
+                {{ detail.hoTroDienThoai }}
+              </td>
+              <td>
+                {{ detail.mucDongBHXH }}
+              </td>
+              <td>
+                {{ detail.luongCoDinh }}
+              </td>
+              <td>
+                {{ detail.tongCong }}
+              </td>
+              <td>
+                {{ detail.bhxh }}
+              </td>
+              <td>
+                {{ detail.bhyt }}
+              </td>
+              <td>
+                {{ detail.bhtt }}
+              </td>
+              <td>
+                {{ detail.tongBH }}
+              </td>
+
+              <td>
+                {{ detail.tongLuongChiuThue }}
+              </td>
+
+              <td>
+                {{ detail.soNguoiPhuThuoc }}
+              </td>
+
+              <td>
+                {{ detail.giamTNCN }}
+              </td>
+
+              <td>
+                {{ detail.thuNhapChiuThueThuNhap }}
+              </td>
+
+              <td>
+                {{ detail.tncnThangTruoc }}
+              </td>
+
+              <td>
+                {{ detail.truyThuHoanThue }}
+              </td>
+
+              <td>
+                {{ detail.cdcp }}
+              </td>
+              <td>
+                {{ detail.truyThuChiBoSung }}
+              </td>
+
+              <td>
+                {{ detail.tongLinh }}
+              </td>
+              <td>
+                {{ detail.luongTamUngLan1 }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="selectedTabIndex === 1">
+    <div>
+      <div class="d-flex justify-content-between">
+        <span style="margin-top: 20px; margin-bottom: 20px; font-weight: bold; font-size: 17px"
+          >BẢNG LƯƠNG DỊCH VỤ HTKD ĐẠI LÝ, ĐIỂM BÁN LẺ VÀ KHÁCH HÀNG CÁ NHÂN</span
+        >
+      </div>
+      <div style="max-height: 650px; width: 100%; overflow-x: auto; overflow-y: auto; white-space: nowrap">
+        <table class="table lh-table-column--bytes table-bordered">
+          <thead style="background-color: #3b3e66; color: white; position: sticky; top: 0; z-index: 1000">
+            <tr>
+              <th style="width: 50px; position: sticky; left: 0; z-index: 2; background: #3b3e66"><span>STT</span></th>
+
+              <th style="min-width: 240px !important; position: sticky; left: 45px; z-index: 2; background: #3b3e66">
+                <span>Nhân viên</span>
+              </th>
+              <th>
+                <span>Mã nhân viên</span>
+              </th>
+              <th>
+                <span>Đơn vị</span>
+              </th>
+              <th style="min-width: 190px !important">Mã số thuế cá nhân</th>
+              <th style="min-width: 90px !important">CCCD</th>
+              <th style="min-width: 90px !important">Địa bàn</th>
+              <th style="min-width: 90px !important">Vùng</th>
+              <th style="min-width: 90px !important">KPIs</th>
+              <th style="min-width: 90px !important">Hct</th>
+              <th style="min-width: 90px !important">Số ngày thực hiện tiêu chuẩn</th>
+              <th style="min-width: 90px !important">Số ngày thực hiện thực tế</th>
+              <th style="min-width: 90px !important">Mức đóng BHXH</th>
+              <th style="min-width: 90px !important">Lương cố định</th>
+              <th style="min-width: 90px !important">Chi phí khác</th>
+              <th style="min-width: 90px !important">Hoa hồng khoán sản phẩm</th>
+              <th style="min-width: 90px !important">Chi phí bổ sung chi phí tối thiểu vùng</th>
+              <th style="min-width: 90px !important">Tổng cộng</th>
+              <th style="min-width: 90px !important">BHXH</th>
+              <th style="min-width: 90px !important">BHTT</th>
+              <th style="min-width: 90px !important">Tổng BHXH, YT, TN NLĐ</th>
+              <th style="min-width: 90px !important">Tổng lương chịu thuế</th>
+              <th style="min-width: 90px !important">Số NPT</th>
+              <th style="min-width: 90px !important">Mức giảm trừ thuế TNCN</th>
+              <th style="min-width: 90px !important">1% CĐ phí</th>
+              <th style="min-width: 90px !important">4.5% BHYT báo muộn</th>
+              <th style="min-width: 90px !important">Truy thu lương T1</th>
+              <th style="min-width: 90px !important">Tổng lĩnh</th>
+              <th style="min-width: 90px !important">Lương tạm ứng lần 1</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let detail of luongDetailNVBH; let j = index">
+              <td style="position: sticky; left: 0; z-index: 2; background: white">{{ j + 1 }}</td>
+              <td style="position: sticky; left: 45px; z-index: 2; background: white">
+                {{ detail.employeeName }}
+              </td>
+              <td>
+                {{ detail.employeeCode }}
+              </td>
+              <td>
+                {{ detail.phongBan }}
+              </td>
+              <td>
+                {{ detail.mst }}
+              </td>
+              <td>
+                {{ detail.cccd }}
+              </td>
+              <td>
+                {{ detail.diaban }}
+              </td>
+              <td>
+                {{ detail.vung }}
+              </td>
+              <td>
+                {{ detail.kpi }}
+              </td>
+              <td>
+                {{ detail.hct }}
+              </td>
+              <td>
+                {{ detail.numberWorking }}
+              </td>
+              <td>
+                {{ detail.numberWorkInMonth }}
+              </td>
+
+              <td>
+                {{ detail.mucDongBHXH }}
+              </td>
+
+              <td>
+                {{ detail.luongCoDinh }}
+              </td>
+              <td>
+                {{ detail.chiPhiKhac }}
+              </td>
+
+              <td>
+                {{ detail.hoaHongKhoanSanPham }}
+              </td>
+              <td>
+                {{ detail.chiPhiBoSungToiThieuVung }}
+              </td>
+              <td>
+                {{ detail.tongCong }}
+              </td>
+              <td>
+                {{ detail.bhxh }}
+              </td>
+              <td>
+                {{ detail.bhyt }}
+              </td>
+              <td>
+                {{ detail.bhtt }}
+              </td>
+
+              <td>
+                {{ detail.tongBH }}
+              </td>
+              <td>
+                {{ detail.npt }}
+              </td>
+              <td>
+                {{ detail.giamTNCN }}
+              </td>
+
+              <td>
+                {{ detail.cdcp }}
+              </td>
+
+              <td>
+                {{ detail.bhytBaoMuon }}
+              </td>
+
+              <td>
+                {{ detail.truyThuLuongDot1 }}
+              </td>
+
+              <td>
+                {{ detail.tongLinh }}
+              </td>
+
+              <td>
+                {{ detail.luongTamUngLan1 }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="selectedTabIndex === 2">
+    <div>
+      <div class="d-flex justify-content-between">
+        <span style="margin-top: 20px; margin-bottom: 20px; font-weight: bold; font-size: 17px"
+          >BẢNG LƯƠNG DỊCH VỤ HỖ TRỢ KINH DOANH KHÁCH HÀNG DOANH NGHIỆP</span
+        >
+      </div>
+      <div style="max-height: 650px; width: 100%; overflow-x: auto; overflow-y: auto; white-space: nowrap">
+        <table class="table lh-table-column--bytes table-bordered">
+          <thead style="background-color: #3b3e66; color: white; position: sticky; top: 0; z-index: 1000">
+            <tr>
+              <th style="width: 50px; position: sticky; left: 0; z-index: 2; background: #3b3e66"><span>STT</span></th>
+
+              <th style="min-width: 240px !important; position: sticky; left: 45px; z-index: 2; background: #3b3e66">
+                <span>Nhân viên</span>
+              </th>
+              <th>
+                <span>Mã nhân viên</span>
+              </th>
+              <th>
+                <span>Đơn vị</span>
+              </th>
+              <th style="min-width: 190px !important">Mã số thuế cá nhân</th>
+              <th style="min-width: 90px !important">CCCD</th>
+              <th style="min-width: 90px !important">Địa bàn</th>
+              <th style="min-width: 90px !important">Vùng</th>
+              <th style="min-width: 90px !important">Số ngày thực hiện tiêu chuẩn</th>
+              <th style="min-width: 90px !important">Số ngày thực hiện thực tế</th>
+              <th style="min-width: 90px !important">Mức đóng BHXH</th>
+              <th style="min-width: 90px !important">Lương cố định</th>
+              <th style="min-width: 90px !important">Tổng cộng</th>
+              <th style="min-width: 90px !important">BHXH(8%)</th>
+              <th style="min-width: 90px !important">BHYT(1,5%)</th>
+              <th style="min-width: 90px !important">BHTN(1%)</th>
+              <th style="min-width: 90px !important">Tổng BHXH, YT, TN NLĐ</th>
+              <th style="min-width: 90px !important">Tổng lương chịu thuế</th>
+              <th style="min-width: 90px !important">Số người phụ thuộc</th>
+              <th style="min-width: 90px !important">Mức giảm trừ thuế TNCN</th>
+              <th style="min-width: 90px !important">Thu nhập chịu thuế</th>
+              <th style="min-width: 90px !important">Thuế TNCN T2 tạm tính</th>
+              <th style="min-width: 90px !important">Truy thu/Hoàn thuế</th>
+              <th style="min-width: 90px !important">Truy thu CP PTTB</th>
+              <th style="min-width: 90px !important">1% CĐ phí</th>
+              <th style="min-width: 90px !important">4.5% BHYT báo muộn</th>
+              <th style="min-width: 90px !important">Tổng lĩnh</th>
+              <th style="min-width: 90px !important">Lương tạm ứng lần 1</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let detail of luongDetailAM; let j = index">
+              <td style="position: sticky; left: 0; z-index: 2; background: white">{{ j + 1 }}</td>
+              <td style="position: sticky; left: 45px; z-index: 2; background: white">
+                {{ detail.employeeName }}
+              </td>
+              <td>
+                {{ detail.employeeCode }}
+              </td>
+              <td>
+                {{ detail.phongBan }}
+              </td>
+              <td>
+                {{ detail.mst }}
+              </td>
+              <td>
+                {{ detail.cccd }}
+              </td>
+              <td>
+                {{ detail.diaban }}
+              </td>
+              <td>
+                {{ detail.vung }}
+              </td>
+              <td>
+                {{ detail.numberWorkInMonth }}
+              </td>
+              <td>
+                {{ detail.numberWorking }}
+              </td>
+
+              <td>
+                {{ detail.mucDongBHXH }}
+              </td>
+
+              <td>
+                {{ detail.luongCoDinh }}
+              </td>
+              <td>
+                {{ detail.tongCong }}
+              </td>
+              <td>
+                {{ detail.bhxh }}
+              </td>
+
+              <td>
+                {{ detail.bhyt }}
+              </td>
+              <td>
+                {{ detail.bhtt }}
+              </td>
+              <td>
+                {{ detail.tongBH }}
+              </td>
+              <td>
+                {{ detail.tongLuongChiuThue }}
+              </td>
+              <td>
+                {{ detail.soNguoiPhuThuoc }}
+              </td>
+              <td>
+                {{ detail.giamTNCN }}
+              </td>
+
+              <td>
+                {{ detail.thuNhapChiuThueThuNhap }}
+              </td>
+              <td>
+                {{ detail.tncnThangTruoc }}
+              </td>
+              <td>
+                {{ detail.truyThuHoanThue }}
+              </td>
+
+              <td>
+                {{ detail.truyThuCPPTTB }}
+              </td>
+
+              <td>
+                {{ detail.cdcp }}
+              </td>
+
+              <td>
+                {{ detail.bhytBaoMuon }}
+              </td>
+
+              <td>
+                {{ detail.tongLinh }}
+              </td>
+
+              <td>
+                {{ detail.luongTamUngLan1 }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="selectedTabIndex === 3">
+    <div>
+      <div class="d-flex justify-content-between">
+        <span style="margin-top: 20px; margin-bottom: 20px; font-weight: bold; font-size: 17px"
+          >BẢNG LƯƠNG DỊCH VỤ HỖ TRỢ KINH DOANH TẠI CỬA HÀNG, SHOWROOM</span
+        >
+      </div>
+      <div style="max-height: 650px; width: 100%; overflow-x: auto; overflow-y: auto; white-space: nowrap">
+        <table class="table lh-table-column--bytes table-bordered">
+          <thead style="background-color: #3b3e66; color: white; position: sticky; top: 0; z-index: 1000">
+            <tr>
+              <th style="width: 50px; position: sticky; left: 0; z-index: 2; background: #3b3e66"><span>STT</span></th>
+
+              <th style="min-width: 240px !important; position: sticky; left: 45px; z-index: 2; background: #3b3e66">
+                <span>Nhân viên</span>
+              </th>
+              <th>
+                <span>Mã nhân viên</span>
+              </th>
+              <th>
+                <span>Phòng ban</span>
+              </th>
+              <th style="min-width: 190px !important">Mã số thuế cá nhân</th>
+              <th style="min-width: 90px !important">CCCD</th>
+              <th style="min-width: 90px !important">Địa bàn</th>
+              <th style="min-width: 90px !important">Vùng</th>
+              <th style="min-width: 90px !important">Cấp</th>
+              <th style="min-width: 90px !important">KPIs</th>
+              <th style="min-width: 90px !important">Hct</th>
+              <th style="min-width: 90px !important">Số ngày thực hiện tiêu chuẩn</th>
+              <th style="min-width: 90px !important">Số ngày thực hiện thực tế</th>
+              <th style="min-width: 90px !important">Số ngày không thực hiện nghiệp vụ</th>
+              <th style="min-width: 90px !important">Mức đóng BHXH</th>
+              <th style="min-width: 90px !important">Lương cố định</th>
+              <th style="min-width: 90px !important">Tổng cộng</th>
+              <th style="min-width: 90px !important">BHXH</th>
+              <th style="min-width: 90px !important">BHYT</th>
+              <th style="min-width: 90px !important">BHTT</th>
+              <th style="min-width: 90px !important">Tổng BHXH, YT, TN NLĐ</th>
+              <th style="min-width: 90px !important">Tổng lương chịu thuế</th>
+              <th style="min-width: 90px !important">Số NPT</th>
+              <th style="min-width: 90px !important">Mức giảm trừ thuế TNCN</th>
+              <th style="min-width: 90px !important">Thu nhập chịu thuế</th>
+              <th style="min-width: 90px !important">Thuế TNCN tạm tính</th>
+              <th style="min-width: 90px !important">Truy thu/Hoàn thu</th>
+              <th style="min-width: 90px !important">1% CĐ phí</th>
+              <th style="min-width: 90px !important">4.5% BHYT báo muộn</th>
+              <th style="min-width: 90px !important">Truy thu CP PTTB</th>
+              <th style="min-width: 90px !important">Tổng lĩnh</th>
+              <th style="min-width: 90px !important">Lương tạm ứng lần 1</th>
+              <th style="min-width: 90px !important">Thực chi lương tạm ứng lần 1</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let detail of luongDetailGDV; let j = index">
+              <td style="position: sticky; left: 0; z-index: 2; background: white">{{ j + 1 }}</td>
+              <td style="position: sticky; left: 45px; z-index: 2; background: white">
+                {{ detail.employeeName }}
+              </td>
+              <td>
+                {{ detail.employeeCode }}
+              </td>
+              <td>
+                {{ detail.phongBan }}
+              </td>
+              <td>
+                {{ detail.mst }}
+              </td>
+              <td>
+                {{ detail.cccd }}
+              </td>
+              <td>
+                {{ detail.diaban }}
+              </td>
+              <td>
+                {{ detail.vung }}
+              </td>
+              <td>
+                {{ detail.cap }}
+              </td>
+              <td>
+                {{ detail.kpi }}
+              </td>
+              <td>
+                {{ detail.hct }}
+              </td>
+              <td>
+                {{ detail.numberWorking }}
+              </td>
+              <td>
+                {{ detail.numberWorkInMonth }}
+              </td>
+              <td>
+                {{ detail.soNgayKhongThucHien }}
+              </td>
+
+              <td>
+                {{ detail.mucDongBHXH }}
+              </td>
+
+              <td>
+                {{ detail.luongCoDinh }}
+              </td>
+              <td>
+                {{ detail.tongCong }}
+              </td>
+
+              <td>
+                {{ detail.bhxh }}
+              </td>
+              <td>
+                {{ detail.bhyt }}
+              </td>
+              <td>
+                {{ detail.bhtt }}
+              </td>
+              <td>
+                {{ detail.tongBH }}
+              </td>
+              <td>
+                {{ detail.tongLuongChiuThue }}
+              </td>
+              <td>
+                {{ detail.npt }}
+              </td>
+
+              <td>
+                {{ detail.giamTNCN }}
+              </td>
+              <td>
+                {{ detail.thuNhapChiuThueThuNhap }}
+              </td>
+              <td>
+                {{ detail.tncnThangTruoc }}
+              </td>
+
+              <td>
+                {{ detail.truyThuHoanThue }}
+              </td>
+
+              <td>
+                {{ detail.cdcp }}
+              </td>
+
+              <td>
+                {{ detail.bhytBaoMuon }}
+              </td>
+              <td>
+                {{ detail.truyThuCPPTTB }}
+              </td>
+
+              <td>
+                {{ detail.tongLinh }}
+              </td>
+
+              <td>
+                {{ detail.luongTamUngLan1 }}
+              </td>
+              <td>
+                {{ detail.thucChiLuongTamUng }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<jhi-toast #toastSalary></jhi-toast>

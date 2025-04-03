@@ -3,6 +3,7 @@ package com.mycompany.myapp.service;
 import com.mycompany.myapp.domain.BaoCao;
 import com.mycompany.myapp.domain.Employee;
 import com.mycompany.myapp.repository.*;
+import com.mycompany.myapp.repository.DTO.NhanVienDTO;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;

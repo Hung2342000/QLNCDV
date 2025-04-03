@@ -28,6 +28,12 @@ public class SalaryDetail implements Serializable {
     @Column(name = "employeeCode")
     private String employeeCode;
 
+    @Column(name = "employeeName")
+    private String employeeName;
+
+    @Column(name = "department")
+    private String department;
+
     @Column(name = "chucDanh")
     private String chucDanh;
 
@@ -125,6 +131,22 @@ public class SalaryDetail implements Serializable {
     private BigDecimal chiPhiBoSungCPTTV;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
+
+    public String getEmployeeName() {
+        return employeeName;
+    }
+
+    public void setEmployeeName(String employeeName) {
+        this.employeeName = employeeName;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
 
     public Long getId() {
         return id;

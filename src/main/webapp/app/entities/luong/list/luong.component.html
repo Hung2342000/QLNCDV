@@ -1,0 +1,133 @@
+<div>
+  <h4 id="page-heading" data-cy="EmployeeHeading">
+    <span style="color: rgba(0, 81, 255, 0.85)">Danh sách Lương đợt 1</span>
+    <div class="d-flex justify-content-end">
+      <button (click)="importExcel()" data-cy="entityCreateButton" class="btn btn-primary btn-sm">
+        <span> Import </span>
+      </button>
+    </div>
+  </h4>
+
+  <div class="table-responsive" id="entities">
+    <table class="table table-hover" aria-describedby="page-heading">
+      <thead>
+        <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="loadPage()">
+          <th scope="col" style="width: 5%"><span>STT</span></th>
+          <th scope="col" style="width: 10%"><span>Ngày tạo</span></th>
+          <th style="width: 20%" scope="col"><span>Tên bảng</span></th>
+          <th scope="col"><span>Tháng</span></th>
+          <th scope="col"><span>Năm</span></th>
+          <th style="width: 6%" class="text-center" scope="col">Thao tác</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let luong of luongs; trackBy: trackId; let i = index" data-cy="entityTable">
+          <td>{{ i + 1 }}</td>
+          <td>{{ luong.createDate | formatDateVnPipe }}</td>
+          <td>{{ luong.nameSalary }}</td>
+          <td>{{ luong.month }}</td>
+          <td>{{ luong.year }}</td>
+          <td class="text-end">
+            <div class="btn-group">
+              <button type="submit" [routerLink]="['/luong', luong.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                <fa-icon icon="pencil-alt"></fa-icon>
+              </button>
+
+              <button type="submit" (click)="delete(luong)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                <fa-icon icon="times"></fa-icon>
+              </button>
+            </div>
+          </td>
+        </tr>
+        <tr *ngFor="let l of newArr(itemsPerPage - luongs.length)">
+          <td class="text-center empty-row">&nbsp;</td>
+          <td class="text-center empty-row">&nbsp;</td>
+          <td class="text-center empty-row">&nbsp;</td>
+          <td class="text-center empty-row">&nbsp;</td>
+          <td class="text-center empty-row">&nbsp;</td>
+          <td class="text-center empty-row"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="luongs && luongs.length > 0" class="d-flex justify-content-end">
+    <div class="p-3 d-flex" style="justify-content: space-between">
+      <select style="border-radius: 7%; height: 35px" [(ngModel)]="itemsPerPage" (change)="loadPage()">
+        <option value="10">10</option>
+        <option value="20">20</option>
+        <option value="30">30</option>
+      </select>
+      <div style="font-size: 20px; margin-right: 15px">
+        <span style="width: 170px; padding-left: 20px; font-size: 15px">Tổng số: {{ this.totalItems }} </span>
+      </div>
+      <ngb-pagination
+        [collectionSize]="totalItems"
+        [(page)]="ngbPaginationPage"
+        [pageSize]="itemsPerPage"
+        [maxSize]="5"
+        [rotate]="true"
+        [boundaryLinks]="true"
+        (pageChange)="loadPage($event)"
+        class=""
+      ></ngb-pagination>
+    </div>
+  </div>
+</div>
+
+<ng-template #importExcelModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" data-cy="toolDeleteDialogHeading">Import Excel</h4>
+    <button type="button" class="btn-close" data-dismiss="modal" aria-hidden="true" (click)="closeModal()"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row mb-3">
+      <div class="col-md-6">
+        <label class="form-label">Tháng</label>
+        <select [(ngModel)]="thang" class="form-select" id="field_month" name="month">
+          <option [value]="1">1</option>
+          <option [value]="2">2</option>
+          <option [value]="3">3</option>
+          <option [value]="4">4</option>
+          <option [value]="5">5</option>
+          <option [value]="6">6</option>
+          <option [value]="7">7</option>
+          <option [value]="8">8</option>
+          <option [value]="9">9</option>
+          <option [value]="10">10</option>
+          <option [value]="11">11</option>
+          <option [value]="12">12</option>
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Năm</label>
+        <input [(ngModel)]="nam" type="text" class="form-control" name="year" id="field_year" />
+      </div>
+      <div>
+        <label class="form-label">Tên bảng lương</label>
+        <input [(ngModel)]="name" type="text" class="form-control" name="nameSalary" id="field_nameSalary" />
+      </div>
+    </div>
+
+    <div style="margin-bottom: 10px">
+      <span style="margin-bottom: 10px; display: inline-block">
+        <b>File import phải đúng định dạng như file export ra từ hệ thống</b>
+      </span>
+      <!--      <div>-->
+      <!--        <a href="./../../content/file/ImportEmployee.xlsx" download>Tải file mẫu</a>-->
+      <!--      </div>-->
+    </div>
+    <div>
+      <input type="file" accept=".xlsx, .xls" (change)="onFileChange($event)" />
+    </div>
+    <div style="margin-left: 4px; color: red" *ngIf="!checkUpload && importClicked">Chưa có file upload</div>
+  </div>
+  <div class="modal-footer">
+    <button id="jhi-confirm-delete-tool" data-cy="entityConfirmDeleteButton" type="submit" class="btn btn-danger btn-sm" (click)="import()">
+      <span>Import</span>
+    </button>
+    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal" (click)="closeModal()">
+      <span>Đóng</span>
+    </button>
+  </div>
+</ng-template>

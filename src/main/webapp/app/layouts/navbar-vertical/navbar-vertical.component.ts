@@ -7,7 +7,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NavbarVerticalComponent {
   isNavbarCollapsed = true;
+  isNavbarCollapsedLuong = true;
   isDropdownOpen = false;
+  isDropdownOpenLuong = false;
   collapseNavbar(): void {
     this.isNavbarCollapsed = true;
   }
@@ -16,6 +18,13 @@ export class NavbarVerticalComponent {
     this.isDropdownOpen = !this.isDropdownOpen;
   }
 
+  collapseNavbarLuong(): void {
+    this.isNavbarCollapsedLuong = true;
+  }
+
+  toggleDropdownLuong(): void {
+    this.isDropdownOpenLuong = !this.isDropdownOpenLuong;
+  }
   closeDropdown(): void {
     this.isDropdownOpen = false;
   }

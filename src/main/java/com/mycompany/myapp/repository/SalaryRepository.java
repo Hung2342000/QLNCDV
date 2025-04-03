@@ -1,6 +1,7 @@
 package com.mycompany.myapp.repository;
 
 import com.mycompany.myapp.domain.Salary;
+import com.mycompany.myapp.repository.DTO.NhanVienDTO;
 import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +20,7 @@ public interface SalaryRepository extends JpaRepository<Salary, Long> {
     Page<Salary> getSalaryByDepartment(@Param("departmentCode") String departmentCode, Pageable pageable);
 
     @Query(
-        "select new com.mycompany.myapp.repository.NhanVienDTO (e.id, e.codeEmployee, e.name, e.serviceTypeName, e.region, e.rank, e.nhom,s.month, s.year, sd.kpis,sd.htc) " +
+        "select new com.mycompany.myapp.repository.DTO.NhanVienDTO (e.id, e.codeEmployee, e.name, e.serviceTypeName, e.region, e.rank, e.nhom,s.month, s.year, sd.kpis,sd.htc) " +
         "from Salary s join SalaryDetail sd on s.id = sd.salaryId join Employee e on e.id = sd.employeeId " +
         " where s.year = :nam and e.nhom = :nhom and e.id = :id"
     )

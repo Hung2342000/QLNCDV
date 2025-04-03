@@ -1,5 +1,8 @@
 package com.mycompany.myapp.service;
 
+import static com.mycompany.myapp.security.AuthoritiesConstants.*;
+import static com.mycompany.myapp.security.SecurityUtils.getAuthorities;
+
 import com.mycompany.myapp.domain.*;
 import com.mycompany.myapp.repository.*;
 import java.io.ByteArrayOutputStream;
@@ -7,6 +10,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.poi.ss.usermodel.*;
@@ -15,6 +19,9 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 /**
@@ -63,6 +70,33 @@ public class SalaryDetailService {
         //        salaryDetail.setAmount(amount);
         this.salaryDetailRepository.save(salaryDetail);
         return salaryDetail;
+    }
+
+    public List<SalaryDetail> getSalaryDetailALl(Long id) {
+        List<SalaryDetail> salaryDetails = new ArrayList<>();
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username;
+        User user = new User();
+        Object principal = authentication.getPrincipal();
+        UserDetails userDetails = (UserDetails) principal;
+        username = userDetails.getUsername();
+        user = userRepository.findOneByLogin(username).get();
+
+        if (
+            authentication != null &&
+            !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(USER).contains(authority)) &&
+            getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority))
+        ) {
+            salaryDetails = salaryDetailRepository.getSalaryDetailBySalaryId(id);
+        } else if (
+            authentication != null &&
+            !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority)) &&
+            getAuthorities(authentication).anyMatch(authority -> Arrays.asList(SUPERUSER).contains(authority))
+        ) {
+            salaryDetails = salaryDetailRepository.getAllBySalaryIdDepartment(id, user.getDepartmentName());
+        }
+        return salaryDetails;
     }
 
     public byte[] exportSalaryDetail(Long salaryId) throws IOException {

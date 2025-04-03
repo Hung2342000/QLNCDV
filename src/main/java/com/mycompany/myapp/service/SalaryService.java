@@ -1,7 +1,6 @@
 package com.mycompany.myapp.service;
 
-import static com.mycompany.myapp.security.AuthoritiesConstants.ADMIN;
-import static com.mycompany.myapp.security.AuthoritiesConstants.USER;
+import static com.mycompany.myapp.security.AuthoritiesConstants.*;
 import static com.mycompany.myapp.security.SecurityUtils.getAuthorities;
 
 import com.mycompany.myapp.domain.*;
@@ -85,7 +84,7 @@ public class SalaryService {
         } else if (
             authentication != null &&
             !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority)) &&
-            getAuthorities(authentication).anyMatch(authority -> Arrays.asList(USER).contains(authority))
+            getAuthorities(authentication).anyMatch(authority -> Arrays.asList(SUPERUSER).contains(authority))
         ) {
             page = this.salaryRepository.getSalaryByDepartment(user.getDepartment(), pageable);
         }
@@ -171,6 +170,12 @@ public class SalaryService {
         for (Employee employee : employeeListHTVP) {
             SalaryDetail salaryDetail = new SalaryDetail();
             salaryDetail.setEmployeeId(employee.getId());
+            salaryDetail.setEmployeeName(employee.getName());
+            salaryDetail.setEmployeeCode(employee.getCodeEmployee());
+            String phongBan = employeeRepository.nameDepartmentByCode(employee.getCodeEmployee());
+            if (phongBan != null) {
+                salaryDetail.setDepartment(phongBan);
+            } else salaryDetail.setDepartment("");
             salaryDetail.setSalaryId(salaryCreate.getId());
             Department department = departmentRepository.findDepartmentByCode(employee.getDepartment());
             if (department != null) {
@@ -230,6 +235,12 @@ public class SalaryService {
         for (Employee employee : employeeListAm) {
             SalaryDetail salaryDetail = new SalaryDetail();
             salaryDetail.setEmployeeId(employee.getId());
+            salaryDetail.setEmployeeName(employee.getName());
+            salaryDetail.setEmployeeCode(employee.getCodeEmployee());
+            String phongBan = employeeRepository.nameDepartmentByCode(employee.getCodeEmployee());
+            if (phongBan != null) {
+                salaryDetail.setDepartment(phongBan);
+            } else salaryDetail.setDepartment("");
             salaryDetail.setSalaryId(salaryCreate.getId());
             Department department = departmentRepository.findDepartmentByCode(employee.getDepartment());
             if (department != null) {
@@ -300,8 +311,14 @@ public class SalaryService {
         List<SalaryDetail> salaryDetailListGDV = new ArrayList<>();
         for (Employee employee : employeeListGDV) {
             SalaryDetail salaryDetail = new SalaryDetail();
+            salaryDetail.setEmployeeName(employee.getName());
+            salaryDetail.setEmployeeCode(employee.getCodeEmployee());
             salaryDetail.setEmployeeId(employee.getId());
             salaryDetail.setSalaryId(salaryCreate.getId());
+            String phongBan = employeeRepository.nameDepartmentByCode(employee.getCodeEmployee());
+            if (phongBan != null) {
+                salaryDetail.setDepartment(phongBan);
+            } else salaryDetail.setDepartment("");
             Department department = departmentRepository.findDepartmentByCode(employee.getDepartment());
             if (department != null) {
                 salaryDetail.setTenDonVi(department.getName());
@@ -371,8 +388,14 @@ public class SalaryService {
         List<SalaryDetail> salaryDetailListKAM = new ArrayList<>();
         for (Employee employee : employeeListKAM) {
             SalaryDetail salaryDetail = new SalaryDetail();
+            salaryDetail.setEmployeeName(employee.getName());
+            salaryDetail.setEmployeeCode(employee.getCodeEmployee());
             salaryDetail.setEmployeeId(employee.getId());
             salaryDetail.setSalaryId(salaryCreate.getId());
+            String phongBan = employeeRepository.nameDepartmentByCode(employee.getCodeEmployee());
+            if (phongBan != null) {
+                salaryDetail.setDepartment(phongBan);
+            } else salaryDetail.setDepartment("");
             Department department = departmentRepository.findDepartmentByCode(employee.getDepartment());
             if (department != null) {
                 salaryDetail.setTenDonVi(department.getName());
@@ -440,7 +463,13 @@ public class SalaryService {
         for (Employee employee : employeeListNVBH) {
             SalaryDetail salaryDetail = new SalaryDetail();
             salaryDetail.setEmployeeId(employee.getId());
+            salaryDetail.setEmployeeCode(employee.getCodeEmployee());
             salaryDetail.setSalaryId(salaryCreate.getId());
+            salaryDetail.setEmployeeName(employee.getName());
+            String phongBan = employeeRepository.nameDepartmentByCode(employee.getCodeEmployee());
+            if (phongBan != null) {
+                salaryDetail.setDepartment(phongBan);
+            } else salaryDetail.setDepartment("");
             Department department = departmentRepository.findDepartmentByCode(employee.getDepartment());
             if (department != null) {
                 salaryDetail.setTenDonVi(department.getName());

@@ -55,7 +55,7 @@ public class TransferService {
             diaBan = diaBanRepository.findDiaBanByName(transfer.getDiaBan());
         }
 
-        if (transfer.getRank() == null || transfer.getRank() == "") {
+        if (transfer.getRank() == null || transfer.getRank() == "" || !transfer.getServiceTypeName().equals("HTKD tại cửa hàng Showroom")) {
             transfer.setRank("trống");
         }
 
@@ -86,6 +86,9 @@ public class TransferService {
                 transfer.setNhom(serviceTypeNew.getNhom());
                 transfer.setServiceTypeName(serviceTypeNew.getServiceName());
                 transfer.setServiceType(serviceTypeNew.getId());
+                employeeCheck.setRegion(serviceTypeNew.getRegion());
+                employeeCheck.setRank(serviceTypeNew.getRank());
+                employeeCheck.setBasicSalary(serviceTypeNew.getBasicSalary());
             }
 
             Transfer transferCheck = new Transfer();

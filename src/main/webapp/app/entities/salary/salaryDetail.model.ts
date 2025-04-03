@@ -3,6 +3,7 @@ export interface ISalaryDetail {
   salaryId?: number | null;
   employeeId?: number | null;
   employeeCode?: string | null;
+  employeeName?: string | null;
   diemCungCapDV?: string | null;
   chucDanh?: string | null;
   vung?: string | null;
@@ -42,6 +43,7 @@ export class SalaryDetail implements ISalaryDetail {
     public salaryId?: number | null,
     public employeeId?: number | null,
     public employeeCode?: string | null,
+    public employeeName?: string | null,
     public diemCungCapDV?: string | null,
     public chucDanh?: string | null,
     public vung?: string | null,

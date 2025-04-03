@@ -1,4 +1,4 @@
-package com.mycompany.myapp.repository;
+package com.mycompany.myapp.repository.DTO;
 
 /**
  * A DTO representing a user, with his authorities.

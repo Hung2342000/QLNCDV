@@ -30,6 +30,19 @@
         <span>Quản lý chi phí khoán</span>
       </a>
     </li>
+    <li class="nav-item dropdown" [class.show]="isDropdownOpenLuong">
+      <a class="nav-link dropdown-toggle" (click)="toggleDropdownLuong()">
+        <fa-icon icon="th-list"></fa-icon>
+        <span>Quản lý lương</span>
+      </a>
+      <ul class="dropdown-menu" [class.show]="isDropdownOpenLuong">
+        <li>
+          <a class="nav-link" routerLink="luong" (click)="collapseNavbarLuong()">
+            <span>Quản lý lương đợt 1</span>
+          </a>
+        </li>
+      </ul>
+    </li>
     <li class="nav-item dropdown" [class.show]="isDropdownOpen">
       <a class="nav-link dropdown-toggle" (click)="toggleDropdown()">
         <fa-icon icon="th-list"></fa-icon>

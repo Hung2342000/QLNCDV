@@ -159,7 +159,7 @@ public class SalaryDetailResource {
 
     @GetMapping("/salary-detail/all/{id}")
     public ResponseEntity<List<SalaryDetail>> getAllSalaryDetail(@PathVariable Long id) throws IOException {
-        List<SalaryDetail> salaryDetailList = salaryDetailRepository.getSalaryDetailBySalaryId(id);
+        List<SalaryDetail> salaryDetailList = salaryDetailService.getSalaryDetailALl(id);
         return ResponseEntity.ok().body(salaryDetailList);
     }
 

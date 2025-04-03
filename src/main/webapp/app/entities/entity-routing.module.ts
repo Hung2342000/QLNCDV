@@ -24,6 +24,11 @@ import { RouterModule } from '@angular/router';
         data: { pageTitle: 'qldvApp.baocao.home.title' },
         loadChildren: () => import('./baocao/baocao.module').then(m => m.BaocaoModule),
       },
+      {
+        path: 'luong',
+        data: { pageTitle: 'qldvApp.baocao.home.title' },
+        loadChildren: () => import('./luong/luong.module').then(m => m.LuongModule),
+      },
       /* jhipster-needle-add-entity-route - JHipster will add entity modules routes here */
     ]),
   ],

@@ -170,4 +170,10 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     @Query("select a from Employee a where  a.nhom = :searchNhom")
     List<Employee> listAllEmployeesNhom(@Param("searchNhom") String searchNhom);
+
+    @Query("select a from Employee a where  a.codeEmployee = :code")
+    List<Employee> listAllEmployeesCode(@Param("code") String code);
+
+    @Query("select d.name from Department d join Employee  a on d.code = a.department where a.codeEmployee = :code")
+    String nameDepartmentByCode(@Param("code") String code);
 }

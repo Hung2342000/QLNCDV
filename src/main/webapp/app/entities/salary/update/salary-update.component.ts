@@ -17,6 +17,7 @@ import * as XLSX from 'xlsx';
 @Component({
   selector: 'jhi-employee-update',
   templateUrl: './salary-update.component.html',
+  styleUrls: ['./salary-update.component.scss'],
 })
 export class SalaryUpdateComponent implements OnInit {
   @ViewChild('addDetailSalary') addDetailSalary: TemplateRef<any> | undefined;
@@ -51,7 +52,9 @@ export class SalaryUpdateComponent implements OnInit {
   content?: string = '';
   checkUpload = false;
   importClicked = false;
+  selectedTabIndex = 0; // Tab mặc định chọn là Tab 1
 
+  tabs = [{ label: 'HTVP' }, { label: 'AM' }, { label: 'GDV' }, { label: 'NVBH' }, { label: 'KAM' }];
   editForm = this.fb.group({
     id: [null, [Validators.required]],
     nameSalary: [],
@@ -117,12 +120,16 @@ export class SalaryUpdateComponent implements OnInit {
         },
       });
   }
-
+  selectTab(index: number): void {
+    this.selectedTabIndex = index;
+  }
   createRowForm(item: any): FormGroup {
     return this.fb.group({
       id: [item.id],
       salaryId: [item.salaryId],
       employeeId: [item.employeeId],
+      employeeName: [item.employeeName],
+      employeeCode: [item.employeeCode],
       diemCungCapDV: [item.diemCungCapDV],
       chucDanh: [item.chucDanh],
       vung: [item.vung],
@@ -146,6 +153,8 @@ export class SalaryUpdateComponent implements OnInit {
       id: [itemAm.id],
       salaryId: [itemAm.salaryId],
       employeeId: [itemAm.employeeId],
+      employeeName: [itemAm.employeeName],
+      employeeCode: [itemAm.employeeCode],
       vung: [itemAm.vung],
       mucChiToiThieu: [itemAm.mucChiToiThieu],
       kpis: [itemAm.kpis],
@@ -172,6 +181,8 @@ export class SalaryUpdateComponent implements OnInit {
       id: [itemGDV.id],
       salaryId: [itemGDV.salaryId],
       employeeId: [itemGDV.employeeId],
+      employeeName: [itemGDV.employeeName],
+      employeeCode: [itemGDV.employeeCode],
       diaBan: [itemGDV.diaBan],
       vung: [itemGDV.vung],
       cap: [itemGDV.cap],
@@ -201,6 +212,8 @@ export class SalaryUpdateComponent implements OnInit {
       id: [itemKAM.id],
       salaryId: [itemKAM.salaryId],
       employeeId: [itemKAM.employeeId],
+      employeeName: [itemKAM.employeeName],
+      employeeCode: [itemKAM.employeeCode],
       diaBan: [itemKAM.diaBan],
       vung: [itemKAM.vung],
       chucDanh: [itemKAM.chucDanh],
@@ -229,6 +242,8 @@ export class SalaryUpdateComponent implements OnInit {
       id: [itemNVBH.id],
       salaryId: [itemNVBH.salaryId],
       employeeId: [itemNVBH.employeeId],
+      employeeName: [itemNVBH.employeeName],
+      employeeCode: [itemNVBH.employeeCode],
       diaBan: [itemNVBH.diaBan],
       vung: [itemNVBH.vung],
       donGiaDichVu: [itemNVBH.donGiaDichVu],

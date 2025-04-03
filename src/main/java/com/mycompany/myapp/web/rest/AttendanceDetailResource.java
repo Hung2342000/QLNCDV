@@ -107,10 +107,10 @@ public class AttendanceDetailResource {
         String searchName,
         String searchDepartment
     ) {
-        List<AttendanceDetail> attendancDetailList = attendanceDetailRepository.selectAllByAttIdSearch(
+        List<AttendanceDetail> attendancDetailList = attendanceDetailService.getAllAttendanceDetail(
             id,
-            searchCode.toLowerCase(),
-            searchName.toLowerCase(),
+            searchCode,
+            searchName,
             searchDepartment
         );
         return ResponseEntity.ok().body(attendancDetailList);
