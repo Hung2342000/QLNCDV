@@ -324,6 +324,7 @@ export class LuongComponent implements OnInit {
           id: undefined,
           createDate: dayjs(),
           nameSalary: this.name,
+          dot: '1',
           month: this.thang,
           year: this.nam,
           luongDetails: this.luongDetailsImport,

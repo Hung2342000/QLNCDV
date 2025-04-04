@@ -6,11 +6,10 @@ import static com.mycompany.myapp.security.SecurityUtils.getAuthorities;
 import com.mycompany.myapp.domain.*;
 import com.mycompany.myapp.repository.*;
 import com.mycompany.myapp.repository.DTO.LuongDTO;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -80,21 +79,54 @@ public class LuongService {
             !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(USER).contains(authority)) &&
             getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority))
         ) {
-            page = this.luongRepository.findAll(pageable);
+            page = this.luongRepository.getAllByLuongByDot(pageable, "1");
         } else if (
             authentication != null &&
             !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority)) &&
             getAuthorities(authentication).anyMatch(authority -> Arrays.asList(USER).contains(authority))
         ) {
-            page = this.luongRepository.findAll(pageable);
+            page = this.luongRepository.getAllByLuongByDot(pageable, "1");
         } else if (
             authentication != null &&
             !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority)) &&
             getAuthorities(authentication).anyMatch(authority -> Arrays.asList(SUPERUSER).contains(authority))
         ) {
-            page = this.luongRepository.findAll(pageable);
+            page = this.luongRepository.getAllByLuongByDot(pageable, "1");
         }
 
+        return page;
+    }
+
+    public Page<Luong> pageLuongDot2(Pageable pageable) {
+        Page<Luong> page = new PageImpl<>(Collections.emptyList(), PageRequest.of(0, 10), 0);
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username;
+        User user = new User();
+        Object principal = authentication.getPrincipal();
+        UserDetails userDetails = (UserDetails) principal;
+        username = userDetails.getUsername();
+        user = userRepository.findOneByLogin(username).get();
+
+        if (
+            authentication != null &&
+            !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(USER).contains(authority)) &&
+            getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority))
+        ) {
+            page = this.luongRepository.getAllByLuongByDot(pageable, "2");
+        } else if (
+            authentication != null &&
+            !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority)) &&
+            getAuthorities(authentication).anyMatch(authority -> Arrays.asList(USER).contains(authority))
+        ) {
+            page = this.luongRepository.getAllByLuongByDot(pageable, "2");
+        } else if (
+            authentication != null &&
+            !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority)) &&
+            getAuthorities(authentication).anyMatch(authority -> Arrays.asList(SUPERUSER).contains(authority))
+        ) {
+            page = this.luongRepository.getAllByLuongByDot(pageable, "2");
+        }
         return page;
     }
 
@@ -103,7 +135,9 @@ public class LuongService {
         Luong luong = new Luong();
         luong.setYear(luongDTO.getYear());
         luong.setMonth(luongDTO.getMonth());
-        luong.setNameSalary(luongDTO.getNameSalary());
+        luong.setCreateDate(LocalDate.now());
+        luong.setName(luongDTO.getNameSalary());
+        luong.setDot(luongDTO.getDot());
         luong = luongRepository.save(luong);
         for (LuongDetail detail : luongDetailList) {
             if (detail.getEmployeeCode() != null) {
@@ -113,6 +147,9 @@ public class LuongService {
                 } else detail.setPhongBan("");
             }
             detail.setLuongId(luong.getId());
+            if (detail.getKpi() != null) {
+                detail.setKpi(new BigDecimal(detail.getKpi()).setScale(2, RoundingMode.HALF_UP).toString());
+            }
         }
         luongDetailRepository.saveAll(luongDetailList);
     }

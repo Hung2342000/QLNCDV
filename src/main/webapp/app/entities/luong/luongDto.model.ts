@@ -6,6 +6,7 @@ export interface ILuongDto {
   id?: number;
   createDate?: dayjs.Dayjs | null;
   nameSalary?: string | null;
+  dot?: string | null;
   month?: string | null;
   year?: string | null;
   luongDetails?: ILuongDetail[] | null;
@@ -16,6 +17,7 @@ export class LuongDto implements ILuongDto {
     public id?: number,
     public createDate?: dayjs.Dayjs | null,
     public name?: string | null,
+    public dot?: string | null,
     public month?: string | null,
     public year?: string | null,
     public luongDetails?: ILuongDetail[] | null

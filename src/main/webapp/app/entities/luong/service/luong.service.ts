@@ -49,6 +49,13 @@ export class LuongService {
       .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
   }
 
+  querydot2(req?: any): Observable<EntityArrayResponseType> {
+    const options = createRequestOption(req);
+    return this.http
+      .get<ILuong[]>(this.resourceUrl + '/dot2', { params: options, observe: 'response' })
+      .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
+  }
+
   addEmployeeToCollectionIfMissing(employeeCollection: ILuong[], ...employeesToCheck: (ILuong | null | undefined)[]): ILuong[] {
     const employees: ILuong[] = employeesToCheck.filter(isPresent);
     if (employees.length > 0) {

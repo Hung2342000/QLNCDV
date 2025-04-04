@@ -59,6 +59,14 @@ public class LuongResource {
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
+    @GetMapping("/luong/dot2")
+    public ResponseEntity<List<Luong>> getAllLuongsDot2(@org.springdoc.api.annotations.ParameterObject Pageable pageable) {
+        log.debug("REST request to get a page of Salarys");
+        Page<Luong> page = luongService.pageLuongDot2(pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
     @PostMapping("/luong/all/import")
     public void importAllLuongs(@Valid @RequestBody LuongDTO luongDto) throws URISyntaxException {
         luongService.importLuong(luongDto);

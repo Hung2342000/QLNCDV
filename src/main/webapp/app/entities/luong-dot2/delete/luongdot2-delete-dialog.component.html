@@ -1,0 +1,14 @@
+<form *ngIf="luong" name="deleteForm" (ngSubmit)="confirmDelete(luong.id!)">
+  <div class="modal-header">
+    <h4 class="modal-title" data-cy="employeeDeleteDialogHeading">Xác nhận xóa</h4>
+    <button type="button" class="btn-close btn-sm" data-dismiss="modal" aria-hidden="true" (click)="cancel()"></button>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal" (click)="cancel()">
+      <span jhiTranslate="entity.action.cancel">Cancel</span>
+    </button>
+    <button id="jhi-confirm-delete-employee" data-cy="entityConfirmDeleteButton" type="submit" class="btn btn-danger btn-sm">
+      <span jhiTranslate="entity.action.delete">Delete</span>
+    </button>
+  </div>
+</form>

@@ -88,6 +88,9 @@ public class LuongDetail implements Serializable {
     @Column(name = "bhxh")
     private BigDecimal bhxh;
 
+    @Column(name = "bhtnld")
+    private BigDecimal bhtnld;
+
     @Column(name = "bhyt")
     private BigDecimal bhyt;
 
@@ -96,6 +99,24 @@ public class LuongDetail implements Serializable {
 
     @Column(name = "tongBH")
     private BigDecimal tongBH;
+
+    @Column(name = "bhxhdn")
+    private BigDecimal bhxhdn;
+
+    @Column(name = "bhtnlddn")
+    private BigDecimal bhtnlddn;
+
+    @Column(name = "bhytdn")
+    private BigDecimal bhytdn;
+
+    @Column(name = "bhttdn")
+    private BigDecimal bhttdn;
+
+    @Column(name = "cddn")
+    private BigDecimal cddn;
+
+    @Column(name = "tongBHdn")
+    private BigDecimal tongBHdn;
 
     @Column(name = "tongLuongChiuThue")
     private BigDecimal tongLuongChiuThue;
@@ -108,6 +129,9 @@ public class LuongDetail implements Serializable {
 
     @Column(name = "cdcp")
     private BigDecimal cdcp;
+
+    @Column(name = "cdcp2")
+    private BigDecimal cdcp2;
 
     @Column(name = "bhytBaoMuon")
     private BigDecimal bhytBaoMuon;
@@ -165,6 +189,24 @@ public class LuongDetail implements Serializable {
 
     @Column(name = "phongBan")
     private String phongBan;
+
+    @Column(name = "chiPhiKK")
+    private BigDecimal chiPhiKK;
+
+    @Column(name = "chiPhiKKDaChi")
+    private BigDecimal chiPhiKKDaChi;
+
+    @Column(name = "hoaHongKhoanConLai")
+    private BigDecimal hoaHongKhoanConLai;
+
+    @Column(name = "luongLan2")
+    private BigDecimal luongLan2;
+
+    @Column(name = "conLai")
+    private BigDecimal conLai;
+
+    @Column(name = "chiPhiTrucLe")
+    private BigDecimal chiPhiTrucLe;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -566,6 +608,118 @@ public class LuongDetail implements Serializable {
 
     public void setPhongBan(String phongBan) {
         this.phongBan = phongBan;
+    }
+
+    public BigDecimal getBhtnld() {
+        return bhtnld;
+    }
+
+    public void setBhtnld(BigDecimal bhtnld) {
+        this.bhtnld = bhtnld;
+    }
+
+    public BigDecimal getBhxhdn() {
+        return bhxhdn;
+    }
+
+    public void setBhxhdn(BigDecimal bhxhdn) {
+        this.bhxhdn = bhxhdn;
+    }
+
+    public BigDecimal getBhtnlddn() {
+        return bhtnlddn;
+    }
+
+    public void setBhtnlddn(BigDecimal bhtnlddn) {
+        this.bhtnlddn = bhtnlddn;
+    }
+
+    public BigDecimal getBhytdn() {
+        return bhytdn;
+    }
+
+    public void setBhytdn(BigDecimal bhytdn) {
+        this.bhytdn = bhytdn;
+    }
+
+    public BigDecimal getBhttdn() {
+        return bhttdn;
+    }
+
+    public void setBhttdn(BigDecimal bhttdn) {
+        this.bhttdn = bhttdn;
+    }
+
+    public BigDecimal getCddn() {
+        return cddn;
+    }
+
+    public void setCddn(BigDecimal cddn) {
+        this.cddn = cddn;
+    }
+
+    public BigDecimal getTongBHdn() {
+        return tongBHdn;
+    }
+
+    public void setTongBHdn(BigDecimal tongBHdn) {
+        this.tongBHdn = tongBHdn;
+    }
+
+    public BigDecimal getCdcp2() {
+        return cdcp2;
+    }
+
+    public void setCdcp2(BigDecimal cdcp2) {
+        this.cdcp2 = cdcp2;
+    }
+
+    public BigDecimal getChiPhiKK() {
+        return chiPhiKK;
+    }
+
+    public void setChiPhiKK(BigDecimal chiPhiKK) {
+        this.chiPhiKK = chiPhiKK;
+    }
+
+    public BigDecimal getChiPhiKKDaChi() {
+        return chiPhiKKDaChi;
+    }
+
+    public void setChiPhiKKDaChi(BigDecimal chiPhiKKDaChi) {
+        this.chiPhiKKDaChi = chiPhiKKDaChi;
+    }
+
+    public BigDecimal getHoaHongKhoanConLai() {
+        return hoaHongKhoanConLai;
+    }
+
+    public void setHoaHongKhoanConLai(BigDecimal hoaHongKhoanConLai) {
+        this.hoaHongKhoanConLai = hoaHongKhoanConLai;
+    }
+
+    public BigDecimal getLuongLan2() {
+        return luongLan2;
+    }
+
+    public void setLuongLan2(BigDecimal luongLan2) {
+        this.luongLan2 = luongLan2;
+    }
+
+    public BigDecimal getConLai() {
+        return conLai;
+    }
+
+    public void setConLai(BigDecimal conLai) {
+        this.conLai = conLai;
+    }
+
+    public BigDecimal getChiPhiTrucLe() {
+        return chiPhiTrucLe;
+    }
+
+    public void setChiPhiTrucLe(BigDecimal chiPhiTrucLe) {
+        this.chiPhiTrucLe = chiPhiTrucLe;
     }
 
     @Override

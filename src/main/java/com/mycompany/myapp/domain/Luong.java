@@ -24,8 +24,11 @@ public class Luong implements Serializable {
     @Column(name = "createDate")
     private LocalDate createDate;
 
-    @Column(name = "nameSalary")
-    private String nameSalary;
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "dot")
+    private String dot;
 
     @Column(name = "month")
     private Long month;
@@ -51,12 +54,20 @@ public class Luong implements Serializable {
         this.createDate = createDate;
     }
 
-    public String getNameSalary() {
-        return nameSalary;
+    public String getName() {
+        return name;
     }
 
-    public void setNameSalary(String nameSalary) {
-        this.nameSalary = nameSalary;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDot() {
+        return dot;
+    }
+
+    public void setDot(String dot) {
+        this.dot = dot;
     }
 
     public Long getMonth() {
@@ -99,7 +110,7 @@ public class Luong implements Serializable {
     public String toString() {
         return "Salary{" +
             "id=" + getId() +
-            "nameSalary=" + getNameSalary() +
+            "nameSalary=" + getName() +
             "}";
     }
 }

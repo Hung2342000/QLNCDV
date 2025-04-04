@@ -16,6 +16,8 @@ public class LuongDTO {
 
     private String nameSalary;
 
+    private String dot;
+
     private Long month;
 
     private Long year;
@@ -72,5 +74,13 @@ public class LuongDTO {
 
     public void setLuongDetails(List<LuongDetail> luongDetails) {
         this.luongDetails = luongDetails;
+    }
+
+    public String getDot() {
+        return dot;
+    }
+
+    public void setDot(String dot) {
+        this.dot = dot;
     }
 }
