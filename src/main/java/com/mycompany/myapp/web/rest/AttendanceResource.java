@@ -1,9 +1,9 @@
 package com.mycompany.myapp.web.rest;
 
 import com.mycompany.myapp.domain.Attendance;
-import com.mycompany.myapp.domain.AttendanceDetail;
 import com.mycompany.myapp.repository.AttendanceRepository;
 import com.mycompany.myapp.service.AttendanceService;
+import com.mycompany.myapp.service.PdfService;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import java.io.IOException;
 import java.net.URI;
@@ -12,10 +12,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -46,10 +46,12 @@ public class AttendanceResource {
 
     private final AttendanceRepository attendanceRepository;
     private AttendanceService attendanceService;
+    private PdfService pdfService;
 
-    public AttendanceResource(AttendanceRepository attendanceRepository, AttendanceService attendanceService) {
+    public AttendanceResource(AttendanceRepository attendanceRepository, AttendanceService attendanceService, PdfService pdfService) {
         this.attendanceRepository = attendanceRepository;
         this.attendanceService = attendanceService;
+        this.pdfService = pdfService;
     }
 
     /**
@@ -163,5 +165,24 @@ public class AttendanceResource {
         headers.setContentDispositionFormData("attachment", "bangchamcong.xlsx");
 
         return new ResponseEntity<>(excelBytes, headers, HttpStatus.OK);
+    }
+
+    @GetMapping("/attendances/export/pdf")
+    public ResponseEntity<ByteArrayResource> exportChamCongPdf(Long attendanceId) {
+        try {
+            ByteArrayResource resource = pdfService.exportChamCongPdf(attendanceId);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=bang-cham-cong.pdf");
+
+            return ResponseEntity
+                .ok()
+                .headers(headers)
+                .contentLength(resource.contentLength())
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(resource);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }

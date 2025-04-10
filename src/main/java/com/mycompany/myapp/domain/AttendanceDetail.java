@@ -36,6 +36,9 @@ public class AttendanceDetail implements Serializable {
     @Column(name = "service_type_name")
     private String serviceTypeName;
 
+    @Column(name = "nhom")
+    private String nhom;
+
     @Column(name = "department")
     private String department;
 
@@ -469,6 +472,14 @@ public class AttendanceDetail implements Serializable {
 
     public void setEmployeeName(String employeeName) {
         this.employeeName = employeeName;
+    }
+
+    public String getNhom() {
+        return nhom;
+    }
+
+    public void setNhom(String nhom) {
+        this.nhom = nhom;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

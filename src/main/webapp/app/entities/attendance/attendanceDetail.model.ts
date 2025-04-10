@@ -8,6 +8,7 @@ export interface IAttendanceDetail {
   employeeName?: string | null;
   serviceTypeName?: string | null;
   department?: string | null;
+  nhom?: string | null;
   day1?: string | null;
   day2?: string | null;
   day3?: string | null;
@@ -53,6 +54,7 @@ export class AttendanceDetail implements IAttendanceDetail {
     public employeeName?: string,
     public serviceTypeName?: string | null,
     public department?: string | null,
+    public nhom?: string | null,
     public day1?: string | null,
     public day2?: string | null,
     public day3?: string | null,

@@ -71,6 +71,14 @@ export class AttendanceService {
       headers: new HttpHeaders().append('Content-Type', 'application/json'),
     });
   }
+  exportToPdf(req?: any): Observable<any> {
+    const options = createRequestOption(req);
+    return this.http.get(`${this.resourceUrl}/export/pdf`, {
+      params: options,
+      responseType: 'blob',
+      headers: new HttpHeaders().append('Content-Type', 'application/json'),
+    });
+  }
   find(id: number): Observable<EntityResponseType> {
     return this.http.get<IAttendance>(`${this.resourceUrl}/${id}`, { observe: 'response' }).pipe(map((res: EntityResponseType) => res));
   }

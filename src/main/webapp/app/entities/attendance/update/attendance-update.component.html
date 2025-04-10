@@ -51,7 +51,10 @@
 </div>
 <div *ngIf="isEdit === false" class="d-flex justify-content-end">
   <button style="margin-top: 10px; margin-bottom: 20px; margin-right: 5px" (click)="exportToExcel()" class="btn btn-danger btn-sm">
-    <span>Export</span>
+    <span>Excel</span>
+  </button>
+  <button style="margin-top: 10px; margin-bottom: 20px; margin-right: 5px" (click)="downloadPDF()" class="btn btn-danger btn-sm">
+    <span>Pdf</span>
   </button>
   <button style="margin-top: 10px; margin-bottom: 20px; margin-right: 5px" (click)="edit()" class="btn btn-secondary btn-sm">
     <span>Sửa</span>
@@ -83,6 +86,7 @@
           </th>
           <th style="min-width: 140px !important"><span>Đơn vị</span></th>
           <th style="min-width: 240px !important"><span>Loại hình</span></th>
+          <th style="min-width: 140px !important"><span>Nhóm</span></th>
           <th style="min-width: 90px !important">Ngày 1</th>
           <th style="min-width: 90px !important">Ngày 2</th>
           <th style="min-width: 90px !important">Ngày 3</th>
@@ -135,7 +139,9 @@
           <td style="background: white">
             <span>{{ detail.serviceTypeName }}</span>
           </td>
-
+          <td style="background: white">
+            <span>{{ detail.nhom }}</span>
+          </td>
           <td [ngStyle]="{ 'background-color': detail.day1 === 'off' ? '#e84e3d' : '' }">
             <select
               [ngStyle]="{ 'background-color': detail.day1 === 'off' ? '#e84e3d' : '' }"

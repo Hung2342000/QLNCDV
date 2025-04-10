@@ -89,6 +89,22 @@ export class AttendanceUpdateComponent implements OnInit {
       });
   }
 
+  downloadPDF(): void {
+    this.attendanceService
+      .exportToPdf({
+        attendanceId: this.attendance.id,
+      })
+      .subscribe(response => {
+        const blob = new Blob([response], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'bangchamcong.pdf';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      });
+  }
   edit(): void {
     this.isEdit = true;
   }
@@ -131,6 +147,7 @@ export class AttendanceUpdateComponent implements OnInit {
       employeeName: [item.employeeName],
       serviceTypeName: [item.serviceTypeName],
       department: [item.department],
+      nhom: [item.nhom],
       day1: [item.day1],
       day2: [item.day2],
       day3: [item.day3],
