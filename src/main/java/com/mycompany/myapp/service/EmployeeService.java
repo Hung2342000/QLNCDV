@@ -5,14 +5,12 @@ import static com.mycompany.myapp.security.SecurityUtils.getAuthorities;
 
 import com.mycompany.myapp.domain.*;
 import com.mycompany.myapp.repository.*;
+import com.mycompany.myapp.service.dto.AdminUserDTO;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -45,6 +43,7 @@ public class EmployeeService {
     private ServiceTypeRepository serviceTypeRepository;
     private TransferRepository transferRepository;
     private DiaBanRepository diaBanRepository;
+    private UserService userService;
 
     public EmployeeService(
         UserRepository userRepository,
@@ -53,7 +52,8 @@ public class EmployeeService {
         DepartmentRepository departmentRepository,
         ServiceTypeRepository serviceTypeRepository,
         TransferRepository transferRepository,
-        DiaBanRepository diaBanRepository
+        DiaBanRepository diaBanRepository,
+        UserService userService
     ) {
         this.userRepository = userRepository;
         this.employeeRepository = employeeRepository;
@@ -62,6 +62,7 @@ public class EmployeeService {
         this.serviceTypeRepository = serviceTypeRepository;
         this.transferRepository = transferRepository;
         this.diaBanRepository = diaBanRepository;
+        this.userService = userService;
     }
 
     public Page<Employee> getAllEmployees(
@@ -778,6 +779,19 @@ public class EmployeeService {
                 if (employee.getStatus() == null || employee.getStatus().equals("")) {
                     employee.setStatus("Đang làm việc");
                 }
+                AdminUserDTO adminUserDTO = new AdminUserDTO();
+                adminUserDTO.setName(employee.getName());
+                adminUserDTO.setEmail(employee.getWorkEmail());
+                adminUserDTO.setContact(employee.getWorkPhone());
+                adminUserDTO.setDepartment(employee.getDepartment());
+                Set<String> authorities = new HashSet<>();
+                authorities.add("USER");
+                adminUserDTO.setAuthorities(authorities);
+                adminUserDTO.setDepartmentName(department.getName());
+                adminUserDTO.setLogin(employee.getWorkEmail());
+                if (adminUserDTO.getLogin() != null) {
+                    userService.createUser(adminUserDTO);
+                }
                 Employee employeeCheck = new Employee();
                 employeeCheck = employeeRepository.getByCode(employee.getCodeEmployee());
                 if (employeeCheck == null) {
@@ -785,6 +799,7 @@ public class EmployeeService {
                 }
             }
         }
+
         List<Employee> employeeListSave = employeeRepository.saveAll(employees);
         for (Employee employee : employeeListSave) {
             Transfer transfer = new Transfer();
