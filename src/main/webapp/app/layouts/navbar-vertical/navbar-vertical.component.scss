@@ -53,3 +53,17 @@
   max-height: 150px; /* Điều chỉnh nếu cần */
   opacity: 1;
 }
+.nav-item.hdsd {
+  margin-top: auto;
+}
+
+.navbar-vertical {
+  display: flex;
+  flex-direction: column;
+}
+
+.navbar-nav {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
