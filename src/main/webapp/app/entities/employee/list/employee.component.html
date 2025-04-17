@@ -4,6 +4,7 @@
 
     <div class="d-flex justify-content-end">
       <button
+        *jhiHasAnyAuthority="'ROLE_ADMIN'"
         style="margin-right: 10px"
         id="jh-create-entity"
         data-cy="entityCreateButton"
@@ -150,6 +151,7 @@
               </button>
 
               <button
+                *jhiHasAnyAuthority="'ROLE_ADMIN'"
                 type="submit"
                 [routerLink]="['/employee', employee.id, 'edit']"
                 class="btn btn-primary btn-sm"
@@ -158,7 +160,13 @@
                 <fa-icon icon="pencil-alt"></fa-icon>
               </button>
 
-              <button type="submit" (click)="delete(employee)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+              <button
+                *jhiHasAnyAuthority="'ROLE_ADMIN'"
+                type="submit"
+                (click)="delete(employee)"
+                class="btn btn-danger btn-sm"
+                data-cy="entityDeleteButton"
+              >
                 <fa-icon icon="times"></fa-icon>
               </button>
             </div>
@@ -210,6 +218,7 @@
   </div>
   <div class="modal-body">
     <div style="margin-bottom: 10px">
+      `
       <span style="margin-bottom: 10px; display: inline-block">
         <b>File import phải đúng định dạng như file mẫu</b>
       </span>

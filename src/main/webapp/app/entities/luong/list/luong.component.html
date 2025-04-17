@@ -24,7 +24,7 @@
         <tr *ngFor="let luong of luongs; trackBy: trackId; let i = index" data-cy="entityTable">
           <td>{{ i + 1 }}</td>
           <td>{{ luong.createDate | formatDateVnPipe }}</td>
-          <td>{{ luong.nameSalary }}</td>
+          <td>{{ luong.name }}</td>
           <td>{{ luong.month }}</td>
           <td>{{ luong.year }}</td>
           <td class="text-end">

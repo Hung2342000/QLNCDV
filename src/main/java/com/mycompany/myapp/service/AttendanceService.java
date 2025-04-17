@@ -115,8 +115,11 @@ public class AttendanceService {
         if (listEmployee != null && listEmployee.size() > 0) {
             attendance.setEmployees(listEmployee);
         }
-
-        attendance.setDepartmentCode(user.getDepartment());
+        if (user.getAuthorities().size() > 0 && user.getAuthorities().iterator().next().getName().equals("ROLE_ADMIN")) {
+            attendance.setDepartmentCode("ADMIN");
+        } else {
+            attendance.setDepartmentCode(user.getDepartment());
+        }
         String ngayNghi = attendance.getNgayNghi();
         List<String> ngayNghiCheck = new ArrayList<>();
         if (ngayNghi != null) {
@@ -273,17 +276,9 @@ public class AttendanceService {
         username = userDetails.getUsername();
         user = userRepository.findOneByLogin(username).get();
         Page<Attendance> page = new PageImpl<>(Collections.emptyList(), PageRequest.of(0, 10), 0);
-        if (
-            authentication != null &&
-            !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(SUPERUSER).contains(authority)) &&
-            getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority))
-        ) {
+        if (authentication != null && getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority))) {
             page = this.attendanceRepository.getAllAttendancePage(pageable);
-        } else if (
-            authentication != null &&
-            !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority)) &&
-            getAuthorities(authentication).anyMatch(authority -> Arrays.asList(SUPERUSER).contains(authority))
-        ) {
+        } else {
             page = this.attendanceRepository.getAttendanceByDepartment(user.getDepartment(), pageable);
         }
         return page;

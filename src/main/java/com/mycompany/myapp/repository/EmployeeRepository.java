@@ -96,6 +96,11 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     );
 
     @Query(
+        "select new Employee(a.id,a.codeEmployee,a.name,a.birthday, a.otherId, a.address, a.mobilePhone, a.workPhone, a.workEmail, a.privateEmail, a.department, a.startDate, a.closeDate,a.basicSalary, a.serviceType, a.serviceTypeName, a.region, a.rank, a.mucChiTraToiThieu,a.nhom,a.diaBan, a.status, a.note, a.ngayNghiSinh, a.ngayDieuChuyen) from Employee a  where a.codeEmployee = :codeEmployee"
+    )
+    Page<Employee> listOneEmployee(@Param("codeEmployee") String codeEmployee, Pageable pageable);
+
+    @Query(
         "select a from Employee a where LOWER(a.name) LIKE %:searchName% and a.department LIKE %:searchDepartment% and a.nhom = :searchNhom AND a.status = 'Đang làm việc'"
     )
     List<Employee> listAllEmployees(
@@ -167,6 +172,11 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
         @Param("searchService") String searchService,
         @Param("searchStartDate") String searchStartDate
     );
+
+    @Query(
+        "select new Employee(a.id,a.codeEmployee,a.name,a.birthday, a.otherId, a.address, a.mobilePhone, a.workPhone, a.workEmail, a.privateEmail, a.department, a.startDate, a.closeDate,a.basicSalary, a.serviceType, a.serviceTypeName, a.region, a.rank, a.mucChiTraToiThieu,a.nhom,a.diaBan, a.status, a.note, a.ngayNghiSinh, a.ngayDieuChuyen) from Employee a  where a.codeEmployee = :codeEmployee"
+    )
+    List<Employee> listOne(@Param("codeEmployee") String codeEmployee);
 
     @Query("select a from Employee a where  a.nhom = :searchNhom")
     List<Employee> listAllEmployeesNhom(@Param("searchNhom") String searchNhom);

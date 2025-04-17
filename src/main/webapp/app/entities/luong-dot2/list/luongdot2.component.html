@@ -2,7 +2,7 @@
   <h4 id="page-heading" data-cy="EmployeeHeading">
     <span style="color: rgba(0, 81, 255, 0.85)">Danh sách Lương đợt 2</span>
     <div class="d-flex justify-content-end">
-      <button (click)="importExcel()" data-cy="entityCreateButton" class="btn btn-primary btn-sm">
+      <button *jhiHasAnyAuthority="'ROLE_ADMIN'" (click)="importExcel()" data-cy="entityCreateButton" class="btn btn-primary btn-sm">
         <span> Import </span>
       </button>
     </div>

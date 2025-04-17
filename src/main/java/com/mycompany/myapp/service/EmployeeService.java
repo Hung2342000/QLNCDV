@@ -115,7 +115,7 @@ public class EmployeeService {
                     pageable
                 );
         } else if (
-            authentication != null && !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority))
+            authentication != null && getAuthorities(authentication).anyMatch(authority -> Arrays.asList(SUPERUSER).contains(authority))
         ) {
             if (searchNhom.equals("") || searchNhom == null) {
                 page =
@@ -139,6 +139,10 @@ public class EmployeeService {
                     searchStartDate,
                     pageable
                 );
+        } else if (
+            authentication != null && getAuthorities(authentication).anyMatch(authority -> Arrays.asList(USER).contains(authority))
+        ) {
+            page = employeeRepository.listOneEmployee(user.getCode(), pageable);
         }
         return page;
     }
@@ -221,7 +225,24 @@ public class EmployeeService {
                     employee.getRank().toLowerCase()
                 );
         }
-
+        Department department = new Department();
+        if (employee.getDepartment() != null) {
+            department = departmentRepository.findDepartmentByCode(employee.getDepartment());
+        }
+        AdminUserDTO adminUserDTO = new AdminUserDTO();
+        adminUserDTO.setName(employee.getName());
+        adminUserDTO.setCode(employee.getCodeEmployee());
+        adminUserDTO.setEmail(employee.getWorkEmail());
+        adminUserDTO.setContact(employee.getWorkPhone());
+        adminUserDTO.setDepartment(employee.getDepartment());
+        Set<String> authorities = new HashSet<>();
+        authorities.add("ROLE_USER");
+        adminUserDTO.setAuthorities(authorities);
+        adminUserDTO.setDepartmentName(department.getName());
+        adminUserDTO.setLogin(employee.getWorkEmail());
+        if (adminUserDTO.getLogin() != null) {
+            userService.createUser(adminUserDTO);
+        }
         if (serviceType != null) {
             transfer.setServiceType(serviceType.getId());
             transfer.setNhom(serviceType.getNhom());
@@ -254,7 +275,8 @@ public class EmployeeService {
         }
         LocalDate closeDate = LocalDate.of(2200, 12, 12);
         transfer.setCloseDate(closeDate);
-        Employee employeeSave = employeeRepository.save(employee);
+        Employee employeeSave = new Employee();
+        employeeSave = employeeRepository.save(employee);
         if (employeeSave.getId() != null) {
             transfer.setEmployeeId(employeeSave.getId());
         }
@@ -413,11 +435,7 @@ public class EmployeeService {
             searchStartDate = "2200-12-01";
         }
         List<Employee> employeeList = new ArrayList<>();
-        if (
-            authentication != null &&
-            !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(USER).contains(authority)) &&
-            getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority))
-        ) {
+        if (authentication != null && getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority))) {
             if (searchNhom.equals("") || searchNhom == null) {
                 employeeList =
                     employeeRepository.listAllEmployeesExportNoNhom(
@@ -441,7 +459,7 @@ public class EmployeeService {
                     );
             }
         } else if (
-            authentication != null && !getAuthorities(authentication).anyMatch(authority -> Arrays.asList(ADMIN).contains(authority))
+            authentication != null && getAuthorities(authentication).anyMatch(authority -> Arrays.asList(SUPERUSER).contains(authority))
         ) {
             if (searchNhom.equals("") || searchNhom == null) {
                 employeeList =
@@ -465,6 +483,8 @@ public class EmployeeService {
                         searchStartDate
                     );
             }
+        } else {
+            employeeList = employeeRepository.listOne(user.getCode());
         }
 
         XSSFWorkbook workbook = new XSSFWorkbook();
@@ -784,8 +804,9 @@ public class EmployeeService {
                 adminUserDTO.setEmail(employee.getWorkEmail());
                 adminUserDTO.setContact(employee.getWorkPhone());
                 adminUserDTO.setDepartment(employee.getDepartment());
+                adminUserDTO.setCode(employee.getCodeEmployee());
                 Set<String> authorities = new HashSet<>();
-                authorities.add("USER");
+                authorities.add("ROLE_USER");
                 adminUserDTO.setAuthorities(authorities);
                 adminUserDTO.setDepartmentName(department.getName());
                 adminUserDTO.setLogin(employee.getWorkEmail());

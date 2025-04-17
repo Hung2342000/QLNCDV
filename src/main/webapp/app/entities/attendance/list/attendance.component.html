@@ -3,7 +3,13 @@
     <span style="color: rgba(0, 81, 255, 0.85)">Chấm công</span>
 
     <div class="d-flex justify-content-end">
-      <button style="margin-right: 10px" data-cy="entityConfirmDeleteButton" class="btn btn-danger btn-sm" (click)="create()">
+      <button
+        *jhiHasAnyAuthority="['ROLE_ADMIN', 'ROLE_SUPERUSER']"
+        style="margin-right: 10px"
+        data-cy="entityConfirmDeleteButton"
+        class="btn btn-danger btn-sm"
+        (click)="create()"
+      >
         <span> Thêm </span>
       </button>
       <button *jhiHasAnyAuthority="'ROLE_ADMIN'" (click)="ngayNghiLeListShow()" class="btn btn-primary btn-sm">
@@ -17,7 +23,7 @@
       <thead>
         <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="loadPage()">
           <th style="width: 5%" scope="col" jhiSortBy="id"><span>STT</span></th>
-          <th style="width: 20%" scope="col"><span>Tên bảng chấm công</span></th>
+          <th style="width: 30%" scope="col"><span>Tên bảng chấm công</span></th>
           <th style="width: 15%" scope="col" jhiSortBy="month"><span>Thời gian</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" jhiSortBy="note"><span>Ghi chú</span> <fa-icon icon="sort"></fa-icon></th>
           <th scope="col" style="width: 6%">Thao tác</th>
@@ -28,7 +34,7 @@
           <td>
             {{ i + 1 }}
           </td>
-          <td class="text-center">{{ attendance.name }}</td>
+          <td>{{ attendance.name }}</td>
           <td>{{ formatMonthYear(attendance) }}</td>
           <td>{{ attendance.note }}</td>
           <td class="text-center">

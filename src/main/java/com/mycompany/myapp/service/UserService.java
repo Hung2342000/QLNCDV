@@ -152,6 +152,7 @@ public class UserService {
         } else {
             user.setLangKey(userDTO.getLangKey());
         }
+        user.setCode(userDTO.getCode());
         //        String encryptedPassword = passwordEncoder.encode(userDTO.getPassWord());
         user.setPassword("Mbf@123456");
         //        user.setResetKey(RandomUtil.generateResetKey());
